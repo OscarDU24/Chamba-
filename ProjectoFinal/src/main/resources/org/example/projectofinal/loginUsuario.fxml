@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.PasswordField?>
+<StackPane prefHeight="600.0" prefWidth="900.0"
+           style="-fx-background-color: linear-gradient(to bottom right, #eef4ff, #dce8f8);"
+           xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="org.example.projectofinal.Controller.LoginEstudianteController">
+    <VBox alignment="CENTER_LEFT" maxWidth="430.0" spacing="14.0"
+          style="-fx-background-color: white; -fx-background-radius: 16;"
+          StackPane.alignment="CENTER">
+        <padding>
+            <Insets top="36.0" right="40.0" bottom="36.0" left="40.0"/>
+        </padding>
+
+        <Label text="PORTAL ESTUDIANTIL"
+               style="-fx-text-fill: #4263a5; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+        <Label text="Iniciar sesión"
+               style="-fx-text-fill: #1d2b45; -fx-font-size: 30px; -fx-font-weight: bold;"/>
+        <Label text="Ingresa tu correo y tu contraseña para continuar."
+               wrapText="true"
+               style="-fx-text-fill: #65738a; -fx-font-size: 14px;"/>
+        <Label text="Correo"
+               style="-fx-text-fill: #28364d; -fx-font-size: 15px; -fx-font-weight: bold;"/>
+        <TextField fx:id="Correotxt" promptText="Escribe su correo institucional"
+                   prefHeight="42"
+                   style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #d6deeb;"/>
+
+        <Label text="Contraseña"
+               style="-fx-text-fill: #28364d; -fx-font-size: 15px; -fx-font-weight: bold;"/>
+        <PasswordField fx:id="Passwordtxt" promptText="Ingrese su contraseña"
+                   prefHeight="42"
+                   style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #d6deeb;"/>
+
+        <Label text="Confirme la contraseña"
+                style="-fx-text-fill: #28364d; -fx-font-size: 15px; -fx-font-weight: bold;"/>
+        <PasswordField fx:id="ConfirmPasswordtxt" promptText="Confirme su contraseña"
+                       prefHeight="42"
+                       style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #d6deeb;"/>
+
+
+        <Button text="Continuar" onAction="#onLogin"
+                maxWidth="Infinity" prefHeight="44.0"
+                style="-fx-background-color: #315da8; -fx-background-radius: 8; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;"/>
+        <Label fx:id="feedbackLbl" wrapText="true" minHeight="20.0"
+               style="-fx-text-fill: #b42318; -fx-font-size: 13px;"/>
+    </VBox>
+</StackPane>

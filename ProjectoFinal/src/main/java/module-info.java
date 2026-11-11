@@ -7,4 +7,6 @@ module org.example.projectofinal {
 
     opens org.example.projectofinal to javafx.fxml;
     exports org.example.projectofinal;
+    exports org.example.projectofinal.Controller;
+    opens org.example.projectofinal.Controller to javafx.fxml;
 }
