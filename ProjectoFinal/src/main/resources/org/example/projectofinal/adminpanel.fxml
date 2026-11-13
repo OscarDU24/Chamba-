@@ -7,205 +7,98 @@
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.projectofinal.controller.AdminPanelController"
-            prefWidth="1150"
-            prefHeight="700"
+            prefWidth="1000"
+            prefHeight="600"
             style="-fx-background-color: #F4F6F9;">
 
-    <!-- ===================================== -->
-    <!-- ENCABEZADO -->
-    <!-- ===================================== -->
-
     <top>
-        <VBox spacing="7"
-              style="-fx-background-color: #243447;">
-
+        <VBox spacing="5" style="-fx-background-color: #E8EDF2;">
             <padding>
-                <Insets top="22" right="28" bottom="22" left="28"/>
+                <Insets top="18" right="20" bottom="18" left="20"/>
             </padding>
 
-            <Label text="Panel de administración"
-                   style="-fx-font-size: 25px;
-                          -fx-font-weight: bold;
-                          -fx-text-fill: white;"/>
+            <Label text="Gestión de empleados"
+                   style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
 
-            <Label text="Sistema de Gestión de Personal Institucional"
-                   style="-fx-font-size: 13px;
-                          -fx-text-fill: #D0D9E2;"/>
-
+            <Label text="Registro y administración de los datos del personal."
+                   style="-fx-text-fill: #555555;"/>
         </VBox>
     </top>
 
-
-    <!-- ===================================== -->
-    <!-- CONTENIDO PRINCIPAL -->
-    <!-- ===================================== -->
-
     <center>
-        <VBox spacing="20">
-
+        <VBox spacing="15">
             <padding>
-                <Insets top="25" right="28" bottom="25" left="28"/>
+                <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
 
-
-            <!-- BUSCADOR Y FILTROS -->
-
-            <HBox alignment="CENTER_LEFT"
-                  spacing="12">
-
-                <Label text="Empleados registrados"
-                       style="-fx-font-size: 19px;
-                              -fx-font-weight: bold;
-                              -fx-text-fill: #243447;"/>
-
-                <Region HBox.hgrow="ALWAYS"/>
-
-                <!-- FILTRO POR DEPARTAMENTO -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="txtBuscar"
+                           promptText="Buscar por nombre, CIF o correo..."
+                           HBox.hgrow="ALWAYS"/>
 
                 <ComboBox fx:id="cmbDepartamento"
-                          promptText="Todos los departamentos"
-                          prefWidth="190"/>
+                          promptText="Departamento"
+                          prefWidth="180"/>
 
-                <!-- BUSCADOR -->
-
-                <TextField fx:id="txtBuscar"
-                           promptText="Buscar empleado..."
-                           prefWidth="230"/>
-
-                <!-- ACTUALIZAR -->
-
-                <Button fx:id="btnActualizar"
-                        text="Actualizar"
-                        onAction="#actualizarTabla"
-                        style="-fx-background-color: #34495E;
-                               -fx-text-fill: white;
-                               -fx-cursor: hand;"/>
-
+                <Button text="Actualizar"
+                        onAction="#actualizarTabla"/>
             </HBox>
 
-
-            <!-- ===================================== -->
-            <!-- TABLA DE EMPLEADOS -->
-            <!-- ===================================== -->
-
             <TableView fx:id="tablaEmpleados"
-                       VBox.vgrow="ALWAYS"
-                       columnResizePolicy="CONSTRAINED_RESIZE_POLICY">
+                       VBox.vgrow="ALWAYS">
 
                 <columns>
-
-                    <!-- NOMBRE COMPLETO -->
-
-                    <TableColumn fx:id="colNombreCompleto"
+                    <TableColumn fx:id="colNombre"
                                  text="Nombre completo"
                                  prefWidth="190"/>
 
-                    <!-- CIF -->
-
-                    <TableColumn fx:id="colCIF"
+                    <TableColumn fx:id="colCif"
                                  text="CIF"
-                                 prefWidth="125"/>
-
-                    <!-- CORREO -->
+                                 prefWidth="110"/>
 
                     <TableColumn fx:id="colCorreo"
                                  text="Correo institucional"
-                                 prefWidth="210"/>
-
-                    <!-- CATEGORIA -->
+                                 prefWidth="190"/>
 
                     <TableColumn fx:id="colCategoria"
                                  text="Categoría"
-                                 prefWidth="170"/>
-
-                    <!-- DEPARTAMENTO -->
+                                 prefWidth="130"/>
 
                     <TableColumn fx:id="colDepartamento"
                                  text="Departamento"
-                                 prefWidth="160"/>
+                                 prefWidth="140"/>
 
-                    <!-- ESTADO DEL EMPLEADO -->
-
-                    <TableColumn fx:id="colActivo"
-                                 text="Activo"
-                                 prefWidth="100"/>
-
+                    <TableColumn fx:id="colEstadoCuenta"
+                                 text="Estado de cuenta"
+                                 prefWidth="120"/>
                 </columns>
 
                 <placeholder>
-                    <Label text="No hay empleados registrados."
-                           style="-fx-text-fill: #7F8C8D;"/>
+                    <Label text="No hay empleados registrados."/>
                 </placeholder>
-
             </TableView>
 
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button text="Registrar"
+                        onAction="#registrarEmpleado"/>
 
-            <!-- ===================================== -->
-            <!-- BOTONES ADMINISTRATIVOS -->
-            <!-- ===================================== -->
+                <Button text="Editar"
+                        onAction="#editarEmpleado"/>
 
-            <HBox alignment="CENTER_LEFT"
-                  spacing="12">
+                <Button text="Eliminar"
+                        onAction="#eliminarEmpleado"/>
 
-                <Button fx:id="btnRegistrar"
-                        text="Registrar empleado"
-                        onAction="#registrarEmpleado"
-                        prefHeight="36"
-                        style="-fx-background-color: #27865B;
-                               -fx-text-fill: white;
-                               -fx-font-weight: bold;
-                               -fx-cursor: hand;"/>
-
-                <Button fx:id="btnEditar"
-                        text="Editar información"
-                        onAction="#editarEmpleado"
-                        prefHeight="36"
-                        style="-fx-background-color: #3478B8;
-                               -fx-text-fill: white;
-                               -fx-cursor: hand;"/>
-
-                <Button fx:id="btnCambiarEstado"
-                        text="Activar / Desactivar"
-                        onAction="#cambiarEstado"
-                        prefHeight="36"
-                        style="-fx-background-color: #D99A27;
-                               -fx-text-fill: white;
-                               -fx-font-weight: bold;
-                               -fx-cursor: hand;"/>
-
+                <Button text="Activar / Desactivar cuenta"
+                        onAction="#cambiarEstadoCuenta"/>
             </HBox>
 
-
-            <!-- MENSAJES DEL SISTEMA -->
-
             <Label fx:id="lblEstado"
-                   text="Seleccione un empleado para administrar su información."
-                   style="-fx-font-size: 12px;
-                          -fx-text-fill: #64748B;"/>
-
+                   text="Seleccione un empleado para realizar una operación."
+                   style="-fx-text-fill: #555555;"/>
         </VBox>
     </center>
 
-
-    <!-- ===================================== -->
-    <!-- PIE DE PAGINA -->
-    <!-- ===================================== -->
-
-    <bottom>
-        <HBox alignment="CENTER_RIGHT"
-              style="-fx-background-color: #E8EDF2;">
-
-            <padding>
-                <Insets top="12" right="28" bottom="12" left="28"/>
-            </padding>
-
-            <Label text="Sistema de Gestión de Personal Institucional"
-                   style="-fx-font-size: 11px;
-                          -fx-text-fill: #64748B;"/>
-
-        </HBox>
-    </bottom>
-
 </BorderPane>
+
 
 

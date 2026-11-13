@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.projectofinal.controller.DashboardController"
+            fitToWidth="true"
+            hbarPolicy="NEVER"
+            style="-fx-background-color: transparent;
+                   -fx-background: #F4F6FA;">
+
+    <VBox spacing="22"
+          style="-fx-background-color: #F4F6FA;">
+
+        <padding>
+            <Insets top="28" right="30" bottom="30" left="30"/>
+        </padding>
+
+        <!-- BIENVENIDA -->
+        <VBox spacing="6">
+            <Label text="Bienvenido al sistema"
+                   style="-fx-font-size: 24px;
+                          -fx-font-weight: bold;
+                          -fx-text-fill: #263548;"/>
+
+            <Label text="Resumen general de la gestión institucional y evaluación del desempeño."
+                   wrapText="true"
+                   style="-fx-font-size: 13px;
+                          -fx-text-fill: #8492A6;"/>
+        </VBox>
+
+        <!-- INDICADORES -->
+        <GridPane hgap="16" vgap="16">
+
+            <columnConstraints>
+                <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
+                <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
+                <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
+                <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
+            </columnConstraints>
+
+            <VBox GridPane.columnIndex="0"
+                  styleClass="dashboard-card">
+                <Label text="PERSONAL ACTIVO"
+                       styleClass="card-subtitle"/>
+                <Label fx:id="lblTotalEmpleados"
+                       text="—"
+                       styleClass="card-number"/>
+                <Label text="Empleados registrados"
+                       styleClass="card-description"/>
+            </VBox>
+
+            <VBox GridPane.columnIndex="1"
+                  styleClass="dashboard-card">
+                <Label text="DEPARTAMENTOS"
+                       styleClass="card-subtitle"/>
+                <Label fx:id="lblTotalDepartamentos"
+                       text="—"
+                       styleClass="card-number"/>
+                <Label text="Departamentos activos"
+                       styleClass="card-description"/>
+            </VBox>
+
+            <VBox GridPane.columnIndex="2"
+                  styleClass="dashboard-card">
+                <Label text="OBJETIVOS"
+                       styleClass="card-subtitle"/>
+                <Label fx:id="lblTotalObjetivos"
+                       text="—"
+                       styleClass="card-number"/>
+                <Label text="Objetivos asignados"
+                       styleClass="card-description"/>
+            </VBox>
+
+            <VBox GridPane.columnIndex="3"
+                  styleClass="dashboard-card">
+                <Label text="EVALUACIONES"
+                       styleClass="card-subtitle"/>
+                <Label fx:id="lblTotalEvaluaciones"
+                       text="—"
+                       styleClass="card-number"/>
+                <Label text="Evaluaciones registradas"
+                       styleClass="card-description"/>
+            </VBox>
+
+        </GridPane>
+
+        <!-- PERIODO ACTUAL Y OBJETIVOS -->
+        <GridPane hgap="16" vgap="16">
+
+            <columnConstraints>
+                <ColumnConstraints percentWidth="55" hgrow="ALWAYS"/>
+                <ColumnConstraints percentWidth="45" hgrow="ALWAYS"/>
+            </columnConstraints>
+
+            <!-- PERIODO -->
+            <VBox GridPane.columnIndex="0"
+                  spacing="15"
+                  styleClass="dashboard-panel">
+
+                <Label text="PERÍODO DE EVALUACIÓN"
+                       styleClass="panel-title"/>
+
+                <Label fx:id="lblPeriodoActual"
+                       text="No hay un período activo"
+                       wrapText="true"
+                       style="-fx-font-size: 17px;
+                              -fx-font-weight: bold;
+                              -fx-text-fill: #263548;"/>
+
+                <Label fx:id="lblFechasPeriodo"
+                       text="Sin fechas disponibles"
+                       styleClass="card-description"/>
+
+                <Separator/>
+
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Estado:"
+                           styleClass="card-description"/>
+
+                    <Pane HBox.hgrow="ALWAYS"/>
+
+                    <Label fx:id="lblEstadoPeriodo"
+                           text="Sin período"
+                           style="-fx-text-fill: #8492A6;
+                                  -fx-font-weight: bold;"/>
+                </HBox>
+
+            </VBox>
+
+            <!-- OBJETIVOS -->
+            <VBox GridPane.columnIndex="1"
+                  spacing="15"
+                  styleClass="dashboard-panel">
+
+                <Label text="RESUMEN DE OBJETIVOS"
+                       styleClass="panel-title"/>
+
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Asignados"
+                           styleClass="card-description"/>
+                    <Pane HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="lblObjetivosAsignados"
+                           text="—"
+                           styleClass="summary-number"/>
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="En seguimiento"
+                           styleClass="card-description"/>
+                    <Pane HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="lblObjetivosSeguimiento"
+                           text="—"
+                           styleClass="summary-number"/>
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Cumplidos"
+                           styleClass="card-description"/>
+                    <Pane HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="lblObjetivosCumplidos"
+                           text="—"
+                           styleClass="summary-number"/>
+                </HBox>
+
+            </VBox>
+
+        </GridPane>
+
+        <!-- ACTIVIDAD RECIENTE -->
+        <VBox spacing="15"
+              styleClass="dashboard-panel">
+
+            <HBox alignment="CENTER_LEFT">
+                <Label text="ACTIVIDAD RECIENTE"
+                       styleClass="panel-title"/>
+
+                <Pane HBox.hgrow="ALWAYS"/>
+
+                <Label text="Últimos registros"
+                       styleClass="card-description"/>
+            </HBox>
+
+            <TableView fx:id="tablaActividad"
+                       prefHeight="230"
+                       placeholder="No hay actividades registradas.">
+
+                <columns>
+                    <TableColumn fx:id="colFecha"
+                                 text="Fecha"
+                                 prefWidth="130"/>
+
+                    <TableColumn fx:id="colActividad"
+                                 text="Actividad"
+                                 prefWidth="250"/>
+
+                    <TableColumn fx:id="colResponsable"
+                                 text="Responsable"
+                                 prefWidth="200"/>
+
+                    <TableColumn fx:id="colEstado"
+                                 text="Estado"
+                                 prefWidth="140"/>
+                </columns>
+
+            </TableView>
+
+        </VBox>
+
+    </VBox>
+
+</ScrollPane>
