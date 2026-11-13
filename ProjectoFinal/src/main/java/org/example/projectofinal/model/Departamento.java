@@ -29,6 +29,7 @@ public class Departamento {
     private String telefono;
 
     @ColumnDefault("true")
+    @Column(name = "activo")
     private Boolean activo;
 
     public UUID getId() {

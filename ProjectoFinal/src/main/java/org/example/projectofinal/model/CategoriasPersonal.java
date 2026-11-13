@@ -6,25 +6,21 @@ import org.hibernate.annotations.ColumnDefault;
 import java.util.UUID;
 
 @Entity
-@Table(name = "servicios")
-public class Servicio {
+@Table(name = "categorias_personal")
+public class CategoriasPersonal {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_servicio", nullable = false)
+    @Column(name = "id_categoria", nullable = false)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_departamento", nullable = false)
-    private Departamento idDepartamento;
-
-    @Column(name = "nombre", nullable = false, length = 100)
+    @Column(name = "nombre", nullable = false, length = 50)
     private String nombre;
 
     @Column(name = "descripcion", length = Integer.MAX_VALUE)
     private String descripcion;
 
     @ColumnDefault("true")
-    @Column(name = "activo")
+    @Column(name = "activo", nullable = false)
     private Boolean activo;
 
     public UUID getId() {
@@ -33,14 +29,6 @@ public class Servicio {
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public Departamento getIdDepartamento() {
-        return idDepartamento;
-    }
-
-    public void setIdDepartamento(Departamento idDepartamento) {
-        this.idDepartamento = idDepartamento;
     }
 
     public String getNombre() {

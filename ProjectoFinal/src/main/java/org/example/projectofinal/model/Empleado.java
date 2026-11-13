@@ -24,7 +24,6 @@ public class Empleado {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_categoria", nullable = false)
-    private CategoriaPersonal idCategoria;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_departamento")
@@ -66,11 +65,9 @@ public class Empleado {
         this.correoInstitucional = correoInstitucional;
     }
 
-    public CategoriaPersonal getIdCategoria() {
         return idCategoria;
     }
 
-    public void setIdCategoria(CategoriaPersonal idCategoria) {
         this.idCategoria = idCategoria;
     }
 
