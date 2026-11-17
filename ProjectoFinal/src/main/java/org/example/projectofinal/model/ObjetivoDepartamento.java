@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "objetivos_departamento")
-public class ObjetivosDepartamento {
+public class ObjetivoDepartamento {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_asignacion", nullable = false)
@@ -24,7 +24,7 @@ public class ObjetivosDepartamento {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_periodo", nullable = false)
-    private PeriodosEvaluacion idPeriodo;
+    private PeriodoEvaluacion idPeriodo;
 
     @ColumnDefault("CURRENT_DATE")
     @Column(name = "fecha_asignacion", nullable = false)
@@ -54,11 +54,11 @@ public class ObjetivosDepartamento {
         this.idDepartamento = idDepartamento;
     }
 
-    public PeriodosEvaluacion getIdPeriodo() {
+    public PeriodoEvaluacion getIdPeriodo() {
         return idPeriodo;
     }
 
-    public void setIdPeriodo(PeriodosEvaluacion idPeriodo) {
+    public void setIdPeriodo(PeriodoEvaluacion idPeriodo) {
         this.idPeriodo = idPeriodo;
     }
 
