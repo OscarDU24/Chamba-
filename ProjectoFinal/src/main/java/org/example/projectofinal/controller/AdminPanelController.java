@@ -1,4 +1,3 @@
-
 package org.example.projectofinal.controller;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -6,71 +5,120 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.StringConverter;
+
 import org.example.projectofinal.model.CategoriaPersonal;
 import org.example.projectofinal.model.Departamento;
 import org.example.projectofinal.model.Empleado;
 import org.example.projectofinal.service.AdminPanelService;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class AdminPanelController {
 
-    @FXML private TextField txtNombreCompleto;
-    @FXML private TextField txtCif;
-    @FXML private TextField txtCorreo;
-    @FXML private PasswordField txtContrasena;
+    // =========================================================
+    // CAMPOS DEL FORMULARIO
+    // =========================================================
 
-    @FXML private ComboBox<CategoriaPersonal> cmbCategoria;
-    @FXML private ComboBox<Departamento> cmbDepartamento;
-    @FXML private ComboBox<Departamento> cmbFiltroDepartamento;
+    @FXML
+    private TextField txtNombreCompleto;
 
-    @FXML private TextField txtBuscar;
+    @FXML
+    private TextField txtCif;
 
-    @FXML private TableView<Empleado> tablaEmpleados;
-    @FXML private TableColumn<Empleado, String> colNombre;
-    @FXML private TableColumn<Empleado, String> colCif;
-    @FXML private TableColumn<Empleado, String> colCorreo;
-    @FXML private TableColumn<Empleado, String> colCategoria;
-    @FXML private TableColumn<Empleado, String> colDepartamento;
-    @FXML private TableColumn<Empleado, String> colEstado;
+    @FXML
+    private TextField txtCorreo;
 
-    @FXML private Label lblEstado;
-    @FXML private Button btnGuardar;
+    @FXML
+    private PasswordField txtContrasena;
+
+    @FXML
+    private ComboBox<CategoriaPersonal> cmbCategoria;
+
+    @FXML
+    private ComboBox<Departamento> cmbDepartamento;
+
+    @FXML
+    private Button btnGuardar;
+
+    // =========================================================
+    // BUSQUEDA Y FILTROS
+    // =========================================================
+
+    @FXML
+    private TextField txtBuscar;
+
+    @FXML
+    private ComboBox<Departamento> cmbFiltroDepartamento;
+
+    // =========================================================
+    // TABLA
+    // =========================================================
+
+    @FXML
+    private TableView<Empleado> tablaEmpleados;
+
+    @FXML
+    private TableColumn<Empleado, String> colNombre;
+
+    @FXML
+    private TableColumn<Empleado, String> colCif;
+
+    @FXML
+    private TableColumn<Empleado, String> colCorreo;
+
+    @FXML
+    private TableColumn<Empleado, String> colCategoria;
+
+    @FXML
+    private TableColumn<Empleado, String> colDepartamento;
+
+    @FXML
+    private TableColumn<Empleado, String> colEstado;
+
+    // =========================================================
+    // ESTADO Y SERVICIO
+    // =========================================================
+
+    @FXML
+    private Label lblEstado;
 
     private final AdminPanelService service = new AdminPanelService();
 
     private final ObservableList<Empleado> empleados =
             FXCollections.observableArrayList();
 
-    private Map<UUID, Boolean> estadosCuentas;
+    private final ObservableList<Empleado> datosTabla =
+            FXCollections.observableArrayList();
+
+    private final Map<UUID, Boolean> estadosCuentas = new HashMap<>();
 
     private Empleado empleadoSeleccionado;
 
+    // =========================================================
+    // INICIALIZACION
+    // =========================================================
+
     @FXML
     public void initialize() {
+
         configurarTabla();
-        cargarCombos();
+        configurarCombos();
+        configurarFiltros();
+
         actualizarTabla();
 
-        txtBuscar.textProperty().addListener(
-                (observable, anterior, nuevo) -> filtrarEmpleados()
-        );
-
-        cmbFiltroDepartamento.setOnAction(
-                event -> filtrarEmpleados()
-        );
-
-        tablaEmpleados.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((observable, anterior, seleccionado) ->
-                        empleadoSeleccionado = seleccionado
-                );
     }
 
+    // =========================================================
+    // CONFIGURAR TABLA
+    // =========================================================
+
     private void configurarTabla() {
+
         colNombre.setCellValueFactory(data ->
                 new SimpleStringProperty(
                         data.getValue().getNombreCompleto()
@@ -89,122 +137,194 @@ public class AdminPanelController {
                 )
         );
 
-        colCategoria.setCellValueFactory(data ->
-                new SimpleStringProperty(
-                        data.getValue().getIdCategoria() != null
-                                ? data.getValue().getIdCategoria().getNombre()
-                                : ""
-                )
-        );
+        colCategoria.setCellValueFactory(data -> {
 
-        colDepartamento.setCellValueFactory(data ->
-                new SimpleStringProperty(
-                        data.getValue().getIdDepartamento() != null
-                                ? data.getValue().getIdDepartamento().getNombre()
-                                : "Sin departamento"
-                )
-        );
-
-        colEstado.setCellValueFactory(data -> {
-            Boolean activo = estadosCuentas == null
-                    ? null
-                    : estadosCuentas.get(data.getValue().getId());
+            CategoriaPersonal categoria =
+                    data.getValue().getIdCategoria();
 
             return new SimpleStringProperty(
-                    Boolean.TRUE.equals(activo) ? "Activa" : "Inactiva"
+                    categoria != null ? categoria.getNombre() : ""
             );
         });
 
-        tablaEmpleados.setItems(empleados);
+        colDepartamento.setCellValueFactory(data -> {
+
+            Departamento departamento =
+                    data.getValue().getIdDepartamento();
+
+            return new SimpleStringProperty(
+                    departamento != null ? departamento.getNombre() : "Sin departamento"
+            );
+        });
+
+        colEstado.setCellValueFactory(data -> {
+
+            Empleado empleado = data.getValue();
+
+            if (!Boolean.TRUE.equals(empleado.getActivo())) {
+                return new SimpleStringProperty("Empleado inactivo");
+            }
+
+            Boolean activo = estadosCuentas.get(empleado.getId());
+
+            if (activo == null) {
+                return new SimpleStringProperty("Sin cuenta");
+            }
+
+            return new SimpleStringProperty(
+                    activo ? "Cuenta activa" : "Cuenta inactiva"
+            );
+        });
+
+        tablaEmpleados.setItems(datosTabla);
+
+        tablaEmpleados.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((observable, anterior, seleccionado) -> {
+
+                    if (seleccionado != null) {
+                        empleadoSeleccionado = seleccionado;
+                        cargarEmpleadoFormulario(seleccionado);
+                    }
+
+                });
+    }
+
+    // =========================================================
+    // CONFIGURAR COMBOS
+    // =========================================================
+
+    private void configurarCombos() {
+
+        StringConverter<CategoriaPersonal> conversorCategoria =
+                new StringConverter<>() {
+
+                    @Override
+                    public String toString(CategoriaPersonal categoria) {
+                        return categoria == null ? "" : categoria.getNombre();
+                    }
+
+                    @Override
+                    public CategoriaPersonal fromString(String texto) {
+                        return null;
+                    }
+                };
+
+        StringConverter<Departamento> conversorDepartamento =
+                new StringConverter<>() {
+
+                    @Override
+                    public String toString(Departamento departamento) {
+                        return departamento == null ? "" : departamento.getNombre();
+                    }
+
+                    @Override
+                    public Departamento fromString(String texto) {
+                        return null;
+                    }
+                };
+
+        cmbCategoria.setConverter(conversorCategoria);
+        cmbDepartamento.setConverter(conversorDepartamento);
+        cmbFiltroDepartamento.setConverter(conversorDepartamento);
+
+        cmbCategoria.setCellFactory(param ->
+                new ListCell<>() {
+                    @Override
+                    protected void updateItem(CategoriaPersonal item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setText(empty || item == null ? null : item.getNombre());
+                    }
+                }
+        );
+
+        cmbDepartamento.setCellFactory(param ->
+                new ListCell<>() {
+                    @Override
+                    protected void updateItem(Departamento item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setText(empty || item == null ? null : item.getNombre());
+                    }
+                }
+        );
+
+        cmbFiltroDepartamento.setCellFactory(param ->
+                new ListCell<>() {
+                    @Override
+                    protected void updateItem(Departamento item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setText(empty || item == null ? null : item.getNombre());
+                    }
+                }
+        );
+
+        cargarCombos();
     }
 
     private void cargarCombos() {
-        cmbCategoria.setItems(
-                FXCollections.observableArrayList(
-                        service.listarCategorias()
-                )
+
+        try {
+
+            cmbCategoria.setItems(
+                    FXCollections.observableArrayList(
+                            service.listarCategorias()
+                    )
+            );
+
+            cmbDepartamento.setItems(
+                    FXCollections.observableArrayList(
+                            service.listarDepartamentos()
+                    )
+            );
+
+            cmbFiltroDepartamento.setItems(
+                    FXCollections.observableArrayList(
+                            service.listarDepartamentos()
+                    )
+            );
+
+            cmbFiltroDepartamento.setPromptText("Todos los departamentos");
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            mostrarAlerta(
+                    Alert.AlertType.ERROR,
+                    "Error",
+                    "No se pudieron cargar las categorías y departamentos."
+            );
+        }
+    }
+
+    // =========================================================
+    // CONFIGURAR FILTROS
+    // =========================================================
+
+    private void configurarFiltros() {
+
+        txtBuscar.textProperty().addListener(
+                (observable, anterior, nuevo) -> filtrarEmpleados()
         );
 
-        cmbDepartamento.setItems(
-                FXCollections.observableArrayList(
-                        service.listarDepartamentos()
-                )
+        cmbFiltroDepartamento.valueProperty().addListener(
+                (observable, anterior, nuevo) -> filtrarEmpleados()
         );
-
-        cmbFiltroDepartamento.setItems(
-                FXCollections.observableArrayList(
-                        service.listarDepartamentos()
-                )
-        );
-
-        configurarPresentacionComboCategoria();
-        configurarPresentacionComboDepartamento();
-        configurarPresentacionFiltroDepartamento();
     }
 
-    private void configurarPresentacionComboCategoria() {
-        cmbCategoria.setCellFactory(list -> new ListCell<>() {
-            @Override
-            protected void updateItem(CategoriaPersonal item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : item.getNombre());
-            }
-        });
-
-        cmbCategoria.setButtonCell(new ListCell<>() {
-            @Override
-            protected void updateItem(CategoriaPersonal item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : item.getNombre());
-            }
-        });
-    }
-
-    private void configurarPresentacionComboDepartamento() {
-        cmbDepartamento.setCellFactory(list -> new ListCell<>() {
-            @Override
-            protected void updateItem(Departamento item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : item.getNombre());
-            }
-        });
-
-        cmbDepartamento.setButtonCell(new ListCell<>() {
-            @Override
-            protected void updateItem(Departamento item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : item.getNombre());
-            }
-        });
-    }
-
-    private void configurarPresentacionFiltroDepartamento() {
-        cmbFiltroDepartamento.setCellFactory(list -> new ListCell<>() {
-            @Override
-            protected void updateItem(Departamento item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : item.getNombre());
-            }
-        });
-
-        cmbFiltroDepartamento.setButtonCell(new ListCell<>() {
-            @Override
-            protected void updateItem(Departamento item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null
-                        ? "Todos los departamentos"
-                        : item.getNombre());
-            }
-        });
-    }
+    // =========================================================
+    // REGISTRAR O ACTUALIZAR EMPLEADO
+    // =========================================================
 
     @FXML
-    public void guardarEmpleado() {
+    private void guardarEmpleado() {
+
         if (!validarFormulario()) {
             return;
         }
 
-        Empleado empleado = empleadoSeleccionado == null
+        boolean esNuevo = empleadoSeleccionado == null;
+
+        Empleado empleado = esNuevo
                 ? new Empleado()
                 : empleadoSeleccionado;
 
@@ -216,15 +336,21 @@ public class AdminPanelController {
 
         boolean resultado;
 
-        if (empleadoSeleccionado == null) {
+        if (esNuevo) {
+
+            empleado.setActivo(true);
+
             resultado = service.registrarEmpleado(
                     empleado,
                     txtContrasena.getText()
             );
+
         } else {
+
             resultado = service.actualizarEmpleado(empleado);
 
             if (resultado && !txtContrasena.getText().isBlank()) {
+
                 resultado = service.cambiarContrasena(
                         empleado.getId(),
                         txtContrasena.getText()
@@ -233,174 +359,365 @@ public class AdminPanelController {
         }
 
         if (resultado) {
-            mostrarEstado("Empleado guardado correctamente.");
+
+            mostrarAlerta(
+                    Alert.AlertType.INFORMATION,
+                    "Operación exitosa",
+                    esNuevo
+                            ? "Empleado y cuenta registrados correctamente."
+                            : "Los datos del empleado fueron actualizados."
+            );
+
             limpiarFormulario();
             actualizarTabla();
+
         } else {
-            mostrarEstado("No se pudo completar la operación.");
+
+            mostrarAlerta(
+                    Alert.AlertType.ERROR,
+                    "Error",
+                    "No se pudo completar la operación."
+            );
         }
     }
 
+    // =========================================================
+    // VALIDAR FORMULARIO
+    // =========================================================
+
     private boolean validarFormulario() {
+
         if (txtNombreCompleto.getText().isBlank()
                 || txtCif.getText().isBlank()
                 || txtCorreo.getText().isBlank()
                 || cmbCategoria.getValue() == null) {
 
-            mostrarEstado("Complete los campos obligatorios.");
+            mostrarAlerta(
+                    Alert.AlertType.WARNING,
+                    "Campos obligatorios",
+                    "Complete el nombre, CIF, correo y categoría."
+            );
+
             return false;
         }
 
-        if (empleadoSeleccionado == null
-                && txtContrasena.getText().isBlank()) {
+        String correo = txtCorreo.getText().trim();
 
-            mostrarEstado("Debe establecer una contraseña inicial.");
+        if (!correo.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+
+            mostrarAlerta(
+                    Alert.AlertType.WARNING,
+                    "Correo inválido",
+                    "Introduzca una dirección de correo válida."
+            );
+
             return false;
         }
 
-        if (txtContrasena.getText().length() > 72) {
-            mostrarEstado("La contraseña no debe superar 72 caracteres.");
+        if (empleadoSeleccionado == null) {
+
+            String contrasena = txtContrasena.getText();
+
+            if (contrasena == null || contrasena.length() < 8
+                    || contrasena.length() > 128) {
+
+                mostrarAlerta(
+                        Alert.AlertType.WARNING,
+                        "Contraseña inválida",
+                        "La contraseña inicial debe tener entre 8 y 128 caracteres."
+                );
+
+                return false;
+            }
+
+        } else if (!txtContrasena.getText().isBlank()
+                && (txtContrasena.getText().length() < 8
+                || txtContrasena.getText().length() > 128)) {
+
+            mostrarAlerta(
+                    Alert.AlertType.WARNING,
+                    "Contraseña inválida",
+                    "La nueva contraseña debe tener entre 8 y 128 caracteres."
+            );
+
             return false;
         }
 
         return true;
     }
 
+    // =========================================================
+    // CARGAR EMPLEADO EN EL FORMULARIO
+    // =========================================================
+
+    private void cargarEmpleadoFormulario(Empleado empleado) {
+
+        txtNombreCompleto.setText(empleado.getNombreCompleto());
+        txtCif.setText(empleado.getCif());
+        txtCorreo.setText(empleado.getCorreoInstitucional());
+
+        cmbCategoria.setValue(empleado.getIdCategoria());
+        cmbDepartamento.setValue(empleado.getIdDepartamento());
+
+        txtContrasena.clear();
+
+        btnGuardar.setText("Actualizar");
+    }
+
+    // =========================================================
+    // LIMPIAR FORMULARIO
+    // =========================================================
+
     @FXML
-    public void limpiarFormulario() {
+    private void limpiarFormulario() {
+
+        empleadoSeleccionado = null;
+
         txtNombreCompleto.clear();
         txtCif.clear();
         txtCorreo.clear();
         txtContrasena.clear();
 
-        cmbCategoria.getSelectionModel().clearSelection();
-        cmbDepartamento.getSelectionModel().clearSelection();
+        cmbCategoria.setValue(null);
+        cmbDepartamento.setValue(null);
 
-        empleadoSeleccionado = null;
         tablaEmpleados.getSelectionModel().clearSelection();
 
-        btnGuardar.setText("Registrar empleado");
+        btnGuardar.setText("Guardar");
+
+        mostrarEstado("Formulario limpio.");
     }
 
+    // =========================================================
+    // ACTUALIZAR TABLA
+    // =========================================================
+
     @FXML
-    public void actualizarTabla() {
+    private void actualizarTabla() {
+
         try {
+
             empleados.setAll(service.listarEmpleados());
-            estadosCuentas = service.listarEstadosCuentas();
+
+            estadosCuentas.clear();
+            estadosCuentas.putAll(service.listarEstadosCuentas());
+
             filtrarEmpleados();
+
+            tablaEmpleados.refresh();
+
+            mostrarEstado("Registros actualizados: " + empleados.size());
+
         } catch (Exception e) {
+
             e.printStackTrace();
-            mostrarEstado("Error al cargar los empleados.");
+
+            mostrarAlerta(
+                    Alert.AlertType.ERROR,
+                    "Error",
+                    "No se pudo actualizar la tabla de empleados."
+            );
         }
     }
 
+    // =========================================================
+    // FILTRAR EMPLEADOS
+    // =========================================================
+
     private void filtrarEmpleados() {
+
         String busqueda = txtBuscar.getText() == null
                 ? ""
                 : txtBuscar.getText().trim().toLowerCase();
 
-        Departamento departamento = cmbFiltroDepartamento.getValue();
+        Departamento departamentoSeleccionado =
+                cmbFiltroDepartamento.getValue();
 
-        List<Empleado> filtrados = empleados.stream()
-                .filter(e ->
-                        e.getNombreCompleto().toLowerCase().contains(busqueda)
-                                || e.getCif().toLowerCase().contains(busqueda)
-                                || e.getCorreoInstitucional().toLowerCase().contains(busqueda)
-                )
-                .filter(e ->
-                        departamento == null
-                                || (e.getIdDepartamento() != null
-                                && e.getIdDepartamento().getId()
-                                .equals(departamento.getId()))
-                )
-                .collect(Collectors.toList());
+        datosTabla.setAll(
+                empleados.stream()
+                        .filter(empleado -> {
 
-        tablaEmpleados.setItems(
-                FXCollections.observableArrayList(filtrados)
+                            boolean coincideBusqueda =
+                                    empleado.getNombreCompleto().toLowerCase().contains(busqueda)
+                                            || empleado.getCif().toLowerCase().contains(busqueda)
+                                            || empleado.getCorreoInstitucional().toLowerCase().contains(busqueda);
+
+                            boolean coincideDepartamento =
+                                    departamentoSeleccionado == null
+                                            || (empleado.getIdDepartamento() != null
+                                            && empleado.getIdDepartamento().getId()
+                                            .equals(departamentoSeleccionado.getId()));
+
+                            return coincideBusqueda && coincideDepartamento;
+                        })
+                        .toList()
         );
+
+        tablaEmpleados.refresh();
     }
 
+    // =========================================================
+    // EDITAR EMPLEADO
+    // =========================================================
+
     @FXML
-    public void editarEmpleado() {
+    private void editarEmpleado() {
+
         Empleado seleccionado =
                 tablaEmpleados.getSelectionModel().getSelectedItem();
 
         if (seleccionado == null) {
-            mostrarEstado("Seleccione un empleado para editar.");
+
+            mostrarAlerta(
+                    Alert.AlertType.WARNING,
+                    "Selección requerida",
+                    "Seleccione un empleado de la tabla."
+            );
+
             return;
         }
 
         empleadoSeleccionado = seleccionado;
-
-        txtNombreCompleto.setText(seleccionado.getNombreCompleto());
-        txtCif.setText(seleccionado.getCif());
-        txtCorreo.setText(seleccionado.getCorreoInstitucional());
-        txtContrasena.clear();
-
-        cmbCategoria.setValue(seleccionado.getIdCategoria());
-        cmbDepartamento.setValue(seleccionado.getIdDepartamento());
-
-        btnGuardar.setText("Guardar cambios");
-
-        mostrarEstado("Modificando información del empleado.");
+        cargarEmpleadoFormulario(seleccionado);
     }
 
+    // =========================================================
+    // DESACTIVAR EMPLEADO
+    // =========================================================
+
     @FXML
-    public void eliminarEmpleado() {
+    private void eliminarEmpleado() {
+
         Empleado seleccionado =
                 tablaEmpleados.getSelectionModel().getSelectedItem();
 
         if (seleccionado == null) {
-            mostrarEstado("Seleccione un empleado para desactivar.");
+
+            mostrarAlerta(
+                    Alert.AlertType.WARNING,
+                    "Selección requerida",
+                    "Seleccione un empleado."
+            );
+
             return;
         }
 
         Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmacion.setTitle("Confirmar operación");
-        confirmacion.setHeaderText("Desactivar empleado");
+
+        confirmacion.setTitle("Confirmar desactivación");
+        confirmacion.setHeaderText("¿Desea desactivar este empleado?");
         confirmacion.setContentText(
-                "¿Desea desactivar a "
-                        + seleccionado.getNombreCompleto() + "?"
+                seleccionado.getNombreCompleto()
+                        + "\nTambién se desactivará su cuenta de usuario."
         );
 
-        if (confirmacion.showAndWait().orElse(ButtonType.CANCEL)
-                != ButtonType.OK) {
-            return;
-        }
+        confirmacion.showAndWait().ifPresent(respuesta -> {
 
-        if (service.desactivarEmpleado(seleccionado.getId())) {
-            mostrarEstado("Empleado y cuenta desactivados correctamente.");
-            limpiarFormulario();
-            actualizarTabla();
-        } else {
-            mostrarEstado("No se pudo desactivar el empleado.");
-        }
+            if (respuesta == ButtonType.OK) {
+
+                boolean resultado =
+                        service.desactivarEmpleado(seleccionado.getId());
+
+                if (resultado) {
+
+                    mostrarAlerta(
+                            Alert.AlertType.INFORMATION,
+                            "Operación exitosa",
+                            "El empleado y su cuenta fueron desactivados."
+                    );
+
+                    limpiarFormulario();
+                    actualizarTabla();
+
+                } else {
+
+                    mostrarAlerta(
+                            Alert.AlertType.ERROR,
+                            "Error",
+                            "No se pudo desactivar el empleado."
+                    );
+                }
+            }
+        });
     }
 
+    // =========================================================
+    // CAMBIAR ESTADO DE CUENTA
+    // =========================================================
+
     @FXML
-    public void cambiarEstadoCuenta() {
+    private void cambiarEstadoCuenta() {
+
         Empleado seleccionado =
                 tablaEmpleados.getSelectionModel().getSelectedItem();
 
         if (seleccionado == null) {
-            mostrarEstado("Seleccione un empleado.");
+
+            mostrarAlerta(
+                    Alert.AlertType.WARNING,
+                    "Selección requerida",
+                    "Seleccione un empleado."
+            );
+
             return;
         }
 
         if (!Boolean.TRUE.equals(seleccionado.getActivo())) {
-            mostrarEstado("El empleado está inactivo.");
+
+            mostrarAlerta(
+                    Alert.AlertType.WARNING,
+                    "Empleado inactivo",
+                    "No se puede activar una cuenta perteneciente a un empleado inactivo."
+            );
+
             return;
         }
 
-        if (service.cambiarEstadoCuenta(seleccionado.getId())) {
-            mostrarEstado("Estado de cuenta actualizado.");
+        boolean resultado =
+                service.cambiarEstadoCuenta(seleccionado.getId());
+
+        if (resultado) {
+
             actualizarTabla();
+
+            mostrarAlerta(
+                    Alert.AlertType.INFORMATION,
+                    "Operación exitosa",
+                    "El estado de la cuenta fue cambiado correctamente."
+            );
+
         } else {
-            mostrarEstado("No se pudo modificar el estado de la cuenta.");
+
+            mostrarAlerta(
+                    Alert.AlertType.ERROR,
+                    "Error",
+                    "No se pudo cambiar el estado de la cuenta."
+            );
         }
     }
 
+    // =========================================================
+    // MENSAJES
+    // =========================================================
+
     private void mostrarEstado(String mensaje) {
-        lblEstado.setText(mensaje);
+
+        if (lblEstado != null) {
+            lblEstado.setText(mensaje);
+        }
+    }
+
+    private void mostrarAlerta(
+            Alert.AlertType tipo,
+            String titulo,
+            String mensaje) {
+
+        Alert alerta = new Alert(tipo);
+
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+
+        alerta.showAndWait();
     }
 }
