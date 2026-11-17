@@ -1,4 +1,3 @@
-
 package org.example.projectofinal.model;
 
 import jakarta.persistence.*;
