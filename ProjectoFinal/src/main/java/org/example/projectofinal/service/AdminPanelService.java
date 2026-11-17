@@ -1,19 +1,19 @@
-
 package org.example.projectofinal.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
-import org.example.projectofinal.dao.CategoriaPersonalDao;
-import org.example.projectofinal.dao.DepartamentoDao;
-import org.example.projectofinal.dao.EmpleadoDao;
-import org.example.projectofinal.model.CuentaUsuario;
-import org.example.projectofinal.model.Empleado;
+
+import org.example.projectofinal.dao.CuentaUsuarioDao;
+import org.example.projectofinal.dao.EntityManagerAdmin;
+import org.example.projectofinal.dao.ImplDao;
 import org.example.projectofinal.model.CategoriaPersonal;
+import org.example.projectofinal.model.CuentaUsuario;
 import org.example.projectofinal.model.Departamento;
-import org.example.projectofinal.util.JpaUtil;
+import org.example.projectofinal.model.Empleado;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -22,24 +22,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class AdminPanelService {
+public class AdminPanelService extends ServiceGeneric<Empleado> {
+
+    private final ImplDao<CategoriaPersonal> categoriaDao;
+    private final ImplDao<Departamento> departamentoDao;
+    private final CuentaUsuarioDao cuentaUsuarioDao;
 
     private static final int ITERACIONES = 210000;
     private static final int LONGITUD_HASH = 256;
     private static final int LONGITUD_SALT = 16;
 
-    private final EmpleadoDao empleadoDao;
-    private final DepartamentoDao departamentoDao;
-    private final CategoriaPersonalDao categoriaPersonalDao;
-
     public AdminPanelService() {
-        this.empleadoDao = new EmpleadoDao();
-        this.departamentoDao = new DepartamentoDao();
-        this.categoriaPersonalDao = new CategoriaPersonalDao();
+        super(new ImplDao<>(Empleado.class));
+
+        this.categoriaDao = new ImplDao<>(CategoriaPersonal.class);
+        this.departamentoDao = new ImplDao<>(Departamento.class);
+        this.cuentaUsuarioDao = new CuentaUsuarioDao();
     }
 
+    // =========================================================
+    // REGISTRAR EMPLEADO Y CREAR SU CUENTA
+    // =========================================================
+
     public boolean registrarEmpleado(Empleado empleado, String contrasena) {
-        EntityManager em = JpaUtil.getEntityManager();
+
+        if (empleado == null || contrasena == null || contrasena.isBlank()) {
+            return false;
+        }
+
+        EntityManager em = EntityManagerAdmin.getEntityManager();
         EntityTransaction tx = em.getTransaction();
 
         try {
@@ -50,29 +61,38 @@ public class AdminPanelService {
             em.flush();
 
             CuentaUsuario cuenta = new CuentaUsuario();
+
             cuenta.setIdEmpleado(empleado);
             cuenta.setContrasenaHash(generarHash(contrasena));
             cuenta.setRol("EMPLEADO");
             cuenta.setActivo(true);
 
             em.persist(cuenta);
-            tx.commit();
 
+            tx.commit();
             return true;
 
         } catch (Exception e) {
+
             if (tx.isActive()) {
                 tx.rollback();
             }
+
             e.printStackTrace();
             return false;
+
         } finally {
-            em.close();
+            EntityManagerAdmin.cerrar(em);
         }
     }
 
+    // =========================================================
+    // LISTAR EMPLEADOS
+    // =========================================================
+
     public List<Empleado> listarEmpleados() {
-        EntityManager em = JpaUtil.getEntityManager();
+
+        EntityManager em = EntityManagerAdmin.getEntityManager();
 
         try {
             return em.createQuery(
@@ -82,25 +102,43 @@ public class AdminPanelService {
                             "ORDER BY e.nombreCompleto",
                     Empleado.class
             ).getResultList();
+
         } finally {
-            em.close();
+            EntityManagerAdmin.cerrar(em);
         }
     }
 
+    // =========================================================
+    // LISTAR CATEGORIAS ACTIVAS
+    // =========================================================
+
     public List<CategoriaPersonal> listarCategorias() {
-        return categoriaPersonalDao.listar().stream()
+
+        return categoriaDao.listar()
+                .stream()
                 .filter(c -> Boolean.TRUE.equals(c.getActivo()))
                 .toList();
     }
 
+    // =========================================================
+    // LISTAR DEPARTAMENTOS ACTIVOS
+    // =========================================================
+
     public List<Departamento> listarDepartamentos() {
-        return departamentoDao.listar().stream()
+
+        return departamentoDao.listar()
+                .stream()
                 .filter(d -> Boolean.TRUE.equals(d.getActivo()))
                 .toList();
     }
 
+    // =========================================================
+    // LISTAR ESTADOS DE CUENTAS
+    // =========================================================
+
     public Map<UUID, Boolean> listarEstadosCuentas() {
-        EntityManager em = JpaUtil.getEntityManager();
+
+        EntityManager em = EntityManagerAdmin.getEntityManager();
 
         try {
             List<Object[]> resultados = em.createQuery(
@@ -111,21 +149,46 @@ public class AdminPanelService {
             Map<UUID, Boolean> estados = new HashMap<>();
 
             for (Object[] resultado : resultados) {
-                estados.put((UUID) resultado[0], (Boolean) resultado[1]);
+                estados.put(
+                        (UUID) resultado[0],
+                        (Boolean) resultado[1]
+                );
             }
 
             return estados;
+
         } finally {
-            em.close();
+            EntityManagerAdmin.cerrar(em);
         }
     }
 
+    // =========================================================
+    // ACTUALIZAR EMPLEADO
+    // =========================================================
+
     public boolean actualizarEmpleado(Empleado empleado) {
-        return empleadoDao.actualizar(empleado);
+
+        if (empleado == null || empleado.getId() == null) {
+            return false;
+        }
+
+        try {
+            super.actualizar(empleado);
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
+    // =========================================================
+    // DESACTIVAR EMPLEADO Y SU CUENTA
+    // =========================================================
+
     public boolean desactivarEmpleado(UUID idEmpleado) {
-        EntityManager em = JpaUtil.getEntityManager();
+
+        EntityManager em = EntityManagerAdmin.getEntityManager();
         EntityTransaction tx = em.getTransaction();
 
         try {
@@ -157,18 +220,26 @@ public class AdminPanelService {
             return true;
 
         } catch (Exception e) {
+
             if (tx.isActive()) {
                 tx.rollback();
             }
+
             e.printStackTrace();
             return false;
+
         } finally {
-            em.close();
+            EntityManagerAdmin.cerrar(em);
         }
     }
 
+    // =========================================================
+    // CAMBIAR ESTADO DE CUENTA
+    // =========================================================
+
     public boolean cambiarEstadoCuenta(UUID idEmpleado) {
-        EntityManager em = JpaUtil.getEntityManager();
+
+        EntityManager em = EntityManagerAdmin.getEntityManager();
         EntityTransaction tx = em.getTransaction();
 
         try {
@@ -176,6 +247,7 @@ public class AdminPanelService {
 
             CuentaUsuario cuenta = em.createQuery(
                             "SELECT c FROM CuentaUsuario c " +
+                                    "JOIN FETCH c.idEmpleado " +
                                     "WHERE c.idEmpleado.id = :id",
                             CuentaUsuario.class
                     ).setParameter("id", idEmpleado)
@@ -199,22 +271,30 @@ public class AdminPanelService {
             return true;
 
         } catch (Exception e) {
+
             if (tx.isActive()) {
                 tx.rollback();
             }
+
             e.printStackTrace();
             return false;
+
         } finally {
-            em.close();
+            EntityManagerAdmin.cerrar(em);
         }
     }
 
-    public boolean cambiarContrasena(UUID idEmpleado, String contrasena) {
-        if (contrasena == null || contrasena.isBlank()) {
+    // =========================================================
+    // CAMBIAR CONTRASEÑA
+    // =========================================================
+
+    public boolean cambiarContrasena(UUID idEmpleado, String nuevaContrasena) {
+
+        if (nuevaContrasena == null || nuevaContrasena.isBlank()) {
             return false;
         }
 
-        EntityManager em = JpaUtil.getEntityManager();
+        EntityManager em = EntityManagerAdmin.getEntityManager();
         EntityTransaction tx = em.getTransaction();
 
         try {
@@ -234,25 +314,48 @@ public class AdminPanelService {
                 return false;
             }
 
-            cuenta.setContrasenaHash(generarHash(contrasena));
+            cuenta.setContrasenaHash(generarHash(nuevaContrasena));
 
             tx.commit();
             return true;
 
         } catch (Exception e) {
+
             if (tx.isActive()) {
                 tx.rollback();
             }
+
             e.printStackTrace();
             return false;
+
         } finally {
-            em.close();
+            EntityManagerAdmin.cerrar(em);
         }
     }
 
+    // =========================================================
+    // BUSCAR CUENTA POR CORREO
+    // =========================================================
+
+    public CuentaUsuario buscarCuentaPorCorreo(String correo) {
+
+        if (correo == null || correo.isBlank()) {
+            return null;
+        }
+
+        return cuentaUsuarioDao.buscarPorCorreoInstitucional(correo);
+    }
+
+    // =========================================================
+    // GENERAR HASH DE CONTRASEÑA
+    // =========================================================
+
     private String generarHash(String contrasena) throws Exception {
+
+        SecureRandom random = new SecureRandom();
+
         byte[] salt = new byte[LONGITUD_SALT];
-        new SecureRandom().nextBytes(salt);
+        random.nextBytes(salt);
 
         PBEKeySpec spec = new PBEKeySpec(
                 contrasena.toCharArray(),
@@ -262,9 +365,8 @@ public class AdminPanelService {
         );
 
         try {
-            SecretKeyFactory factory = SecretKeyFactory.getInstance(
-                    "PBKDF2WithHmacSHA256"
-            );
+            SecretKeyFactory factory =
+                    SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
 
             byte[] hash = factory.generateSecret(spec).getEncoded();
 
@@ -274,6 +376,61 @@ public class AdminPanelService {
 
         } finally {
             spec.clearPassword();
+        }
+    }
+
+    // =========================================================
+    // VERIFICAR CONTRASEÑA PARA EL LOGIN
+    // =========================================================
+
+    public boolean verificarContrasena(String contrasena, String hashGuardado) {
+
+        if (contrasena == null || hashGuardado == null) {
+            return false;
+        }
+
+        try {
+            String[] partes = hashGuardado.split(":");
+
+            if (partes.length != 3) {
+                return false;
+            }
+
+            int iteraciones = Integer.parseInt(partes[0]);
+
+            if (iteraciones <= 0 || iteraciones > 1000000) {
+                return false;
+            }
+
+            byte[] salt = Base64.getDecoder().decode(partes[1]);
+            byte[] hashOriginal = Base64.getDecoder().decode(partes[2]);
+
+            if (salt.length != LONGITUD_SALT ||
+                    hashOriginal.length != LONGITUD_HASH / 8) {
+                return false;
+            }
+
+            PBEKeySpec spec = new PBEKeySpec(
+                    contrasena.toCharArray(),
+                    salt,
+                    iteraciones,
+                    LONGITUD_HASH
+            );
+
+            try {
+                SecretKeyFactory factory =
+                        SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+
+                byte[] hashCalculado = factory.generateSecret(spec).getEncoded();
+
+                return MessageDigest.isEqual(hashOriginal, hashCalculado);
+
+            } finally {
+                spec.clearPassword();
+            }
+
+        } catch (Exception e) {
+            return false;
         }
     }
 }
