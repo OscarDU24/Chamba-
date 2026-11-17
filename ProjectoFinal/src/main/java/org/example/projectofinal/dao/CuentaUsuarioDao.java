@@ -1,3 +1,4 @@
+
 package org.example.projectofinal.dao;
 
 import jakarta.persistence.EntityManager;
@@ -31,7 +32,7 @@ public class CuentaUsuarioDao {
         EntityManager em = JpaUtil.getEntityManager();
         try {
             return em.createQuery(
-                    "SELECT c FROM CuentaUsuario c",
+                    "SELECT c FROM CuentaUsuario c JOIN FETCH c.idEmpleado",
                     CuentaUsuario.class
             ).getResultList();
         } finally {
@@ -42,7 +43,10 @@ public class CuentaUsuarioDao {
     public CuentaUsuario buscarPorId(UUID id) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            return em.find(CuentaUsuario.class, id);
+            return em.createQuery(
+                    "SELECT c FROM CuentaUsuario c JOIN FETCH c.idEmpleado WHERE c.id = :id",
+                    CuentaUsuario.class
+            ).setParameter("id", id).getResultStream().findFirst().orElse(null);
         } finally {
             em.close();
         }
@@ -51,12 +55,26 @@ public class CuentaUsuarioDao {
     public CuentaUsuario buscarPorEmpleado(UUID idEmpleado) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            List<CuentaUsuario> lista = em.createQuery(
-                    "SELECT c FROM CuentaUsuario c WHERE c.empleado.idEmpleado = :id",
+            return em.createQuery(
+                    "SELECT c FROM CuentaUsuario c JOIN FETCH c.idEmpleado e WHERE e.id = :id",
                     CuentaUsuario.class
-            ).setParameter("id", idEmpleado).getResultList();
+            ).setParameter("id", idEmpleado).getResultStream().findFirst().orElse(null);
+        } finally {
+            em.close();
+        }
+    }
 
-            return lista.isEmpty() ? null : lista.get(0);
+    public CuentaUsuario buscarPorCorreoInstitucional(String correo) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            return em.createQuery(
+                    "SELECT c FROM CuentaUsuario c " +
+                            "JOIN FETCH c.idEmpleado e " +
+                            "WHERE LOWER(e.correoInstitucional) = LOWER(:correo) " +
+                            "AND c.activo = true " +
+                            "AND e.activo = true",
+                    CuentaUsuario.class
+            ).setParameter("correo", correo).getResultStream().findFirst().orElse(null);
         } finally {
             em.close();
         }

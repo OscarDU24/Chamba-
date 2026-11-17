@@ -66,6 +66,10 @@
                                GridPane.columnIndex="1"
                                GridPane.rowIndex="2"/>
 
+                        <Label text="Contraseña inicial:"
+                               GridPane.columnIndex="2"
+                               GridPane.rowIndex="2"/>
+
                         <ComboBox fx:id="cmbCategoria"
                                   promptText="Seleccione categoría"
                                   maxWidth="Infinity"
@@ -77,6 +81,11 @@
                                   maxWidth="Infinity"
                                   GridPane.columnIndex="1"
                                   GridPane.rowIndex="3"/>
+
+                        <PasswordField fx:id="txtContrasena"
+                                       promptText="Establezca una contraseña"
+                                       GridPane.columnIndex="2"
+                                       GridPane.rowIndex="3"/>
 
                         <columnConstraints>
                             <ColumnConstraints percentWidth="33.33"
@@ -167,6 +176,3 @@
 
     </VBox>
 </AnchorPane>
-
-
-
