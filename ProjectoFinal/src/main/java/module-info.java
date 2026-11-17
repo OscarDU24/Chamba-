@@ -6,12 +6,8 @@ module org.example.projectofinal {
     requires java.sql;
 
     opens org.example.projectofinal to javafx.fxml;
+    opens org.example.projectofinal.model to org.hibernate.orm.core;
     opens org.example.projectofinal.controller to javafx.fxml;
-    opens org.example.projectofinal.model to
-            org.hibernate.orm.core,
-            jakarta.persistence;
 
     exports org.example.projectofinal;
-    exports org.example.projectofinal.model;
 }
-

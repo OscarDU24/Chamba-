@@ -17,7 +17,7 @@ public class Seguimiento {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_asignacion", nullable = false)
-    private ObjetivosDepartamento idAsignacion;
+    private ObjetivoDepartamento idAsignacion;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_empleado")
@@ -52,11 +52,11 @@ public class Seguimiento {
         this.id = id;
     }
 
-    public ObjetivosDepartamento getIdAsignacion() {
+    public ObjetivoDepartamento getIdAsignacion() {
         return idAsignacion;
     }
 
-    public void setIdAsignacion(ObjetivosDepartamento idAsignacion) {
+    public void setIdAsignacion(ObjetivoDepartamento idAsignacion) {
         this.idAsignacion = idAsignacion;
     }
 

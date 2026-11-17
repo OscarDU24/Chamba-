@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "evaluaciones")
-public class Evaluacione {
+public class Evaluacion {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_evaluacion", nullable = false)
@@ -17,7 +17,7 @@ public class Evaluacione {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_periodo", nullable = false)
-    private PeriodosEvaluacion idPeriodo;
+    private PeriodoEvaluacion idPeriodo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_departamento", nullable = false)
@@ -62,11 +62,11 @@ public class Evaluacione {
         this.id = id;
     }
 
-    public PeriodosEvaluacion getIdPeriodo() {
+    public PeriodoEvaluacion getIdPeriodo() {
         return idPeriodo;
     }
 
-    public void setIdPeriodo(PeriodosEvaluacion idPeriodo) {
+    public void setIdPeriodo(PeriodoEvaluacion idPeriodo) {
         this.idPeriodo = idPeriodo;
     }
 

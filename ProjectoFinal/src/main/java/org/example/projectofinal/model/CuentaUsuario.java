@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "cuentas_usuario")
-public class CuentasUsuario {
+public class CuentaUsuario {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_usuario", nullable = false)
