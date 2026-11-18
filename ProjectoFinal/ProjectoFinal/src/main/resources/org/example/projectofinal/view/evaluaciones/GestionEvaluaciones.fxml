@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.projectofinal.controller.GestionEvaluacionesController" stylesheets="@evaluaciones.css" styleClass="page">
+    <top><VBox spacing="8" styleClass="header"><Label text="Evaluaciones de desempeño" styleClass="title"/><Label text="Configura los puntos de la prueba y ábrela según el rol seleccionado." styleClass="subtitle"/></VBox></top>
+    <center><VBox spacing="16">
+        <HBox spacing="12" alignment="CENTER_LEFT" styleClass="toolbar">
+            <Label text="Rol de la prueba"/><ComboBox fx:id="rolCombo" prefWidth="240"/>
+            <Region HBox.hgrow="ALWAYS"/><Button text="＋ Nuevo punto" onAction="#nuevoCriterio" styleClass="primary"/>
+            <Button text="Editar" onAction="#editarCriterio"/><Button text="Eliminar" onAction="#eliminarCriterio"/>
+        </HBox>
+        <TableView fx:id="tablaCriterios" VBox.vgrow="ALWAYS">
+            <placeholder>
+                <Label text="No hay puntos configurados."/>
+            </placeholder>
+        </TableView>
+        <HBox spacing="12" alignment="CENTER_LEFT"><Label fx:id="mensaje" styleClass="feedback"/><Region HBox.hgrow="ALWAYS"/><Button text="Iniciar prueba para este rol" onAction="#iniciarPrueba" styleClass="primary"/></HBox>
+    </VBox></center>
+    <padding><Insets top="24" right="28" bottom="24" left="28"/></padding>
+</BorderPane>
