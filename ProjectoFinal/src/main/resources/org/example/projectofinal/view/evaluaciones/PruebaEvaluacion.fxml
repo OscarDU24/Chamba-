@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.projectofinal.Controller.PruebaEvaluacionController" styleClass="page">
+    <top><VBox spacing="6" styleClass="header"><Label fx:id="titulo" text="Prueba de evaluación" styleClass="title"/><Label text="Responde cada punto y guarda al terminar." styleClass="subtitle"/></VBox></top>
+    <center><ScrollPane fitToWidth="true"><VBox fx:id="preguntas" spacing="12"/></ScrollPane></center>
+    <bottom><HBox alignment="CENTER_RIGHT"><Button text="Guardar respuestas" onAction="#guardarRespuestas" styleClass="primary"/></HBox></bottom>
+    <padding><Insets top="22" right="28" bottom="22" left="28"/></padding>
+</BorderPane>
