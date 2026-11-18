@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.projectofinal.controller.AdminPanelController"
+            prefHeight="720"
+            prefWidth="1150">
+
+    <VBox spacing="15"
+          AnchorPane.topAnchor="15"
+          AnchorPane.bottomAnchor="15"
+          AnchorPane.leftAnchor="20"
+          AnchorPane.rightAnchor="20">
+
+        <Label text="Gestión de empleados"
+               style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+        <TitledPane text="Registrar empleado"
+                    expanded="true"
+                    collapsible="false">
+
+            <content>
+                <VBox spacing="12">
+                    <padding>
+                        <Insets top="12" right="12" bottom="12" left="12"/>
+                    </padding>
+
+                    <GridPane hgap="12" vgap="8">
+
+                        <Label text="Nombre completo:"
+                               GridPane.columnIndex="0"
+                               GridPane.rowIndex="0"/>
+
+                        <Label text="CIF:"
+                               GridPane.columnIndex="1"
+                               GridPane.rowIndex="0"/>
+
+                        <Label text="Correo institucional:"
+                               GridPane.columnIndex="2"
+                               GridPane.rowIndex="0"/>
+
+                        <TextField fx:id="txtNombreCompleto"
+                                   promptText="Nombre y apellidos"
+                                   GridPane.columnIndex="0"
+                                   GridPane.rowIndex="1"/>
+
+                        <TextField fx:id="txtCif"
+                                   promptText="CIF del empleado"
+                                   GridPane.columnIndex="1"
+                                   GridPane.rowIndex="1"/>
+
+                        <TextField fx:id="txtCorreo"
+                                   promptText="Correo institucional"
+                                   GridPane.columnIndex="2"
+                                   GridPane.rowIndex="1"/>
+
+                        <Label text="Categoría:"
+                               GridPane.columnIndex="0"
+                               GridPane.rowIndex="2"/>
+
+                        <Label text="Departamento:"
+                               GridPane.columnIndex="1"
+                               GridPane.rowIndex="2"/>
+
+                        <Label text="Contraseña inicial:"
+                               GridPane.columnIndex="2"
+                               GridPane.rowIndex="2"/>
+
+                        <ComboBox fx:id="cmbCategoria"
+                                  promptText="Seleccione categoría"
+                                  maxWidth="Infinity"
+                                  GridPane.columnIndex="0"
+                                  GridPane.rowIndex="3"/>
+
+                        <ComboBox fx:id="cmbDepartamento"
+                                  promptText="Seleccione departamento"
+                                  maxWidth="Infinity"
+                                  GridPane.columnIndex="1"
+                                  GridPane.rowIndex="3"/>
+
+                        <PasswordField fx:id="txtContrasena"
+                                       promptText="Establezca una contraseña"
+                                       GridPane.columnIndex="2"
+                                       GridPane.rowIndex="3"/>
+
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="33.33"
+                                               hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="33.33"
+                                               hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="33.34"
+                                               hgrow="ALWAYS"/>
+                        </columnConstraints>
+
+                    </GridPane>
+
+                    <HBox spacing="10">
+                        <Button fx:id="btnGuardar"
+                                text="Registrar empleado"
+                                onAction="#guardarEmpleado"/>
+
+                        <Button text="Limpiar campos"
+                                onAction="#limpiarFormulario"/>
+                    </HBox>
+                </VBox>
+            </content>
+        </TitledPane>
+
+        <Label text="Empleados registrados"
+               style="-fx-font-size: 17px; -fx-font-weight: bold;"/>
+
+        <HBox spacing="10">
+            <TextField fx:id="txtBuscar"
+                       promptText="Buscar empleado..."
+                       HBox.hgrow="ALWAYS"/>
+
+            <ComboBox fx:id="cmbFiltroDepartamento"
+                      promptText="Todos los departamentos"
+                      prefWidth="200"/>
+
+            <Button text="Actualizar"
+                    onAction="#actualizarTabla"/>
+        </HBox>
+
+        <TableView fx:id="tablaEmpleados"
+                   VBox.vgrow="ALWAYS">
+
+            <columns>
+                <TableColumn fx:id="colNombre"
+                             text="Nombre completo"
+                             prefWidth="180"/>
+
+                <TableColumn fx:id="colCif"
+                             text="CIF"
+                             prefWidth="110"/>
+
+                <TableColumn fx:id="colCorreo"
+                             text="Correo institucional"
+                             prefWidth="190"/>
+
+                <TableColumn fx:id="colCategoria"
+                             text="Categoría"
+                             prefWidth="140"/>
+
+                <TableColumn fx:id="colDepartamento"
+                             text="Departamento"
+                             prefWidth="150"/>
+
+                <TableColumn fx:id="colEstado"
+                             text="Estado de cuenta"
+                             prefWidth="120"/>
+            </columns>
+
+            <placeholder>
+                <Label text="No hay empleados registrados."/>
+            </placeholder>
+        </TableView>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button text="Editar seleccionado"
+                    onAction="#editarEmpleado"/>
+
+            <Button text="Eliminar seleccionado"
+                    onAction="#eliminarEmpleado"/>
+
+            <Button text="Activar / Desactivar cuenta"
+                    onAction="#cambiarEstadoCuenta"/>
+        </HBox>
+
+        <Label fx:id="lblEstado"
+               text="Seleccione un empleado para administrar sus datos."/>
+
+    </VBox>
+</AnchorPane>

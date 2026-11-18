@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.projectofinal.controller.PrincipalController"
+            prefWidth="1280.0"
+            prefHeight="800.0"
+            style="-fx-background-color: #F4F6FA;">
+
+    <!-- MENU LATERAL -->
+    <left>
+        <VBox prefWidth="245.0"
+              spacing="0"
+              style="-fx-background-color: #202C3B;">
+
+            <padding>
+                <Insets top="25" right="15" bottom="20" left="15"/>
+            </padding>
+
+            <!-- IDENTIDAD DEL SISTEMA -->
+            <VBox spacing="6" style="-fx-padding: 0 5 28 5;">
+                <Label text="GESTIÓN INSTITUCIONAL"
+                       style="-fx-text-fill: white;
+                              -fx-font-size: 17px;
+                              -fx-font-weight: bold;"/>
+
+                <Label text="Personal y desempeño"
+                       style="-fx-text-fill: #AAB8C8;
+                              -fx-font-size: 12px;"/>
+            </VBox>
+
+            <!-- GENERAL -->
+            <Label text="GENERAL"
+                   style="-fx-text-fill: #8FA1B5;
+                          -fx-font-size: 10px;
+                          -fx-font-weight: bold;
+                          -fx-padding: 0 0 10 8;"/>
+
+            <Button text="  Dashboard"
+                    onAction="#mostrarDashboard"
+                    maxWidth="Infinity"
+                    styleClass="menu-button"
+            />
+
+            <Separator style="-fx-background-color: #435164;"/>
+
+            <!-- ADMINISTRACION -->
+            <Label text="ADMINISTRACIÓN"
+                   style="-fx-text-fill: #8FA1B5;
+                          -fx-font-size: 10px;
+                          -fx-font-weight: bold;
+                          -fx-padding: 16 0 10 8;"/>
+
+            <Button text="  Empleados"
+                    onAction="#mostrarEmpleados"
+                    maxWidth="Infinity"
+                    styleClass="menu-button"/>
+
+            <Button text="  Departamentos"
+                    onAction="#mostrarDepartamentos"
+                    maxWidth="Infinity"
+                    styleClass="menu-button"/>
+
+            <Button text="  Categorías"
+                    onAction="#mostrarCategorias"
+                    maxWidth="Infinity"
+                    styleClass="menu-button"/>
+
+            <Button text="  Usuarios"
+                    onAction="#mostrarUsuarios"
+                    maxWidth="Infinity"
+                    styleClass="menu-button"/>
+
+            <Button text="  Supervisiones"
+                    onAction="#mostrarSupervisiones"
+                    maxWidth="Infinity"
+                    styleClass="menu-button"/>
+
+            <Separator style="-fx-background-color: #435164;"/>
+
+            <!-- EVALUACION -->
+            <Label text="EVALUACIÓN DEL DESEMPEÑO"
+                   style="-fx-text-fill: #8FA1B5;
+                          -fx-font-size: 10px;
+                          -fx-font-weight: bold;
+                          -fx-padding: 16 0 10 8;"/>
+
+            <Button text="  Períodos"
+                    onAction="#mostrarPeriodos"
+                    maxWidth="Infinity"
+                    styleClass="menu-button"/>
+
+            <Button text="  Objetivos"
+                    onAction="#mostrarObjetivos"
+                    maxWidth="Infinity"
+                    styleClass="menu-button"/>
+
+            <Button text="  Seguimientos"
+                    onAction="#mostrarSeguimientos"
+                    maxWidth="Infinity"
+                    styleClass="menu-button"/>
+
+            <Button text="  Evaluaciones"
+                    onAction="#mostrarEvaluaciones"
+                    maxWidth="Infinity"
+                    styleClass="menu-button"/>
+
+            <Button text="  Reportes"
+                    onAction="#mostrarReportes"
+                    maxWidth="Infinity"
+                    styleClass="menu-button"/>
+
+            <Pane VBox.vgrow="ALWAYS"/>
+
+            <Separator style="-fx-background-color: #435164;"/>
+
+            <Button text="  Cerrar sesión"
+                    onAction="#cerrarSesion"
+                    maxWidth="Infinity"
+                    styleClass="logout-button"/>
+
+        </VBox>
+    </left>
+
+    <!-- ENCABEZADO -->
+    <top>
+        <HBox alignment="CENTER_LEFT"
+              spacing="15"
+              prefHeight="75"
+              style="-fx-background-color: white;
+                     -fx-border-color: transparent transparent #E3E8EF transparent;
+                     -fx-border-width: 0 0 1 0;">
+
+            <padding>
+                <Insets left="30" right="30"/>
+            </padding>
+
+            <Label fx:id="lblTitulo"
+                   text="Dashboard"
+                   style="-fx-font-size: 21px;
+                          -fx-font-weight: bold;
+                          -fx-text-fill: #263548;"/>
+
+            <Pane HBox.hgrow="ALWAYS"/>
+
+            <VBox alignment="CENTER_RIGHT" spacing="3">
+                <Label fx:id="lblUsuario"
+                       text="Usuario"
+                       style="-fx-font-size: 13px;
+                              -fx-font-weight: bold;
+                              -fx-text-fill: #263548;"/>
+
+                <Label fx:id="lblRol"
+                       text="Administrador"
+                       style="-fx-font-size: 11px;
+                              -fx-text-fill: #8492A6;"/>
+            </VBox>
+
+        </HBox>
+    </top>
+
+    <!-- CONTENIDO DINAMICO -->
+    <center>
+        <StackPane fx:id="contenedorPrincipal"
+                   style="-fx-background-color: #F4F6FA;"
+        />
+    </center>
+
+</BorderPane>

@@ -63,7 +63,7 @@ public class PrincipalController {
     private void mostrarDashboard() {
 
         cargarVista(
-                "/org/example/projectofinal/Dashboard.fxml",
+                "/org/example/projectofinal/dashboard.fxml",
                 "Dashboard"
         );
     }
@@ -72,7 +72,7 @@ public class PrincipalController {
     private void mostrarEmpleados() {
 
         cargarVista(
-                "/org/example/projectofinal/AdminPanel.fxml",
+                "/org/example/projectofinal/adminpanel.fxml",
                 "Gestión de empleados"
         );
     }
@@ -114,7 +114,11 @@ public class PrincipalController {
 
     @FXML
     private void mostrarEvaluaciones() {
-        mostrarModuloPendiente("Evaluaciones");
+
+        cargarVista(
+                "/org/example/projectofinal/view/evaluaciones/GestionEvaluaciones.fxml",
+                "Evaluaciones"
+        );
     }
 
     @FXML
