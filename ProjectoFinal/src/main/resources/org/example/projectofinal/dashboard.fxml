@@ -185,8 +185,7 @@
             </HBox>
 
             <TableView fx:id="tablaActividad"
-                       prefHeight="230"
-                       placeholder="No hay actividades registradas.">
+                       prefHeight="230">
 
                 <columns>
                     <TableColumn fx:id="colFecha"
