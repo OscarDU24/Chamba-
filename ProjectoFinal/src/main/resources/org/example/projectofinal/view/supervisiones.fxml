@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.projectofinal.controller.SupervisionesController"
+            prefHeight="720" prefWidth="1150">
+
+    <VBox spacing="15"
+          AnchorPane.topAnchor="15" AnchorPane.bottomAnchor="15"
+          AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
+
+        <Label text="Supervisiones (jefe de cada empleado)"
+               style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+        <TitledPane text="Asignar jefe" expanded="true" collapsible="false">
+            <content>
+                <VBox spacing="12">
+                    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+
+                    <GridPane hgap="12" vgap="8">
+                        <Label text="Empleado:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <Label text="Jefe:" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                        <Label text="Desde:" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+
+                        <ComboBox fx:id="cmbEmpleado" promptText="Seleccione empleado" maxWidth="Infinity"
+                                  GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <ComboBox fx:id="cmbJefe" promptText="Seleccione jefe" maxWidth="Infinity"
+                                  GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        <DatePicker fx:id="dpInicio" maxWidth="Infinity"
+                                    GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="40" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="40" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="20" hgrow="ALWAYS"/>
+                        </columnConstraints>
+                    </GridPane>
+
+                    <Label text="Cada empleado tiene un solo jefe: si ya tenía uno, se reemplaza."
+                           style="-fx-text-fill: #65738a;"/>
+
+                    <HBox spacing="10">
+                        <Button text="Asignar jefe" onAction="#asignar"/>
+                    </HBox>
+                </VBox>
+            </content>
+        </TitledPane>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Supervisiones registradas" style="-fx-font-size: 17px; -fx-font-weight: bold;"/>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button text="Actualizar" onAction="#actualizarTodo"/>
+        </HBox>
+
+        <TableView fx:id="tabla" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colEmpleado" text="Empleado" prefWidth="260"/>
+                <TableColumn fx:id="colJefe" text="Jefe" prefWidth="260"/>
+                <TableColumn fx:id="colInicio" text="Desde" prefWidth="110"/>
+                <TableColumn fx:id="colFin" text="Hasta" prefWidth="110"/>
+                <TableColumn fx:id="colEstado" text="Estado" prefWidth="100"/>
+            </columns>
+            <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
+            <placeholder><Label text="No hay supervisiones registradas."/></placeholder>
+        </TableView>
+
+        <HBox spacing="10">
+            <Button text="Finalizar supervisión seleccionada" onAction="#finalizar"/>
+        </HBox>
+
+        <Label fx:id="lblEstado" text=""/>
+    </VBox>
+</AnchorPane>

@@ -7,6 +7,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.application.Platform;
+import org.example.projectofinal.model.CuentaUsuario;
+import org.example.projectofinal.util.SesionUsuario;
 
 import java.io.IOException;
 
@@ -27,8 +29,15 @@ public class PrincipalController {
     @FXML
     public void initialize() {
 
-        lblUsuario.setText("Administrador de prueba");
-        lblRol.setText("ADMINISTRADOR");
+        CuentaUsuario cuenta = SesionUsuario.getCuentaUsuario();
+
+        if (cuenta != null) {
+            lblUsuario.setText(cuenta.getIdEmpleado().getNombreCompleto());
+            lblRol.setText(cuenta.getRol());
+        } else {
+            lblUsuario.setText("Sin sesión");
+            lblRol.setText("");
+        }
 
         mostrarDashboard();
     }
@@ -79,37 +88,65 @@ public class PrincipalController {
 
     @FXML
     private void mostrarDepartamentos() {
-        mostrarModuloPendiente("Departamentos");
+
+        cargarVista(
+                "/org/example/projectofinal/view/departamentos.fxml",
+                "Departamentos"
+        );
     }
 
     @FXML
     private void mostrarCategorias() {
-        mostrarModuloPendiente("Categorías");
+
+        cargarVista(
+                "/org/example/projectofinal/view/categorias.fxml",
+                "Categorías"
+        );
     }
 
     @FXML
     private void mostrarUsuarios() {
-        mostrarModuloPendiente("Usuarios");
+
+        cargarVista(
+                "/org/example/projectofinal/view/usuarios.fxml",
+                "Usuarios"
+        );
     }
 
     @FXML
     private void mostrarSupervisiones() {
-        mostrarModuloPendiente("Supervisiones");
+
+        cargarVista(
+                "/org/example/projectofinal/view/supervisiones.fxml",
+                "Supervisiones"
+        );
     }
 
     @FXML
     private void mostrarPeriodos() {
-        mostrarModuloPendiente("Períodos");
+
+        cargarVista(
+                "/org/example/projectofinal/view/periodos.fxml",
+                "Períodos de evaluación"
+        );
     }
 
     @FXML
     private void mostrarObjetivos() {
-        mostrarModuloPendiente("Objetivos");
+
+        cargarVista(
+                "/org/example/projectofinal/view/objetivos.fxml",
+                "Objetivos"
+        );
     }
 
     @FXML
     private void mostrarSeguimientos() {
-        mostrarModuloPendiente("Seguimientos");
+
+        cargarVista(
+                "/org/example/projectofinal/view/seguimientos.fxml",
+                "Seguimientos"
+        );
     }
 
     @FXML
