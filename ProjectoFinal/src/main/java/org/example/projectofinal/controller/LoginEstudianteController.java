@@ -1,17 +1,25 @@
 package org.example.projectofinal.controller;
 
+import java.io.IOException;
 import java.util.regex.Pattern;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
+import org.example.projectofinal.model.CuentaUsuario;
+import org.example.projectofinal.service.LoginService;
 
 public class LoginEstudianteController {
 
+    private final LoginService loginService = new LoginService();
+
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$");
-    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$");
 
     @FXML
     private TextField Correotxt;
@@ -41,17 +49,37 @@ public class LoginEstudianteController {
             return;
         }
 
-        if (!PASSWORD_PATTERN.matcher(password).matches()) {
-            mostrarMensaje("La contraseña debe tener mínimo 8 caracteres, incluir una minúscula, una mayúscula, un número y un carácter especial.", true);
-            return;
-        }
-
         if (!password.equals(confirmPassword)) {
             mostrarMensaje("Las contraseñas no coinciden.", true);
             return;
         }
 
-        mostrarMensaje("Datos válidos. Puedes continuar.", false);
+        CuentaUsuario cuenta = loginService.iniciarSesion(correo, password);
+
+        if (cuenta == null) {
+            mostrarMensaje("Correo o contraseña incorrectos, o la cuenta está inactiva.", true);
+            return;
+        }
+
+        mostrarMensaje("Bienvenido, " + cuenta.getIdEmpleado().getNombreCompleto() + ".", false);
+        abrirPrincipal();
+    }
+
+    private void abrirPrincipal() {
+        try {
+            Parent root = new FXMLLoader(
+                    getClass().getResource("/org/example/projectofinal/principal.fxml")).load();
+
+            Stage stage = (Stage) Correotxt.getScene().getWindow();
+            stage.setScene(new Scene(root, 1280, 800));
+            stage.setTitle("Sistema de evaluación");
+            stage.centerOnScreen();
+
+        } catch (IOException | RuntimeException e) {
+            e.printStackTrace();
+            mostrarMensaje("Sesión iniciada, pero no se pudo abrir la pantalla principal: "
+                    + e.getMessage(), true);
+        }
     }
 
     private String obtenerTexto(TextField campo) {
