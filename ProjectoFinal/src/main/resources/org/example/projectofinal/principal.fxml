@@ -48,39 +48,41 @@
 
             <Separator style="-fx-background-color: #435164;"/>
 
-            <!-- ADMINISTRACION -->
-            <Label text="ADMINISTRACIÓN"
-                   style="-fx-text-fill: #8FA1B5;
-                          -fx-font-size: 10px;
-                          -fx-font-weight: bold;
-                          -fx-padding: 16 0 10 8;"/>
+            <!-- ADMINISTRACION (solo rol ADMINISTRADOR) -->
+            <VBox fx:id="seccionAdministracion" spacing="0">
+                <Label text="ADMINISTRACIÓN"
+                       style="-fx-text-fill: #8FA1B5;
+                              -fx-font-size: 10px;
+                              -fx-font-weight: bold;
+                              -fx-padding: 16 0 10 8;"/>
 
-            <Button text="  Empleados"
-                    onAction="#mostrarEmpleados"
-                    maxWidth="Infinity"
-                    styleClass="menu-button"/>
+                <Button text="  Empleados"
+                        onAction="#mostrarEmpleados"
+                        maxWidth="Infinity"
+                        styleClass="menu-button"/>
 
-            <Button text="  Departamentos"
-                    onAction="#mostrarDepartamentos"
-                    maxWidth="Infinity"
-                    styleClass="menu-button"/>
+                <Button text="  Departamentos"
+                        onAction="#mostrarDepartamentos"
+                        maxWidth="Infinity"
+                        styleClass="menu-button"/>
 
-            <Button text="  Categorías"
-                    onAction="#mostrarCategorias"
-                    maxWidth="Infinity"
-                    styleClass="menu-button"/>
+                <Button text="  Categorías"
+                        onAction="#mostrarCategorias"
+                        maxWidth="Infinity"
+                        styleClass="menu-button"/>
 
-            <Button text="  Usuarios"
-                    onAction="#mostrarUsuarios"
-                    maxWidth="Infinity"
-                    styleClass="menu-button"/>
+                <Button text="  Usuarios"
+                        onAction="#mostrarUsuarios"
+                        maxWidth="Infinity"
+                        styleClass="menu-button"/>
 
-            <Button text="  Supervisiones"
-                    onAction="#mostrarSupervisiones"
-                    maxWidth="Infinity"
-                    styleClass="menu-button"/>
+                <Button text="  Supervisiones"
+                        onAction="#mostrarSupervisiones"
+                        maxWidth="Infinity"
+                        styleClass="menu-button"/>
 
-            <Separator style="-fx-background-color: #435164;"/>
+                <Separator style="-fx-background-color: #435164;"/>
+            </VBox>
 
             <!-- EVALUACION -->
             <Label text="EVALUACIÓN DEL DESEMPEÑO"
@@ -89,12 +91,14 @@
                           -fx-font-weight: bold;
                           -fx-padding: 16 0 10 8;"/>
 
-            <Button text="  Períodos"
+            <Button fx:id="btnPeriodos"
+                    text="  Períodos"
                     onAction="#mostrarPeriodos"
                     maxWidth="Infinity"
                     styleClass="menu-button"/>
 
-            <Button text="  Objetivos"
+            <Button fx:id="btnObjetivos"
+                    text="  Objetivos"
                     onAction="#mostrarObjetivos"
                     maxWidth="Infinity"
                     styleClass="menu-button"/>
@@ -104,12 +108,19 @@
                     maxWidth="Infinity"
                     styleClass="menu-button"/>
 
-            <Button text="  Evaluaciones"
+            <Button fx:id="btnFormularios"
+                    text="  Formularios"
                     onAction="#mostrarEvaluaciones"
                     maxWidth="Infinity"
                     styleClass="menu-button"/>
 
-            <Button text="  Reportes"
+            <Button text="  Evaluación final"
+                    onAction="#mostrarEvaluacionFinal"
+                    maxWidth="Infinity"
+                    styleClass="menu-button"/>
+
+            <Button fx:id="btnReportes"
+                    text="  Reportes"
                     onAction="#mostrarReportes"
                     maxWidth="Infinity"
                     styleClass="menu-button"/>

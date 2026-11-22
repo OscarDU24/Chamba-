@@ -88,7 +88,7 @@
             <Button text="Activar / Desactivar seleccionado" onAction="#cambiarEstado"/>
         </HBox>
 
-        <TitledPane text="Asignar el objetivo seleccionado a un departamento" expanded="true" collapsible="false">
+        <TitledPane text="Asignar el objetivo ESPECÍFICO seleccionado a un departamento (participan todos sus empleados)" expanded="true" collapsible="false">
             <content>
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
@@ -105,10 +105,17 @@
                 <TableColumn fx:id="colAsigDepartamento" text="Departamento" prefWidth="220"/>
                 <TableColumn fx:id="colAsigPeriodo" text="Período" prefWidth="200"/>
                 <TableColumn fx:id="colAsigFecha" text="Fecha de asignación" prefWidth="140"/>
+                <TableColumn fx:id="colAsigParticipantes" text="Participantes" prefWidth="100"/>
             </columns>
             <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
             <placeholder><Label text="No hay objetivos asignados."/></placeholder>
         </TableView>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button text="Actualizar participantes" onAction="#actualizarParticipantes"/>
+            <Label text="Agrega a los empleados que entraron al departamento después de la asignación."
+                   style="-fx-text-fill: #65738a;"/>
+        </HBox>
 
         <Label fx:id="lblEstado" text=""/>
     </VBox>

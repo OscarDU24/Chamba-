@@ -24,7 +24,7 @@
             <Insets top="36.0" right="40.0" bottom="36.0" left="40.0"/>
         </padding>
 
-        <Label text="PORTAL ESTUDIANTIL"
+        <Label text="GESTIÓN DE PERSONAL Y DESEMPEÑO"
                style="-fx-text-fill: #4263a5; -fx-font-size: 12px; -fx-font-weight: bold;"/>
         <Label text="Iniciar sesión"
                style="-fx-text-fill: #1d2b45; -fx-font-size: 30px; -fx-font-weight: bold;"/>
@@ -43,14 +43,7 @@
                    prefHeight="42"
                    style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #d6deeb;"/>
 
-        <Label text="Confirme la contraseña"
-                style="-fx-text-fill: #28364d; -fx-font-size: 15px; -fx-font-weight: bold;"/>
-        <PasswordField fx:id="ConfirmPasswordtxt" promptText="Confirme su contraseña"
-                       prefHeight="42"
-                       style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #d6deeb;"/>
-
-
-        <Button text="Continuar" onAction="#onLogin"
+        <Button text="Iniciar sesión" onAction="#onLogin" defaultButton="true"
                 maxWidth="Infinity" prefHeight="44.0"
                 style="-fx-background-color: #315da8; -fx-background-radius: 8; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;"/>
         <Label fx:id="feedbackLbl" wrapText="true" minHeight="20.0"

@@ -11,10 +11,13 @@ import org.example.projectofinal.service.DepartamentoService;
 import org.example.projectofinal.service.ObjetivoDepartamentoService;
 import org.example.projectofinal.service.ObjetivoService;
 import org.example.projectofinal.service.PeriodoEvaluacionService;
+import org.example.projectofinal.service.ResponsableObjetivoService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class ObjetivosController {
 
@@ -45,6 +48,7 @@ public class ObjetivosController {
     @FXML private TableColumn<ObjetivoDepartamento, String> colAsigDepartamento;
     @FXML private TableColumn<ObjetivoDepartamento, String> colAsigPeriodo;
     @FXML private TableColumn<ObjetivoDepartamento, String> colAsigFecha;
+    @FXML private TableColumn<ObjetivoDepartamento, String> colAsigParticipantes;
 
     @FXML private Label lblEstado;
 
@@ -52,8 +56,10 @@ public class ObjetivosController {
     private final ObjetivoDepartamentoService asignacionService = new ObjetivoDepartamentoService();
     private final DepartamentoService departamentoService = new DepartamentoService();
     private final PeriodoEvaluacionService periodoService = new PeriodoEvaluacionService();
+    private final ResponsableObjetivoService responsableService = new ResponsableObjetivoService();
 
     private Objetivo seleccionado;
+    private Map<UUID, Long> participantes = Map.of();
 
     @FXML
     public void initialize() {
@@ -83,6 +89,7 @@ public class ObjetivosController {
         UiUtil.columna(colAsigDepartamento, a -> a.getIdDepartamento().getNombre());
         UiUtil.columna(colAsigPeriodo, a -> a.getIdPeriodo().getNombre());
         UiUtil.columna(colAsigFecha, a -> UiUtil.fecha(a.getFechaAsignacion()));
+        UiUtil.columna(colAsigParticipantes, a -> String.valueOf(participantes.getOrDefault(a.getId(), 0L)));
 
         tablaObjetivos.getSelectionModel().selectedItemProperty().addListener((obs, ant, nuevo) -> {
             if (nuevo != null) {
@@ -105,6 +112,7 @@ public class ObjetivosController {
 
         cmbDepartamento.setItems(FXCollections.observableArrayList(departamentoService.listarActivos()));
         cmbPeriodo.setItems(FXCollections.observableArrayList(periodoService.listarOrdenados()));
+        participantes = responsableService.contarPorAsignacion();
         tablaAsignaciones.setItems(FXCollections.observableArrayList(asignacionService.listarConDetalle()));
 
         lblEstado.setText(objetivos.size() + " objetivo(s) y "
@@ -219,6 +227,11 @@ public class ObjetivosController {
             UiUtil.error("No se puede asignar un objetivo inactivo.");
             return;
         }
+        if (!ObjetivoService.ESPECIFICO.equals(o.getNivel())) {
+            UiUtil.error("A los departamentos se asignan objetivos ESPECÍFICOS. "
+                    + "Crea un objetivo específico dentro de \"" + o.getNombre() + "\" y asigna ese.");
+            return;
+        }
         if (cmbDepartamento.getValue() == null || cmbPeriodo.getValue() == null) {
             UiUtil.error("Selecciona el departamento y el período.");
             return;
@@ -235,11 +248,43 @@ public class ObjetivosController {
             return;
         }
 
-        if (asignacionService.asignar(a)) {
-            actualizarTodo();
-            lblEstado.setText("Objetivo asignado a " + cmbDepartamento.getValue().getNombre() + ".");
-        } else {
+        if (!asignacionService.asignar(a)) {
             UiUtil.error("No se pudo asignar el objetivo.");
+            return;
+        }
+
+        // Todos los integrantes del departamento participan en el objetivo
+        int agregados = responsableService.sincronizarConDepartamento(a.getId());
+        actualizarTodo();
+
+        if (agregados < 0) {
+            UiUtil.error("El objetivo se asignó, pero no se pudieron agregar los participantes. "
+                    + "Usa \"Actualizar participantes\".");
+        } else {
+            lblEstado.setText("Objetivo asignado a " + a.getIdDepartamento().getNombre()
+                    + " con " + agregados + " participante(s).");
+        }
+    }
+
+    /** Agrega a la asignación los empleados que entraron después al departamento. */
+    @FXML
+    private void actualizarParticipantes() {
+        ObjetivoDepartamento a = tablaAsignaciones.getSelectionModel().getSelectedItem();
+
+        if (a == null) {
+            UiUtil.error("Selecciona una asignación en la tabla de abajo.");
+            return;
+        }
+
+        int agregados = responsableService.sincronizarConDepartamento(a.getId());
+        actualizarTodo();
+
+        if (agregados < 0) {
+            UiUtil.error("No se pudieron actualizar los participantes.");
+        } else {
+            lblEstado.setText(agregados == 0
+                    ? "Los participantes ya estaban al día."
+                    : "Se agregaron " + agregados + " participante(s).");
         }
     }
 }

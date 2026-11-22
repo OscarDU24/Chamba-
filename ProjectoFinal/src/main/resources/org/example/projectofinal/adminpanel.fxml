@@ -164,8 +164,11 @@
             <Button text="Editar seleccionado"
                     onAction="#editarEmpleado"/>
 
-            <Button text="Eliminar seleccionado"
+            <Button text="Desactivar empleado"
                     onAction="#eliminarEmpleado"/>
+
+            <Button text="Reactivar empleado"
+                    onAction="#reactivarEmpleado"/>
 
             <Button text="Activar / Desactivar cuenta"
                     onAction="#cambiarEstadoCuenta"/>

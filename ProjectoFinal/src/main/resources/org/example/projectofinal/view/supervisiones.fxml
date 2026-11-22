@@ -40,7 +40,7 @@
                         </columnConstraints>
                     </GridPane>
 
-                    <Label text="Cada empleado tiene un solo jefe: si ya tenía uno, se reemplaza."
+                    <Label text="Cada empleado tiene un solo jefe activo. Si ya tenía uno, esa supervisión se finaliza y queda en el historial."
                            style="-fx-text-fill: #65738a;"/>
 
                     <HBox spacing="10">

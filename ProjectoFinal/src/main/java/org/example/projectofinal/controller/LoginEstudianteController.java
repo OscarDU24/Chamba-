@@ -28,29 +28,20 @@ public class LoginEstudianteController {
     private PasswordField Passwordtxt;
 
     @FXML
-    private PasswordField ConfirmPasswordtxt;
-
-    @FXML
     private Label feedbackLbl;
 
     @FXML
     public void onLogin() {
         String correo = obtenerTexto(Correotxt);
         String password = obtenerTexto(Passwordtxt);
-        String confirmPassword = obtenerTexto(ConfirmPasswordtxt);
 
-        if (correo.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
+        if (correo.isBlank() || password.isBlank()) {
             mostrarMensaje("Completa todos los campos.", true);
             return;
         }
 
         if (!EMAIL_PATTERN.matcher(correo).matches()) {
             mostrarMensaje("Ingresa un correo válido.", true);
-            return;
-        }
-
-        if (!password.equals(confirmPassword)) {
-            mostrarMensaje("Las contraseñas no coinciden.", true);
             return;
         }
 

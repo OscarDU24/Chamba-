@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.projectofinal.controller.ReportesController"
+            prefHeight="720" prefWidth="1150">
+
+    <VBox spacing="15"
+          AnchorPane.topAnchor="15" AnchorPane.bottomAnchor="15"
+          AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
+
+        <Label text="Reportes de desempeño"
+               style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Período:"/>
+            <ComboBox fx:id="cmbPeriodo" promptText="Seleccione período" prefWidth="320"/>
+            <Button text="Generar" onAction="#generar"/>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button text="Exportar pestaña a CSV (Excel)" onAction="#exportarCsv"/>
+        </HBox>
+
+        <GridPane hgap="16">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="33.3" hgrow="ALWAYS"/>
+                <ColumnConstraints percentWidth="33.3" hgrow="ALWAYS"/>
+                <ColumnConstraints percentWidth="33.4" hgrow="ALWAYS"/>
+            </columnConstraints>
+
+            <VBox GridPane.columnIndex="0" spacing="4"
+                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 14;">
+                <Label text="AVANCE PROMEDIO DEPARTAMENTAL" style="-fx-text-fill: #8492A6; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                <Label fx:id="lblPromedioDepartamentos" text="—" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #263548;"/>
+            </VBox>
+            <VBox GridPane.columnIndex="1" spacing="4"
+                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 14;">
+                <Label text="AVANCE PROMEDIO INDIVIDUAL" style="-fx-text-fill: #8492A6; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                <Label fx:id="lblPromedioEmpleados" text="—" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #263548;"/>
+            </VBox>
+            <VBox GridPane.columnIndex="2" spacing="4"
+                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 14;">
+                <Label text="EMPLEADOS CON EVALUACIÓN FINAL" style="-fx-text-fill: #8492A6; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                <Label fx:id="lblEvaluados" text="—" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #263548;"/>
+            </VBox>
+        </GridPane>
+
+        <TabPane fx:id="tabs" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+            <Tab fx:id="tabDepartamentos" text="Por departamento">
+                <TableView fx:id="tablaDepartamentos">
+                    <columns>
+                        <TableColumn fx:id="colDepNombre" text="Departamento" prefWidth="240"/>
+                        <TableColumn fx:id="colDepEmpleados" text="Empleados" prefWidth="90"/>
+                        <TableColumn fx:id="colDepObjetivos" text="Objetivos asignados" prefWidth="130"/>
+                        <TableColumn fx:id="colDepAvance" text="Avance departamental" prefWidth="150"/>
+                        <TableColumn fx:id="colDepFinal" text="Evaluación final" prefWidth="120"/>
+                        <TableColumn fx:id="colDepEstado" text="Estado" prefWidth="120"/>
+                    </columns>
+                    <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
+                    <placeholder><Label text="No hay departamentos activos."/></placeholder>
+                </TableView>
+            </Tab>
+            <Tab text="Por empleado">
+                <TableView fx:id="tablaEmpleados">
+                    <columns>
+                        <TableColumn fx:id="colEmpNombre" text="Empleado" prefWidth="240"/>
+                        <TableColumn fx:id="colEmpDepartamento" text="Departamento" prefWidth="180"/>
+                        <TableColumn fx:id="colEmpObjetivos" text="Objetivos" prefWidth="90"/>
+                        <TableColumn fx:id="colEmpAvance" text="Avance individual" prefWidth="130"/>
+                        <TableColumn fx:id="colEmpFinal" text="Evaluación final" prefWidth="120"/>
+                        <TableColumn fx:id="colEmpEstado" text="Estado" prefWidth="120"/>
+                    </columns>
+                    <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
+                    <placeholder><Label text="No hay empleados activos."/></placeholder>
+                </TableView>
+            </Tab>
+        </TabPane>
+
+        <Label fx:id="lblEstado" text=""/>
+    </VBox>
+</AnchorPane>

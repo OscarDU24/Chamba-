@@ -1,5 +1,8 @@
 package org.example.projectofinal.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import org.example.projectofinal.dao.EntityManagerAdmin;
 import org.example.projectofinal.dao.ImplDao;
 import org.example.projectofinal.model.Supervision;
 
@@ -53,29 +56,55 @@ public class SupervisionService extends ServiceGeneric<Supervision> {
             return false;
         }
 
-        try {
-            // En la base cada empleado tiene una sola fila de supervisión
-            // (UNIQUE id_empleado): si ya existe se reutiliza con el nuevo jefe.
-            Supervision existente = consultarUno(
-                    "SELECT s FROM Supervision s WHERE s.idEmpleado.id = :id",
-                    Supervision.class, "id", supervision.getIdEmpleado().getId());
+        // Se conserva el historial: la supervisión anterior se cierra
+        // (activo = false, fecha_fin = inicio de la nueva) y se crea una nueva.
+        // Ambos pasos van en la misma transacción.
+        EntityManager em = EntityManagerAdmin.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
 
-            if (existente != null) {
-                existente.setIdJefe(supervision.getIdJefe());
-                existente.setFechaInicio(supervision.getFechaInicio());
-                existente.setFechaFin(null);
-                existente.setActivo(true);
-                actualizar(existente);
-            } else {
-                supervision.setActivo(true);
-                guardar(supervision);
+        try {
+            tx.begin();
+
+            Supervision anterior = em.createQuery(
+                            "SELECT s FROM Supervision s " +
+                                    "WHERE s.idEmpleado.id = :id AND s.activo = true",
+                            Supervision.class)
+                    .setParameter("id", supervision.getIdEmpleado().getId())
+                    .getResultStream().findFirst().orElse(null);
+
+            if (anterior != null) {
+                if (supervision.getFechaInicio().isBefore(anterior.getFechaInicio())) {
+                    tx.rollback();
+                    return false;
+                }
+                anterior.setActivo(false);
+                anterior.setFechaFin(supervision.getFechaInicio());
+                em.flush();
             }
+
+            supervision.setActivo(true);
+            supervision.setFechaFin(null);
+            em.persist(supervision);
+
+            tx.commit();
             return true;
 
         } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
             e.printStackTrace();
             return false;
+
+        } finally {
+            EntityManagerAdmin.cerrar(em);
         }
+    }
+
+    /** Todas las supervisiones (actuales y pasadas) de un empleado. */
+    public List<Supervision> listarHistorialPorEmpleado(UUID idEmpleado) {
+        return consultar(SELECT_BASE + "WHERE s.idEmpleado.id = :id ORDER BY s.fechaInicio DESC",
+                Supervision.class, "id", idEmpleado);
     }
 
     public boolean finalizar(UUID idSupervision) {

@@ -79,10 +79,23 @@ public class SupervisionesController {
         }
 
         Supervision actual = service.buscarActivaPorEmpleado(empleado.getId());
-        if (actual != null && !UiUtil.confirmar(empleado.getNombreCompleto()
-                + " ya tiene como jefe a " + actual.getIdJefe().getNombreCompleto()
-                + ". ¿Deseas reemplazarlo por " + jefe.getNombreCompleto() + "?")) {
-            return;
+        if (actual != null) {
+            if (actual.getIdJefe().getId().equals(jefe.getId())) {
+                UiUtil.error(jefe.getNombreCompleto() + " ya es el jefe actual de "
+                        + empleado.getNombreCompleto() + ".");
+                return;
+            }
+            if (dpInicio.getValue().isBefore(actual.getFechaInicio())) {
+                UiUtil.error("La fecha debe ser igual o posterior al inicio de la supervisión actual ("
+                        + UiUtil.fecha(actual.getFechaInicio()) + ").");
+                return;
+            }
+            if (!UiUtil.confirmar(empleado.getNombreCompleto()
+                    + " tiene como jefe a " + actual.getIdJefe().getNombreCompleto()
+                    + ". Esa supervisión se finalizará y quedará en el historial. ¿Asignar a "
+                    + jefe.getNombreCompleto() + "?")) {
+                return;
+            }
         }
 
         Supervision s = new Supervision();

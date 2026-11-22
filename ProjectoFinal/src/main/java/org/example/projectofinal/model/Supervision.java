@@ -14,7 +14,9 @@ public class Supervision {
     @Column(name = "id_supervision", nullable = false)
     private UUID id;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    // ManyToOne: un empleado puede tener varias supervisiones (historial),
+    // pero solo una activa (índice único parcial en la base).
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_empleado", nullable = false)
     private Empleado idEmpleado;
 

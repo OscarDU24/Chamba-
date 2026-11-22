@@ -234,6 +234,57 @@ public class AdminPanelService extends ServiceGeneric<Empleado> {
     }
 
     // =========================================================
+    // REACTIVAR EMPLEADO Y SU CUENTA
+    // =========================================================
+
+    public boolean reactivarEmpleado(UUID idEmpleado) {
+
+        EntityManager em = EntityManagerAdmin.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
+        try {
+            tx.begin();
+
+            Empleado empleado = em.find(Empleado.class, idEmpleado);
+
+            if (empleado == null) {
+                tx.rollback();
+                return false;
+            }
+
+            empleado.setActivo(true);
+
+            CuentaUsuario cuenta = em.createQuery(
+                            "SELECT c FROM CuentaUsuario c " +
+                                    "WHERE c.idEmpleado.id = :id",
+                            CuentaUsuario.class
+                    ).setParameter("id", idEmpleado)
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
+
+            if (cuenta != null) {
+                cuenta.setActivo(true);
+            }
+
+            tx.commit();
+            return true;
+
+        } catch (Exception e) {
+
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+
+            e.printStackTrace();
+            return false;
+
+        } finally {
+            EntityManagerAdmin.cerrar(em);
+        }
+    }
+
+    // =========================================================
     // CAMBIAR ESTADO DE CUENTA
     // =========================================================
 
