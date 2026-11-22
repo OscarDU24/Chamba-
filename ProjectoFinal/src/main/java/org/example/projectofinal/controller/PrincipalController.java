@@ -2,12 +2,17 @@ package org.example.projectofinal.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
-import javafx.application.Platform;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.example.projectofinal.model.CuentaUsuario;
+import org.example.projectofinal.service.LoginService;
 import org.example.projectofinal.util.SesionUsuario;
 
 import java.io.IOException;
@@ -26,10 +31,32 @@ public class PrincipalController {
     @FXML
     private Label lblRol;
 
+    // Opciones del menú que solo ve el ADMINISTRADOR
+    @FXML
+    private VBox seccionAdministracion;
+
+    @FXML
+    private Button btnPeriodos;
+
+    @FXML
+    private Button btnObjetivos;
+
+    @FXML
+    private Button btnFormularios;
+
+    @FXML
+    private Button btnReportes;
+
+    private final LoginService loginService = new LoginService();
+
+    private boolean esAdministrador;
+
     @FXML
     public void initialize() {
 
         CuentaUsuario cuenta = SesionUsuario.getCuentaUsuario();
+
+        esAdministrador = cuenta != null && "ADMINISTRADOR".equals(cuenta.getRol());
 
         if (cuenta != null) {
             lblUsuario.setText(cuenta.getIdEmpleado().getNombreCompleto());
@@ -39,7 +66,34 @@ public class PrincipalController {
             lblRol.setText("");
         }
 
+        aplicarPermisos();
         mostrarDashboard();
+    }
+
+    // =========================================================
+    // PERMISOS POR ROL
+    // ADMINISTRADOR: todo el menú.
+    // EMPLEADO: Dashboard, Seguimientos (los suyos) y Evaluación final (sus resultados).
+    // =========================================================
+
+    private void aplicarPermisos() {
+
+        for (Node opcion : new Node[]{seccionAdministracion, btnPeriodos, btnObjetivos, btnFormularios, btnReportes}) {
+            opcion.setVisible(esAdministrador);
+            opcion.setManaged(esAdministrador);
+        }
+    }
+
+    /** Segunda barrera: aunque el botón esté oculto, no abre pantallas de administración. */
+    private boolean permitirSoloAdministrador() {
+
+        if (!esAdministrador) {
+            mostrarAlerta(
+                    "Acceso restringido",
+                    "Esta opción solo está disponible para administradores."
+            );
+        }
+        return esAdministrador;
     }
 
     private void cargarVista(String ruta, String titulo) {
@@ -80,6 +134,8 @@ public class PrincipalController {
     @FXML
     private void mostrarEmpleados() {
 
+        if (!permitirSoloAdministrador()) return;
+
         cargarVista(
                 "/org/example/projectofinal/adminpanel.fxml",
                 "Gestión de empleados"
@@ -88,6 +144,8 @@ public class PrincipalController {
 
     @FXML
     private void mostrarDepartamentos() {
+
+        if (!permitirSoloAdministrador()) return;
 
         cargarVista(
                 "/org/example/projectofinal/view/departamentos.fxml",
@@ -98,6 +156,8 @@ public class PrincipalController {
     @FXML
     private void mostrarCategorias() {
 
+        if (!permitirSoloAdministrador()) return;
+
         cargarVista(
                 "/org/example/projectofinal/view/categorias.fxml",
                 "Categorías"
@@ -106,6 +166,8 @@ public class PrincipalController {
 
     @FXML
     private void mostrarUsuarios() {
+
+        if (!permitirSoloAdministrador()) return;
 
         cargarVista(
                 "/org/example/projectofinal/view/usuarios.fxml",
@@ -116,6 +178,8 @@ public class PrincipalController {
     @FXML
     private void mostrarSupervisiones() {
 
+        if (!permitirSoloAdministrador()) return;
+
         cargarVista(
                 "/org/example/projectofinal/view/supervisiones.fxml",
                 "Supervisiones"
@@ -125,6 +189,8 @@ public class PrincipalController {
     @FXML
     private void mostrarPeriodos() {
 
+        if (!permitirSoloAdministrador()) return;
+
         cargarVista(
                 "/org/example/projectofinal/view/periodos.fxml",
                 "Períodos de evaluación"
@@ -133,6 +199,8 @@ public class PrincipalController {
 
     @FXML
     private void mostrarObjetivos() {
+
+        if (!permitirSoloAdministrador()) return;
 
         cargarVista(
                 "/org/example/projectofinal/view/objetivos.fxml",
@@ -152,30 +220,60 @@ public class PrincipalController {
     @FXML
     private void mostrarEvaluaciones() {
 
+        if (!permitirSoloAdministrador()) return;
+
         cargarVista(
                 "/org/example/projectofinal/view/evaluaciones/GestionEvaluaciones.fxml",
-                "Evaluaciones"
+                "Formularios de evaluación"
+        );
+    }
+
+    @FXML
+    private void mostrarEvaluacionFinal() {
+
+        cargarVista(
+                "/org/example/projectofinal/view/evaluacionFinal.fxml",
+                "Evaluación final"
         );
     }
 
     @FXML
     private void mostrarReportes() {
-        mostrarModuloPendiente("Reportes");
-    }
 
-    private void mostrarModuloPendiente(String modulo) {
+        if (!permitirSoloAdministrador()) return;
 
-        mostrarAlerta(
-                "Módulo pendiente",
-                "El módulo " + modulo
-                        + " todavía no está implementado."
+        cargarVista(
+                "/org/example/projectofinal/view/reportes.fxml",
+                "Reportes"
         );
     }
+
+    // =========================================================
+    // CERRAR SESION: vuelve a la pantalla de login
+    // =========================================================
 
     @FXML
     private void cerrarSesion() {
 
-        Platform.exit();
+        loginService.cerrarSesion();
+
+        try {
+            Parent login = new FXMLLoader(
+                    getClass().getResource("/org/example/projectofinal/loginUsuario.fxml")
+            ).load();
+
+            Stage stage = (Stage) contenedorPrincipal.getScene().getWindow();
+            stage.setScene(new Scene(login, 900, 600));
+            stage.setTitle("Iniciar sesión");
+            stage.centerOnScreen();
+
+        } catch (IOException | RuntimeException e) {
+
+            mostrarAlerta(
+                    "Error",
+                    "No se pudo volver a la pantalla de inicio de sesión: " + e.getMessage()
+            );
+        }
     }
 
     private void mostrarAlerta(String titulo, String mensaje) {

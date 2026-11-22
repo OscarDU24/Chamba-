@@ -642,6 +642,74 @@ public class AdminPanelController {
     }
 
     // =========================================================
+    // REACTIVAR EMPLEADO
+    // =========================================================
+
+    @FXML
+    private void reactivarEmpleado() {
+
+        Empleado seleccionado =
+                tablaEmpleados.getSelectionModel().getSelectedItem();
+
+        if (seleccionado == null) {
+
+            mostrarAlerta(
+                    Alert.AlertType.WARNING,
+                    "Selección requerida",
+                    "Seleccione un empleado."
+            );
+
+            return;
+        }
+
+        if (Boolean.TRUE.equals(seleccionado.getActivo())) {
+
+            mostrarAlerta(
+                    Alert.AlertType.INFORMATION,
+                    "Empleado activo",
+                    "El empleado seleccionado ya está activo."
+            );
+
+            return;
+        }
+
+        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+
+        confirmacion.setTitle("Confirmar reactivación");
+        confirmacion.setHeaderText("¿Desea reactivar este empleado?");
+        confirmacion.setContentText(
+                seleccionado.getNombreCompleto()
+                        + "\nTambién se reactivará su cuenta de usuario."
+        );
+
+        confirmacion.showAndWait().ifPresent(respuesta -> {
+
+            if (respuesta == ButtonType.OK) {
+
+                if (service.reactivarEmpleado(seleccionado.getId())) {
+
+                    mostrarAlerta(
+                            Alert.AlertType.INFORMATION,
+                            "Operación exitosa",
+                            "El empleado y su cuenta fueron reactivados."
+                    );
+
+                    limpiarFormulario();
+                    actualizarTabla();
+
+                } else {
+
+                    mostrarAlerta(
+                            Alert.AlertType.ERROR,
+                            "Error",
+                            "No se pudo reactivar el empleado."
+                    );
+                }
+            }
+        });
+    }
+
+    // =========================================================
     // CAMBIAR ESTADO DE CUENTA
     // =========================================================
 

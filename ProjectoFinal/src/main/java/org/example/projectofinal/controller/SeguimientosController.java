@@ -9,12 +9,16 @@ import org.example.projectofinal.model.ObjetivoDepartamento;
 import org.example.projectofinal.model.Seguimiento;
 import org.example.projectofinal.service.AdminPanelService;
 import org.example.projectofinal.service.ObjetivoDepartamentoService;
+import org.example.projectofinal.service.ResponsableObjetivoService;
 import org.example.projectofinal.service.SeguimientoService;
 import org.example.projectofinal.util.SesionUsuario;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class SeguimientosController {
 
@@ -40,10 +44,20 @@ public class SeguimientosController {
     private final ObjetivoDepartamentoService asignacionService = new ObjetivoDepartamentoService();
     private final AdminPanelService empleadoService = new AdminPanelService();
 
+    private final ResponsableObjetivoService responsableService = new ResponsableObjetivoService();
+
     private List<Empleado> empleadosActivos = List.of();
+
+    /** Si el usuario es EMPLEADO solo registra y ve su propio avance individual. */
+    private boolean esEmpleado;
+    private Empleado yo;
 
     @FXML
     public void initialize() {
+        CuentaUsuario cuentaSesion = SesionUsuario.getCuentaUsuario();
+        yo = cuentaSesion == null ? null : cuentaSesion.getIdEmpleado();
+        esEmpleado = cuentaSesion == null || !"ADMINISTRADOR".equals(cuentaSesion.getRol());
+
         cmbAsignacion.setConverter(UiUtil.conversor(a -> a.getIdObjetivo().getNombre()
                 + " · " + a.getIdDepartamento().getNombre()
                 + " · " + a.getIdPeriodo().getNombre()));
@@ -74,25 +88,57 @@ public class SeguimientosController {
         UiUtil.columna(colRegistradoPor, s -> s.getRegistradoPor().getNombreCompleto());
         UiUtil.columna(colObservaciones, Seguimiento::getObservaciones);
 
+        if (esEmpleado) {
+            cmbTipo.setValue(SeguimientoService.INDIVIDUAL);
+            cmbTipo.setDisable(true);
+        }
+
         actualizarTodo();
     }
 
     @FXML
     private void actualizarTodo() {
-        empleadosActivos = empleadoService.listarEmpleados().stream()
-                .filter(e -> Boolean.TRUE.equals(e.getActivo()))
-                .toList();
-        cmbAsignacion.setItems(FXCollections.observableArrayList(asignacionService.listarConDetalle()));
+        List<ObjetivoDepartamento> asignaciones = asignacionService.listarConDetalle();
+        List<Seguimiento> seguimientos = service.listarConDetalle();
+
+        if (esEmpleado) {
+            // Solo objetivos en los que participa y solo sus propios avances
+            Set<UUID> misAsignaciones = yo == null ? Set.of()
+                    : responsableService.listarPorEmpleado(yo.getId()).stream()
+                        .map(r -> r.getIdAsignacion().getId())
+                        .collect(Collectors.toSet());
+            asignaciones = asignaciones.stream()
+                    .filter(a -> misAsignaciones.contains(a.getId()))
+                    .toList();
+            seguimientos = seguimientos.stream()
+                    .filter(s -> yo != null && s.getIdEmpleado() != null
+                            && s.getIdEmpleado().getId().equals(yo.getId()))
+                    .toList();
+            empleadosActivos = yo == null ? List.of() : List.of(yo);
+        } else {
+            empleadosActivos = empleadoService.listarEmpleados().stream()
+                    .filter(e -> Boolean.TRUE.equals(e.getActivo()))
+                    .toList();
+        }
+
+        cmbAsignacion.setItems(FXCollections.observableArrayList(asignaciones));
         filtrarEmpleados(cmbAsignacion.getValue());
 
-        tabla.setItems(FXCollections.observableArrayList(service.listarConDetalle()));
+        tabla.setItems(FXCollections.observableArrayList(seguimientos));
         lblEstado.setText(tabla.getItems().size() + " seguimiento(s) registrados."
                 + (cmbAsignacion.getItems().isEmpty()
-                    ? " Primero asigna objetivos a departamentos en la pantalla Objetivos." : ""));
+                    ? (esEmpleado ? " Todavía no participas en objetivos asignados."
+                                  : " Primero asigna objetivos a departamentos en la pantalla Objetivos.")
+                    : ""));
     }
 
     /** Muestra solo los empleados del departamento de la asignación elegida. */
     private void filtrarEmpleados(ObjetivoDepartamento asignacion) {
+        if (esEmpleado) {
+            cmbEmpleado.setItems(FXCollections.observableArrayList(empleadosActivos));
+            cmbEmpleado.setValue(yo);
+            return;
+        }
         List<Empleado> lista = asignacion == null ? empleadosActivos
                 : empleadosActivos.stream()
                     .filter(e -> e.getIdDepartamento() != null
@@ -104,8 +150,8 @@ public class SeguimientosController {
     @FXML
     private void limpiarFormulario() {
         cmbAsignacion.setValue(null);
-        cmbTipo.setValue(SeguimientoService.DEPARTAMENTAL);
-        cmbEmpleado.setValue(null);
+        cmbTipo.setValue(esEmpleado ? SeguimientoService.INDIVIDUAL : SeguimientoService.DEPARTAMENTAL);
+        cmbEmpleado.setValue(esEmpleado ? yo : null);
         txtAvance.clear();
         dpFecha.setValue(LocalDate.now());
         txtObservaciones.clear();
