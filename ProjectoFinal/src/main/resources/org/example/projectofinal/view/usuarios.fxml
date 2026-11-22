@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.projectofinal.controller.UsuariosController"
+            prefHeight="720" prefWidth="1150">
+
+    <VBox spacing="15"
+          AnchorPane.topAnchor="15" AnchorPane.bottomAnchor="15"
+          AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
+
+        <Label text="Cuentas de usuario"
+               style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+        <Label text="Las cuentas se crean al registrar un empleado en Gestión de empleados."
+               style="-fx-text-fill: #65738a;"/>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Cuentas registradas" style="-fx-font-size: 17px; -fx-font-weight: bold;"/>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button text="Actualizar" onAction="#actualizarTabla"/>
+        </HBox>
+
+        <TableView fx:id="tabla" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colNombre" text="Empleado" prefWidth="260"/>
+                <TableColumn fx:id="colCorreo" text="Correo institucional" prefWidth="260"/>
+                <TableColumn fx:id="colRol" text="Rol" prefWidth="140"/>
+                <TableColumn fx:id="colEstado" text="Estado" prefWidth="140"/>
+            </columns>
+            <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
+            <placeholder><Label text="No hay cuentas registradas."/></placeholder>
+        </TableView>
+
+        <HBox spacing="10">
+            <Button text="Activar / Desactivar cuenta" onAction="#cambiarEstado"/>
+            <Button text="Cambiar rol" onAction="#cambiarRol"/>
+            <Button text="Restablecer contraseña" onAction="#restablecerContrasena"/>
+        </HBox>
+
+        <Label fx:id="lblEstado" text=""/>
+    </VBox>
+</AnchorPane>

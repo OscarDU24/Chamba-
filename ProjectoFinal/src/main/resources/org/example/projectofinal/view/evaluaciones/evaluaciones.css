@@ -1,0 +1,11 @@
+.root { -fx-font-family: "Segoe UI", sans-serif; -fx-font-size: 14px; -fx-background-color: #f4f7fb; }
+.page { -fx-background-color: #f4f7fb; }
+.header { -fx-background-color: #17365d; -fx-padding: 24 28 22 28; -fx-background-radius: 12; -fx-margin: 0 0 18 0; }
+.title { -fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white; }
+.subtitle { -fx-text-fill: #d5e3f5; }
+.toolbar { -fx-padding: 14 0 2 0; }
+.primary { -fx-background-color: #1769aa; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 9 16; }
+.primary:hover { -fx-background-color: #0f568f; }
+.feedback { -fx-text-fill: #536579; }
+.question-title { -fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #243b53; -fx-padding: 8 0 0 0; }
+.table-view, .text-area, .combo-box { -fx-background-radius: 6; }

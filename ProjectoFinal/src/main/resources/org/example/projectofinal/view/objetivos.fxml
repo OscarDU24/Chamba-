@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.projectofinal.controller.ObjetivosController"
+            fitToWidth="true" hbarPolicy="NEVER"
+            style="-fx-background-color: transparent; -fx-background: #F4F6FA;">
+
+    <VBox spacing="15">
+        <padding><Insets top="15" right="20" bottom="15" left="20"/></padding>
+
+        <Label text="Objetivos institucionales"
+               style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+        <TitledPane text="Datos del objetivo" expanded="true" collapsible="false">
+            <content>
+                <VBox spacing="12">
+                    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+
+                    <GridPane hgap="12" vgap="8">
+                        <Label text="Nombre:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <Label text="Nivel:" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                        <Label text="Objetivo padre (solo ESPECIFICO):" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+
+                        <TextField fx:id="txtNombre" promptText="Nombre del objetivo"
+                                   GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <ComboBox fx:id="cmbNivel" maxWidth="Infinity"
+                                  GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        <ComboBox fx:id="cmbPadre" promptText="Seleccione objetivo general" maxWidth="Infinity"
+                                  GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+
+                        <Label text="Indicador:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <Label text="Meta:" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                        <Label text="Unidad de medida:" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+
+                        <TextField fx:id="txtIndicador" promptText="Cómo se mide"
+                                   GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                        <TextField fx:id="txtMeta" promptText="Ej. 90"
+                                   GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                        <TextField fx:id="txtUnidad" promptText="Ej. %"
+                                   GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+
+                        <Label text="Descripción:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                        <TextArea fx:id="txtDescripcion" promptText="Descripción (opcional)"
+                                  prefRowCount="2" wrapText="true"
+                                  GridPane.columnIndex="0" GridPane.rowIndex="5"
+                                  GridPane.columnSpan="3"/>
+
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="40" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="35" hgrow="ALWAYS"/>
+                        </columnConstraints>
+                    </GridPane>
+
+                    <HBox spacing="10">
+                        <Button fx:id="btnGuardar" text="Registrar objetivo" onAction="#guardar"/>
+                        <Button text="Limpiar campos" onAction="#limpiarFormulario"/>
+                    </HBox>
+                </VBox>
+            </content>
+        </TitledPane>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Objetivos registrados" style="-fx-font-size: 17px; -fx-font-weight: bold;"/>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button text="Actualizar" onAction="#actualizarTodo"/>
+        </HBox>
+
+        <TableView fx:id="tablaObjetivos" prefHeight="230">
+            <columns>
+                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="220"/>
+                <TableColumn fx:id="colNivel" text="Nivel" prefWidth="100"/>
+                <TableColumn fx:id="colPadre" text="Objetivo padre" prefWidth="200"/>
+                <TableColumn fx:id="colIndicador" text="Indicador" prefWidth="180"/>
+                <TableColumn fx:id="colMeta" text="Meta" prefWidth="100"/>
+                <TableColumn fx:id="colEstado" text="Estado" prefWidth="90"/>
+            </columns>
+            <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
+            <placeholder><Label text="No hay objetivos registrados."/></placeholder>
+        </TableView>
+
+        <HBox spacing="10">
+            <Button text="Activar / Desactivar seleccionado" onAction="#cambiarEstado"/>
+        </HBox>
+
+        <TitledPane text="Asignar el objetivo seleccionado a un departamento" expanded="true" collapsible="false">
+            <content>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                    <ComboBox fx:id="cmbDepartamento" promptText="Departamento" prefWidth="260"/>
+                    <ComboBox fx:id="cmbPeriodo" promptText="Período" prefWidth="260"/>
+                    <Button text="Asignar" onAction="#asignar"/>
+                </HBox>
+            </content>
+        </TitledPane>
+
+        <TableView fx:id="tablaAsignaciones" prefHeight="200">
+            <columns>
+                <TableColumn fx:id="colAsigObjetivo" text="Objetivo" prefWidth="260"/>
+                <TableColumn fx:id="colAsigDepartamento" text="Departamento" prefWidth="220"/>
+                <TableColumn fx:id="colAsigPeriodo" text="Período" prefWidth="200"/>
+                <TableColumn fx:id="colAsigFecha" text="Fecha de asignación" prefWidth="140"/>
+            </columns>
+            <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
+            <placeholder><Label text="No hay objetivos asignados."/></placeholder>
+        </TableView>
+
+        <Label fx:id="lblEstado" text=""/>
+    </VBox>
+</ScrollPane>
