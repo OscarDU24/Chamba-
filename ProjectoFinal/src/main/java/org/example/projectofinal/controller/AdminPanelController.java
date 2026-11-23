@@ -14,7 +14,9 @@ import org.example.projectofinal.model.Empleado;
 import org.example.projectofinal.service.AdminPanelService;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class AdminPanelController {
@@ -97,6 +99,8 @@ public class AdminPanelController {
     private final Map<UUID, Boolean> estadosCuentas = new HashMap<>();
 
     private Empleado empleadoSeleccionado;
+
+    private List<Departamento> todosDepartamentos = List.of();
 
     // =========================================================
     // INICIALIZACION
@@ -271,11 +275,9 @@ public class AdminPanelController {
                     )
             );
 
-            cmbDepartamento.setItems(
-                    FXCollections.observableArrayList(
-                            service.listarDepartamentos()
-                    )
-            );
+            todosDepartamentos = service.listarDepartamentos();
+
+            filtrarDepartamentosPorCategoria(cmbCategoria.getValue());
 
             cmbFiltroDepartamento.setItems(
                     FXCollections.observableArrayList(
@@ -297,6 +299,44 @@ public class AdminPanelController {
     }
 
     // =========================================================
+    // DEPARTAMENTOS PERMITIDOS SEGÚN LA CATEGORÍA
+    // =========================================================
+
+    /**
+     * Deja en el combo de departamento solo los permitidos para la categoría
+     * (tabla categoria_departamento). Si la categoría no tiene restricción
+     * se muestran todos y el departamento es opcional.
+     */
+    private void filtrarDepartamentosPorCategoria(CategoriaPersonal categoria) {
+
+        Departamento elegido = cmbDepartamento.getValue();
+
+        Set<UUID> permitidos = categoria == null
+                ? Set.of()
+                : service.departamentosPermitidos(categoria.getId());
+
+        List<Departamento> lista = permitidos.isEmpty()
+                ? todosDepartamentos
+                : todosDepartamentos.stream()
+                    .filter(d -> permitidos.contains(d.getId()))
+                    .toList();
+
+        cmbDepartamento.setItems(FXCollections.observableArrayList(lista));
+
+        cmbDepartamento.setPromptText(categoria == null
+                ? "Seleccione primero la categoría"
+                : permitidos.isEmpty()
+                    ? "Sin departamento (opcional)"
+                    : "Seleccione departamento");
+
+        // Conserva el departamento elegido solo si sigue siendo válido
+        cmbDepartamento.setValue(elegido == null ? null : lista.stream()
+                .filter(d -> d.getId().equals(elegido.getId()))
+                .findFirst()
+                .orElse(null));
+    }
+
+    // =========================================================
     // CONFIGURAR FILTROS
     // =========================================================
 
@@ -308,6 +348,10 @@ public class AdminPanelController {
 
         cmbFiltroDepartamento.valueProperty().addListener(
                 (observable, anterior, nuevo) -> filtrarEmpleados()
+        );
+
+        cmbCategoria.valueProperty().addListener(
+                (observable, anterior, nueva) -> filtrarDepartamentosPorCategoria(nueva)
         );
     }
 
@@ -401,6 +445,23 @@ public class AdminPanelController {
             return false;
         }
 
+        Empleado prueba = new Empleado();
+        prueba.setIdCategoria(cmbCategoria.getValue());
+        prueba.setIdDepartamento(cmbDepartamento.getValue());
+
+        String errorCombinacion = service.validarCategoriaDepartamento(prueba);
+
+        if (errorCombinacion != null) {
+
+            mostrarAlerta(
+                    Alert.AlertType.WARNING,
+                    "Departamento no permitido",
+                    errorCombinacion
+            );
+
+            return false;
+        }
+
         String correo = txtCorreo.getText().trim();
 
         if (!correo.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
@@ -456,8 +517,18 @@ public class AdminPanelController {
         txtCif.setText(empleado.getCif());
         txtCorreo.setText(empleado.getCorreoInstitucional());
 
-        cmbCategoria.setValue(empleado.getIdCategoria());
-        cmbDepartamento.setValue(empleado.getIdDepartamento());
+        // Primero la categoría (filtra los departamentos) y luego el departamento
+        cmbCategoria.setValue(empleado.getIdCategoria() == null ? null
+                : cmbCategoria.getItems().stream()
+                    .filter(c -> c.getId().equals(empleado.getIdCategoria().getId()))
+                    .findFirst()
+                    .orElse(empleado.getIdCategoria()));
+
+        cmbDepartamento.setValue(empleado.getIdDepartamento() == null ? null
+                : cmbDepartamento.getItems().stream()
+                    .filter(d -> d.getId().equals(empleado.getIdDepartamento().getId()))
+                    .findFirst()
+                    .orElse(null));
 
         txtContrasena.clear();
 

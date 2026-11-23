@@ -30,7 +30,7 @@ SELECT 'José Luis Hernández Soto', 'EMP-004', 'jose.hernandez@institucion.edu'
 ON CONFLICT DO NOTHING;
 INSERT INTO empleados (nombre_completo, cif, correo_institucional, id_categoria, id_departamento, activo)
 SELECT 'Laura Patricia Gómez Rivas', 'EMP-005', 'laura.gomez@institucion.edu',
-       (SELECT id_categoria FROM categorias_personal WHERE nombre = 'DOCENTES'), (SELECT id_departamento FROM departamentos WHERE nombre = 'Registro Académico'), true
+       (SELECT id_categoria FROM categorias_personal WHERE nombre = 'SERVICIOS_ESTUDIANTES'), (SELECT id_departamento FROM departamentos WHERE nombre = 'Registro Académico'), true
 ON CONFLICT DO NOTHING;
 INSERT INTO empleados (nombre_completo, cif, correo_institucional, id_categoria, id_departamento, activo)
 SELECT 'Miguel Ángel Torres Vega', 'EMP-006', 'miguel.torres@institucion.edu',
@@ -42,7 +42,7 @@ SELECT 'Sofía Alejandra Ramírez Díaz', 'EMP-007', 'sofia.ramirez@institucion.
 ON CONFLICT DO NOTHING;
 INSERT INTO empleados (nombre_completo, cif, correo_institucional, id_categoria, id_departamento, activo)
 SELECT 'Daniel Eduardo Flores Mejía', 'EMP-008', 'daniel.flores@institucion.edu',
-       (SELECT id_categoria FROM categorias_personal WHERE nombre = 'DOCENTES'), (SELECT id_departamento FROM departamentos WHERE nombre = 'Bienestar Estudiantil'), true
+       (SELECT id_categoria FROM categorias_personal WHERE nombre = 'SERVICIOS_ESTUDIANTES'), (SELECT id_departamento FROM departamentos WHERE nombre = 'Bienestar Estudiantil'), true
 ON CONFLICT DO NOTHING;
 INSERT INTO empleados (nombre_completo, cif, correo_institucional, id_categoria, id_departamento, activo)
 SELECT 'Valeria Isabel Cruz Navarro', 'EMP-009', 'valeria.cruz@institucion.edu',

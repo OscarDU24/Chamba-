@@ -1,10 +1,22 @@
 package org.example.projectofinal.controller;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxListCell;
 import org.example.projectofinal.model.CategoriaPersonal;
+import org.example.projectofinal.model.Departamento;
 import org.example.projectofinal.service.CategoriaPersonalService;
+import org.example.projectofinal.service.DepartamentoService;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class CategoriasController {
 
@@ -16,16 +28,33 @@ public class CategoriasController {
     @FXML private TableColumn<CategoriaPersonal, String> colNombre;
     @FXML private TableColumn<CategoriaPersonal, String> colDescripcion;
     @FXML private TableColumn<CategoriaPersonal, String> colEstado;
+    @FXML private TableColumn<CategoriaPersonal, String> colDepartamentos;
     @FXML private Label lblEstado;
 
+    // Departamentos permitidos para la categoría seleccionada
+    @FXML private Label lblDepartamentos;
+    @FXML private ListView<Departamento> listaDepartamentos;
+
     private final CategoriaPersonalService service = new CategoriaPersonalService();
+    private final DepartamentoService departamentoService = new DepartamentoService();
     private CategoriaPersonal seleccionada;
+
+    private final Map<UUID, BooleanProperty> marcados = new HashMap<>();
+    private Map<UUID, Set<UUID>> reglas = Map.of();
 
     @FXML
     public void initialize() {
         UiUtil.columna(colNombre, CategoriaPersonal::getNombre);
         UiUtil.columna(colDescripcion, CategoriaPersonal::getDescripcion);
         UiUtil.columna(colEstado, c -> UiUtil.estado(c.getActivo()));
+        UiUtil.columna(colDepartamentos, c -> {
+            Set<UUID> ids = reglas.getOrDefault(c.getId(), Set.of());
+            return ids.isEmpty() ? "Cualquiera" : ids.size() + " departamento(s)";
+        });
+
+        listaDepartamentos.setCellFactory(CheckBoxListCell.forListView(
+                d -> marcados.computeIfAbsent(d.getId(), id -> new SimpleBooleanProperty(false)),
+                UiUtil.conversor(Departamento::getNombre)));
 
         tabla.getSelectionModel().selectedItemProperty().addListener((obs, ant, nueva) -> {
             if (nueva != null) {
@@ -33,6 +62,7 @@ public class CategoriasController {
                 txtNombre.setText(UiUtil.valor(nueva.getNombre()));
                 txtDescripcion.setText(UiUtil.valor(nueva.getDescripcion()));
                 btnGuardar.setText("Guardar cambios");
+                cargarDepartamentosPermitidos(nueva);
             }
         });
 
@@ -41,8 +71,63 @@ public class CategoriasController {
 
     @FXML
     private void actualizarTabla() {
-        tabla.setItems(FXCollections.observableArrayList(service.listarOrdenadas()));
-        lblEstado.setText(tabla.getItems().size() + " categoría(s) registradas.");
+        List<CategoriaPersonal> categorias = service.listarOrdenadas();
+
+        Map<UUID, Set<UUID>> nuevasReglas = new HashMap<>();
+        for (CategoriaPersonal c : categorias) {
+            nuevasReglas.put(c.getId(), service.departamentosPermitidos(c.getId()));
+        }
+        reglas = nuevasReglas;
+
+        listaDepartamentos.setItems(FXCollections.observableArrayList(departamentoService.listarActivos()));
+        tabla.setItems(FXCollections.observableArrayList(categorias));
+        tabla.refresh();
+        lblEstado.setText(categorias.size() + " categoría(s) registradas.");
+
+        if (seleccionada != null) {
+            cargarDepartamentosPermitidos(seleccionada);
+        } else {
+            limpiarDepartamentos();
+        }
+    }
+
+    private void cargarDepartamentosPermitidos(CategoriaPersonal c) {
+        Set<UUID> permitidos = reglas.getOrDefault(c.getId(), Set.of());
+        for (Departamento d : listaDepartamentos.getItems()) {
+            marcados.computeIfAbsent(d.getId(), id -> new SimpleBooleanProperty(false))
+                    .set(permitidos.contains(d.getId()));
+        }
+        listaDepartamentos.setDisable(false);
+        lblDepartamentos.setText("Departamentos permitidos para " + c.getNombre()
+                + " (sin ninguno marcado = puede ir en cualquier departamento):");
+    }
+
+    private void limpiarDepartamentos() {
+        marcados.values().forEach(p -> p.set(false));
+        listaDepartamentos.setDisable(true);
+        lblDepartamentos.setText("Selecciona una categoría en la tabla para ver sus departamentos permitidos.");
+    }
+
+    @FXML
+    private void guardarDepartamentos() {
+        if (seleccionada == null) {
+            UiUtil.error("Selecciona una categoría de la tabla.");
+            return;
+        }
+
+        Set<UUID> ids = listaDepartamentos.getItems().stream()
+                .map(Departamento::getId)
+                .filter(id -> marcados.containsKey(id) && marcados.get(id).get())
+                .collect(Collectors.toSet());
+
+        String error = service.guardarDepartamentosPermitidos(seleccionada.getId(), ids);
+        if (error != null) {
+            UiUtil.error(error);
+            return;
+        }
+
+        actualizarTabla();
+        lblEstado.setText("Departamentos permitidos de " + seleccionada.getNombre() + " actualizados.");
     }
 
     @FXML
@@ -52,6 +137,7 @@ public class CategoriasController {
         txtDescripcion.clear();
         btnGuardar.setText("Registrar categoría");
         tabla.getSelectionModel().clearSelection();
+        limpiarDepartamentos();
     }
 
     @FXML

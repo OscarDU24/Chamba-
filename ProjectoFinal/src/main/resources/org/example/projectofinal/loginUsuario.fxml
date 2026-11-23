@@ -17,7 +17,7 @@
            xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="org.example.projectofinal.controller.LoginEstudianteController">
-    <VBox alignment="CENTER_LEFT" maxWidth="430.0" spacing="14.0"
+    <VBox alignment="CENTER_LEFT" maxWidth="430.0" maxHeight="400" spacing="14.0"
           style="-fx-background-color: white; -fx-background-radius: 16;"
           StackPane.alignment="CENTER">
         <padding>
