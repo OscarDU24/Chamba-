@@ -1,12 +1,14 @@
 package org.example.projectofinal.service;
 
 import org.example.projectofinal.dao.ImplDao;
+import org.example.projectofinal.model.ObjetivoDepartamento;
+import org.example.projectofinal.model.PeriodoEvaluacion;
 import org.example.projectofinal.model.Seguimiento;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.UUID;
 
 public class SeguimientoService extends ServiceGeneric<Seguimiento> {
 
@@ -30,28 +32,15 @@ public class SeguimientoService extends ServiceGeneric<Seguimiento> {
         return consultar(SELECT_BASE + "ORDER BY s.fechaSeguimiento DESC", Seguimiento.class);
     }
 
-    public List<Seguimiento> listarPorAsignacion(UUID idAsignacion) {
-        return consultar(SELECT_BASE + "WHERE a.id = :id ORDER BY s.fechaSeguimiento DESC",
-                Seguimiento.class, "id", idAsignacion);
-    }
-
-    public List<Seguimiento> listarPorEmpleado(UUID idEmpleado) {
-        return consultar(SELECT_BASE + "WHERE s.idEmpleado.id = :id ORDER BY s.fechaSeguimiento DESC",
-                Seguimiento.class, "id", idEmpleado);
-    }
-
-    /** Último avance registrado para una asignación (null si no hay). */
-    public Seguimiento buscarUltimo(UUID idAsignacion) {
-        return consultarUno(SELECT_BASE + "WHERE a.id = :id ORDER BY s.fechaSeguimiento DESC",
-                Seguimiento.class, "id", idAsignacion);
-    }
-
     public static final String INDIVIDUAL = "INDIVIDUAL";
     public static final String DEPARTAMENTAL = "DEPARTAMENTAL";
 
     /**
-     * Reglas de la base: INDIVIDUAL lleva empleado y no departamento;
-     * DEPARTAMENTAL lleva departamento y no empleado; avance entre 0 y 100.
+     * Reglas del seguimiento:
+     *  - INDIVIDUAL lleva empleado (que participe en el objetivo) y no departamento;
+     *  - DEPARTAMENTAL lleva el departamento de la asignación y no empleado;
+     *  - avance entre 0 y 100;
+     *  - fecha dentro del período de la asignación.
      * Devuelve el mensaje de error o null si es válido.
      */
     public String validar(Seguimiento seguimiento) {
@@ -78,8 +67,50 @@ public class SeguimientoService extends ServiceGeneric<Seguimiento> {
         if (avance == null || avance.compareTo(BigDecimal.ZERO) < 0 || avance.compareTo(CIEN) > 0) {
             return "El porcentaje de avance debe estar entre 0 y 100.";
         }
+
+        if (seguimiento.getFechaSeguimiento() == null) {
+            seguimiento.setFechaSeguimiento(LocalDate.now());
+        }
+
+        // La asignación se lee de la base con su período y departamento
+        ObjetivoDepartamento asignacion = consultarUno(
+                "SELECT a FROM ObjetivoDepartamento a " +
+                        "JOIN FETCH a.idPeriodo JOIN FETCH a.idDepartamento WHERE a.id = :id",
+                ObjetivoDepartamento.class, "id", seguimiento.getIdAsignacion().getId());
+
+        if (asignacion == null) {
+            return "La asignación seleccionada ya no existe.";
+        }
+
+        // La fecha del avance tiene que caer dentro del período de la asignación
+        PeriodoEvaluacion periodo = asignacion.getIdPeriodo();
+        LocalDate fecha = seguimiento.getFechaSeguimiento();
+        if (fecha.isBefore(periodo.getFechaInicio()) || fecha.isAfter(periodo.getFechaFin())) {
+            return "La fecha del seguimiento debe estar dentro del período " + periodo.getNombre()
+                    + " (del " + periodo.getFechaInicio().format(FECHA)
+                    + " al " + periodo.getFechaFin().format(FECHA) + ").";
+        }
+
+        if (DEPARTAMENTAL.equals(seguimiento.getTipo())
+                && !seguimiento.getIdDepartamento().getId().equals(asignacion.getIdDepartamento().getId())) {
+            return "El seguimiento departamental debe ser del departamento "
+                    + asignacion.getIdDepartamento().getNombre() + ", al que está asignado el objetivo.";
+        }
+
+        if (INDIVIDUAL.equals(seguimiento.getTipo())) {
+            Long participa = consultarUno(
+                    "SELECT COUNT(r) FROM ResponsableObjetivo r " +
+                            "WHERE r.idAsignacion.id = :asig AND r.idEmpleado.id = :emp",
+                    Long.class, "asig", asignacion.getId(), "emp", seguimiento.getIdEmpleado().getId());
+            if (participa == null || participa == 0) {
+                return "Ese empleado no participa en este objetivo. Si entró después al departamento, "
+                        + "usa \"Actualizar participantes\" en la pantalla Objetivos.";
+            }
+        }
         return null;
     }
+
+    private static final DateTimeFormatter FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public boolean registrar(Seguimiento seguimiento) {
 
@@ -88,9 +119,6 @@ public class SeguimientoService extends ServiceGeneric<Seguimiento> {
         }
 
         try {
-            if (seguimiento.getFechaSeguimiento() == null) {
-                seguimiento.setFechaSeguimiento(LocalDate.now());
-            }
             guardar(seguimiento);
             return true;
 

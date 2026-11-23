@@ -19,7 +19,4 @@ public class SesionUsuario {
         cuentaUsuario = null;
     }
 
-    public static boolean haySesionActiva() {
-        return cuentaUsuario != null;
-    }
 }

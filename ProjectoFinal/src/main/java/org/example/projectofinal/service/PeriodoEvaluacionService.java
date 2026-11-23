@@ -18,14 +18,6 @@ public class PeriodoEvaluacionService extends ServiceGeneric<PeriodoEvaluacion> 
                 PeriodoEvaluacion.class);
     }
 
-    public List<PeriodoEvaluacion> listarPorEstado(String estado) {
-        return consultar(
-                "SELECT p FROM PeriodoEvaluacion p WHERE p.estado = :estado " +
-                        "ORDER BY p.fechaInicio DESC",
-                PeriodoEvaluacion.class,
-                "estado", estado);
-    }
-
     /** Período cuyo rango de fechas incluye el día de hoy. */
     public PeriodoEvaluacion buscarPeriodoActual() {
         LocalDate hoy = LocalDate.now();

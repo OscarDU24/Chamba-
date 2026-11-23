@@ -18,26 +18,6 @@ public class ObjetivoService extends ServiceGeneric<Objetivo> {
                 Objetivo.class);
     }
 
-    public List<Objetivo> listarActivos() {
-        return consultar(
-                "SELECT o FROM Objetivo o LEFT JOIN FETCH o.idObjetivoPadre " +
-                        "WHERE o.activo = true ORDER BY o.nombre",
-                Objetivo.class);
-    }
-
-    public List<Objetivo> listarPorNivel(String nivel) {
-        return consultar(
-                "SELECT o FROM Objetivo o WHERE o.nivel = :nivel AND o.activo = true " +
-                        "ORDER BY o.nombre",
-                Objetivo.class, "nivel", nivel);
-    }
-
-    public List<Objetivo> listarHijos(UUID idPadre) {
-        return consultar(
-                "SELECT o FROM Objetivo o WHERE o.idObjetivoPadre.id = :id ORDER BY o.nombre",
-                Objetivo.class, "id", idPadre);
-    }
-
     public static final String GENERAL = "GENERAL";
     public static final String ESPECIFICO = "ESPECIFICO";
 

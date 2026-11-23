@@ -2,10 +2,7 @@ package org.example.projectofinal.util;
 
 import java.util.regex.Pattern;
 
-/**
- * Reglas de formato compartidas por las pantallas y los services.
- * Cada método devuelve el mensaje de error, o null si el valor es válido.
- */
+
 public final class Validaciones {
 
     /** Dominio institucional obligatorio para los correos de empleados. */

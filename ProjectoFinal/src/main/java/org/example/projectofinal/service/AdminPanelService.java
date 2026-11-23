@@ -3,7 +3,6 @@ package org.example.projectofinal.service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
-import org.example.projectofinal.dao.CuentaUsuarioDao;
 import org.example.projectofinal.dao.EntityManagerAdmin;
 import org.example.projectofinal.dao.ImplDao;
 import org.example.projectofinal.model.CategoriaPersonal;
@@ -28,7 +27,6 @@ public class AdminPanelService extends ServiceGeneric<Empleado> {
 
     private final ImplDao<CategoriaPersonal> categoriaDao;
     private final ImplDao<Departamento> departamentoDao;
-    private final CuentaUsuarioDao cuentaUsuarioDao;
     private final CategoriaPersonalService categoriaService = new CategoriaPersonalService();
 
     private static final int ITERACIONES = 210000;
@@ -40,7 +38,6 @@ public class AdminPanelService extends ServiceGeneric<Empleado> {
 
         this.categoriaDao = new ImplDao<>(CategoriaPersonal.class);
         this.departamentoDao = new ImplDao<>(Departamento.class);
-        this.cuentaUsuarioDao = new CuentaUsuarioDao();
     }
 
     // =========================================================
@@ -625,15 +622,6 @@ public class AdminPanelService extends ServiceGeneric<Empleado> {
     // =========================================================
     // BUSCAR CUENTA POR CORREO
     // =========================================================
-
-    public CuentaUsuario buscarCuentaPorCorreo(String correo) {
-
-        if (correo == null || correo.isBlank()) {
-            return null;
-        }
-
-        return cuentaUsuarioDao.buscarPorCorreoInstitucional(correo);
-    }
 
     // =========================================================
     // GENERAR HASH DE CONTRASEÑA

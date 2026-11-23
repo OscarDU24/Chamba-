@@ -72,7 +72,10 @@ public class SeguimientosController {
                 cmbEmpleado.setValue(null);
             }
         });
-        cmbAsignacion.valueProperty().addListener((obs, ant, nueva) -> filtrarEmpleados(nueva));
+        cmbAsignacion.valueProperty().addListener((obs, ant, nueva) -> {
+            filtrarEmpleados(nueva);
+            ajustarFechaAlPeriodo(nueva);
+        });
 
         dpFecha.setValue(LocalDate.now());
 
@@ -139,12 +142,32 @@ public class SeguimientosController {
             cmbEmpleado.setValue(yo);
             return;
         }
+        // Solo los empleados que participan en el objetivo asignado
+        Set<UUID> participantes = asignacion == null ? Set.of()
+                : responsableService.listarPorAsignacion(asignacion.getId()).stream()
+                    .map(r -> r.getIdEmpleado().getId())
+                    .collect(Collectors.toSet());
         List<Empleado> lista = asignacion == null ? empleadosActivos
                 : empleadosActivos.stream()
-                    .filter(e -> e.getIdDepartamento() != null
-                            && e.getIdDepartamento().getId().equals(asignacion.getIdDepartamento().getId()))
+                    .filter(e -> participantes.contains(e.getId()))
                     .toList();
         cmbEmpleado.setItems(FXCollections.observableArrayList(lista));
+    }
+
+    /** Si la fecha elegida queda fuera del período de la asignación, la acerca al período. */
+    private void ajustarFechaAlPeriodo(ObjetivoDepartamento asignacion) {
+        if (asignacion == null || asignacion.getIdPeriodo() == null) {
+            return;
+        }
+        LocalDate inicio = asignacion.getIdPeriodo().getFechaInicio();
+        LocalDate fin = asignacion.getIdPeriodo().getFechaFin();
+        LocalDate fecha = dpFecha.getValue() == null ? LocalDate.now() : dpFecha.getValue();
+
+        if (fecha.isBefore(inicio)) {
+            dpFecha.setValue(inicio);
+        } else if (fecha.isAfter(fin)) {
+            dpFecha.setValue(fin);
+        }
     }
 
     @FXML

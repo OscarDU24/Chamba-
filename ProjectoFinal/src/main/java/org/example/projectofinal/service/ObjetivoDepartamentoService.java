@@ -24,11 +24,6 @@ public class ObjetivoDepartamentoService extends ServiceGeneric<ObjetivoDepartam
                 ObjetivoDepartamento.class);
     }
 
-    public List<ObjetivoDepartamento> listarPorDepartamento(UUID idDepartamento) {
-        return consultar(SELECT_BASE + "WHERE a.idDepartamento.id = :id",
-                ObjetivoDepartamento.class, "id", idDepartamento);
-    }
-
     public List<ObjetivoDepartamento> listarPorPeriodo(UUID idPeriodo) {
         return consultar(SELECT_BASE + "WHERE a.idPeriodo.id = :id",
                 ObjetivoDepartamento.class, "id", idPeriodo);
