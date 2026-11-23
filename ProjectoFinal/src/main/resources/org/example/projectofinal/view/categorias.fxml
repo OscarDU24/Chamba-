@@ -4,14 +4,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/21"
+<ScrollPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.projectofinal.controller.CategoriasController"
-            prefHeight="720" prefWidth="1150">
+            fitToWidth="true" hbarPolicy="NEVER"
+            style="-fx-background-color: transparent; -fx-background: #F4F6FA;">
 
-    <VBox spacing="15"
-          AnchorPane.topAnchor="15" AnchorPane.bottomAnchor="15"
-          AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
+    <VBox spacing="15">
+        <padding><Insets top="15" right="20" bottom="15" left="20"/></padding>
 
         <Label text="Categorías de personal"
                style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
@@ -42,11 +42,12 @@
             <Button text="Actualizar" onAction="#actualizarTabla"/>
         </HBox>
 
-        <TableView fx:id="tabla" VBox.vgrow="ALWAYS">
+        <TableView fx:id="tabla" prefHeight="230">
             <columns>
-                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="220"/>
-                <TableColumn fx:id="colDescripcion" text="Descripción" prefWidth="500"/>
-                <TableColumn fx:id="colEstado" text="Estado" prefWidth="100"/>
+                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="200"/>
+                <TableColumn fx:id="colDescripcion" text="Descripción" prefWidth="420"/>
+                <TableColumn fx:id="colDepartamentos" text="Departamentos permitidos" prefWidth="170"/>
+                <TableColumn fx:id="colEstado" text="Estado" prefWidth="90"/>
             </columns>
             <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
             <placeholder><Label text="No hay categorías registradas."/></placeholder>
@@ -56,6 +57,20 @@
             <Button text="Activar / Desactivar seleccionada" onAction="#cambiarEstado"/>
         </HBox>
 
+        <TitledPane text="Departamentos en los que puede trabajar la categoría" expanded="true" collapsible="false">
+            <content>
+                <VBox spacing="10">
+                    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                    <Label fx:id="lblDepartamentos" wrapText="true"
+                           text="Selecciona una categoría en la tabla para ver sus departamentos permitidos."/>
+                    <ListView fx:id="listaDepartamentos" prefHeight="220" disable="true"/>
+                    <HBox spacing="10">
+                        <Button text="Guardar departamentos permitidos" onAction="#guardarDepartamentos"/>
+                    </HBox>
+                </VBox>
+            </content>
+        </TitledPane>
+
         <Label fx:id="lblEstado" text=""/>
     </VBox>
-</AnchorPane>
+</ScrollPane>

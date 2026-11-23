@@ -20,6 +20,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class AdminPanelService extends ServiceGeneric<Empleado> {
@@ -27,6 +28,7 @@ public class AdminPanelService extends ServiceGeneric<Empleado> {
     private final ImplDao<CategoriaPersonal> categoriaDao;
     private final ImplDao<Departamento> departamentoDao;
     private final CuentaUsuarioDao cuentaUsuarioDao;
+    private final CategoriaPersonalService categoriaService = new CategoriaPersonalService();
 
     private static final int ITERACIONES = 210000;
     private static final int LONGITUD_HASH = 256;
@@ -47,6 +49,10 @@ public class AdminPanelService extends ServiceGeneric<Empleado> {
     public boolean registrarEmpleado(Empleado empleado, String contrasena) {
 
         if (empleado == null || contrasena == null || contrasena.isBlank()) {
+            return false;
+        }
+
+        if (validarCategoriaDepartamento(empleado) != null) {
             return false;
         }
 
@@ -84,6 +90,21 @@ public class AdminPanelService extends ServiceGeneric<Empleado> {
         } finally {
             EntityManagerAdmin.cerrar(em);
         }
+    }
+
+    // =========================================================
+    // VALIDAR CATEGORÍA / DEPARTAMENTO
+    // =========================================================
+
+    /** Mensaje de error si la combinación no está permitida, o null si es válida. */
+    public String validarCategoriaDepartamento(Empleado empleado) {
+        return categoriaService.validarCombinacion(
+                empleado.getIdCategoria(), empleado.getIdDepartamento());
+    }
+
+    /** Ids de departamentos permitidos para la categoría (vacío = cualquiera). */
+    public Set<UUID> departamentosPermitidos(UUID idCategoria) {
+        return categoriaService.departamentosPermitidos(idCategoria);
     }
 
     // =========================================================
@@ -169,6 +190,10 @@ public class AdminPanelService extends ServiceGeneric<Empleado> {
     public boolean actualizarEmpleado(Empleado empleado) {
 
         if (empleado == null || empleado.getId() == null) {
+            return false;
+        }
+
+        if (validarCategoriaDepartamento(empleado) != null) {
             return false;
         }
 
