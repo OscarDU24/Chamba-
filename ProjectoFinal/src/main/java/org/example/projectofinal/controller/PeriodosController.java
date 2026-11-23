@@ -75,31 +75,21 @@ public class PeriodosController {
 
     @FXML
     private void guardar() {
-        String nombre = UiUtil.texto(txtNombre);
-
-        if (nombre == null) {
-            UiUtil.error("Escribe el nombre del período.");
-            return;
+        PeriodoEvaluacion p = new PeriodoEvaluacion();
+        if (seleccionado != null) {
+            p.setId(seleccionado.getId());
         }
-        if (nombre.length() > 100) {
-            UiUtil.error("El nombre no puede tener más de 100 caracteres.");
-            return;
-        }
-        if (dpInicio.getValue() == null || dpFin.getValue() == null) {
-            UiUtil.error("Selecciona la fecha de inicio y la fecha de fin.");
-            return;
-        }
-        if (dpFin.getValue().isBefore(dpInicio.getValue())) {
-            UiUtil.error("La fecha de fin no puede ser anterior a la fecha de inicio.");
-            return;
-        }
-
-        PeriodoEvaluacion p = seleccionado == null ? new PeriodoEvaluacion() : seleccionado;
-        p.setNombre(nombre);
+        p.setNombre(UiUtil.texto(txtNombre));
         p.setFechaInicio(dpInicio.getValue());
         p.setFechaFin(dpFin.getValue());
         p.setEstado(cmbEstado.getValue());
         p.setDescripcion(UiUtil.texto(txtDescripcion));
+
+        String error = service.validar(p);
+        if (error != null) {
+            UiUtil.error(error);
+            return;
+        }
 
         boolean nuevo = seleccionado == null;
         boolean ok = nuevo ? service.registrar(p) : service.modificar(p);

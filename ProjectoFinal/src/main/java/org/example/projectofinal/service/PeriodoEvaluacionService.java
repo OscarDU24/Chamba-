@@ -39,7 +39,7 @@ public class PeriodoEvaluacionService extends ServiceGeneric<PeriodoEvaluacion> 
 
     public boolean registrar(PeriodoEvaluacion periodo) {
 
-        if (!esValido(periodo)) {
+        if (validar(periodo) != null) {
             return false;
         }
 
@@ -55,7 +55,7 @@ public class PeriodoEvaluacionService extends ServiceGeneric<PeriodoEvaluacion> 
 
     public boolean modificar(PeriodoEvaluacion periodo) {
 
-        if (periodo == null || periodo.getId() == null || !esValido(periodo)) {
+        if (periodo == null || periodo.getId() == null || validar(periodo) != null) {
             return false;
         }
 
@@ -69,11 +69,29 @@ public class PeriodoEvaluacionService extends ServiceGeneric<PeriodoEvaluacion> 
         }
     }
 
-    private boolean esValido(PeriodoEvaluacion periodo) {
-        return periodo != null
-                && periodo.getNombre() != null && !periodo.getNombre().isBlank()
-                && periodo.getFechaInicio() != null
-                && periodo.getFechaFin() != null
-                && !periodo.getFechaFin().isBefore(periodo.getFechaInicio());
+    public static final java.util.List<String> ESTADOS = java.util.List.of("PLANIFICADO", "EN_CURSO", "CERRADO");
+
+    /**
+     * Reglas del formulario de períodos.
+     * Devuelve el mensaje de error para mostrar, o null si es válido.
+     */
+    public String validar(PeriodoEvaluacion p) {
+        if (p == null || p.getNombre() == null || p.getNombre().isBlank()) {
+            return "Escribe el nombre del período.";
+        }
+        p.setNombre(p.getNombre().trim());
+        if (p.getNombre().length() > 100) {
+            return "El nombre no puede tener más de 100 caracteres.";
+        }
+        if (p.getFechaInicio() == null || p.getFechaFin() == null) {
+            return "Selecciona la fecha de inicio y la fecha de fin.";
+        }
+        if (p.getFechaFin().isBefore(p.getFechaInicio())) {
+            return "La fecha de fin no puede ser anterior a la fecha de inicio.";
+        }
+        if (!ESTADOS.contains(p.getEstado())) {
+            return "Selecciona el estado del período.";
+        }
+        return null;
     }
 }

@@ -50,6 +50,9 @@ public class ObjetivoService extends ServiceGeneric<Objetivo> {
         if (objetivo == null || objetivo.getNombre() == null || objetivo.getNombre().isBlank()) {
             return "Escribe el nombre del objetivo.";
         }
+        if (objetivo.getNombre().trim().length() > 150) {
+            return "El nombre no puede tener más de 150 caracteres.";
+        }
         if (!GENERAL.equals(objetivo.getNivel()) && !ESPECIFICO.equals(objetivo.getNivel())) {
             return "Selecciona el nivel del objetivo.";
         }

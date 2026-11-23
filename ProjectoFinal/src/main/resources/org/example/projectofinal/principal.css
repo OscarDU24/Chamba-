@@ -1,0 +1,127 @@
+/* =========================================================
+   Menú lateral de la ventana principal (principal.fxml)
+   ========================================================= */
+
+.menu-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #D6DEEA;
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 9 12 9 12;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.menu-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+    -fx-text-fill: #FFFFFF;
+}
+
+.menu-button:pressed {
+    -fx-background-color: rgba(255, 255, 255, 0.14);
+}
+
+/* Opción del menú que está abierta en este momento */
+.menu-button.menu-button-activo,
+.menu-button.menu-button-activo:hover {
+    -fx-background-color: #315DA8;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-border-color: transparent transparent transparent #9FC1FF;
+    -fx-border-width: 0 0 0 3;
+    -fx-border-radius: 8;
+}
+
+.menu-button:focused {
+    -fx-background-insets: 0;
+}
+
+/* =========================================================
+   Botones de las pantallas (todo lo que se abre en el centro)
+   Relieve: borde oscuro + degradado de claro a oscuro + sombra.
+   Al presionar se "hunden": degradado invertido y sombra interior.
+   ========================================================= */
+
+#contenedorPrincipal .button {
+    -fx-background-color:
+            #1F3F75,
+            linear-gradient(to bottom, #5A86D0 0%, #3A66B2 55%, #2F5BA5 100%);
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 7, 6;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 12.5px;
+    -fx-padding: 8 16 8 16;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(16, 32, 64, 0.35), 6, 0.15, 0, 2);
+}
+
+#contenedorPrincipal .button:hover {
+    -fx-background-color:
+            #1F3F75,
+            linear-gradient(to bottom, #6E97DA 0%, #4A76C2 55%, #3A66B2 100%);
+    -fx-effect: dropshadow(gaussian, rgba(16, 32, 64, 0.45), 8, 0.2, 0, 3);
+}
+
+#contenedorPrincipal .button:pressed {
+    -fx-background-color:
+            #1A365F,
+            linear-gradient(to bottom, #284F92 0%, #2F5BA5 100%);
+    -fx-translate-y: 1;
+    -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.35), 5, 0.2, 0, 2);
+}
+
+#contenedorPrincipal .button:focused {
+    -fx-background-color:
+            #9FC1FF,
+            #1F3F75,
+            linear-gradient(to bottom, #5A86D0 0%, #3A66B2 55%, #2F5BA5 100%);
+    -fx-background-insets: -2, 0, 1;
+    -fx-background-radius: 9, 7, 6;
+}
+
+#contenedorPrincipal .button:disabled {
+    -fx-opacity: 0.5;
+    -fx-effect: null;
+}
+
+/* Botones que borran datos: rojo con el mismo relieve */
+#contenedorPrincipal .button.boton-peligro {
+    -fx-background-color:
+            #7F1A12,
+            linear-gradient(to bottom, #E0605A 0%, #C93A2F 55%, #B42318 100%);
+}
+
+#contenedorPrincipal .button.boton-peligro:hover {
+    -fx-background-color:
+            #7F1A12,
+            linear-gradient(to bottom, #EA7670 0%, #D24A3F 55%, #C02C20 100%);
+}
+
+#contenedorPrincipal .button.boton-peligro:pressed {
+    -fx-background-color:
+            #6A150E,
+            linear-gradient(to bottom, #9A1E15 0%, #B42318 100%);
+}
+
+#contenedorPrincipal .button.boton-peligro:focused {
+    -fx-background-color:
+            #F2B8B5,
+            #7F1A12,
+            linear-gradient(to bottom, #E0605A 0%, #C93A2F 55%, #B42318 100%);
+}
+
+.logout-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #F2B8B5;
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 9 12 9 12;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.logout-button:hover {
+    -fx-background-color: rgba(242, 184, 181, 0.12);
+    -fx-text-fill: #FFFFFF;
+}

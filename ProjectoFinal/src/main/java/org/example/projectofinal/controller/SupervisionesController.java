@@ -62,46 +62,25 @@ public class SupervisionesController {
 
     @FXML
     private void asignar() {
-        Empleado empleado = cmbEmpleado.getValue();
-        Empleado jefe = cmbJefe.getValue();
-
-        if (empleado == null || jefe == null) {
-            UiUtil.error("Selecciona el empleado y su jefe.");
-            return;
-        }
-        if (empleado.getId().equals(jefe.getId())) {
-            UiUtil.error("Un empleado no puede ser su propio jefe.");
-            return;
-        }
-        if (dpInicio.getValue() == null) {
-            UiUtil.error("Selecciona la fecha de inicio.");
-            return;
-        }
-
-        Supervision actual = service.buscarActivaPorEmpleado(empleado.getId());
-        if (actual != null) {
-            if (actual.getIdJefe().getId().equals(jefe.getId())) {
-                UiUtil.error(jefe.getNombreCompleto() + " ya es el jefe actual de "
-                        + empleado.getNombreCompleto() + ".");
-                return;
-            }
-            if (dpInicio.getValue().isBefore(actual.getFechaInicio())) {
-                UiUtil.error("La fecha debe ser igual o posterior al inicio de la supervisión actual ("
-                        + UiUtil.fecha(actual.getFechaInicio()) + ").");
-                return;
-            }
-            if (!UiUtil.confirmar(empleado.getNombreCompleto()
-                    + " tiene como jefe a " + actual.getIdJefe().getNombreCompleto()
-                    + ". Esa supervisión se finalizará y quedará en el historial. ¿Asignar a "
-                    + jefe.getNombreCompleto() + "?")) {
-                return;
-            }
-        }
-
         Supervision s = new Supervision();
-        s.setIdEmpleado(empleado);
-        s.setIdJefe(jefe);
+        s.setIdEmpleado(cmbEmpleado.getValue());
+        s.setIdJefe(cmbJefe.getValue());
         s.setFechaInicio(dpInicio.getValue());
+
+        String error = service.validar(s);
+        if (error != null) {
+            UiUtil.error(error);
+            return;
+        }
+
+        // Confirmación (interfaz): si ya tenía jefe, se avisa que pasa al historial
+        Supervision actual = service.buscarActivaPorEmpleado(s.getIdEmpleado().getId());
+        if (actual != null && !UiUtil.confirmar(s.getIdEmpleado().getNombreCompleto()
+                + " tiene como jefe a " + actual.getIdJefe().getNombreCompleto()
+                + ". Esa supervisión se finalizará y quedará en el historial. ¿Asignar a "
+                + s.getIdJefe().getNombreCompleto() + "?")) {
+            return;
+        }
 
         if (service.registrar(s)) {
             cmbEmpleado.setValue(null);

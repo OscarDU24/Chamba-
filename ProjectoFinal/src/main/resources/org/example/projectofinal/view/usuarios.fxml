@@ -39,6 +39,7 @@
             <Button text="Activar / Desactivar cuenta" onAction="#cambiarEstado"/>
             <Button text="Cambiar rol" onAction="#cambiarRol"/>
             <Button text="Restablecer contraseña" onAction="#restablecerContrasena"/>
+            <Button text="Eliminar cuenta" onAction="#eliminarCuenta" styleClass="boton-peligro"/>
         </HBox>
 
         <Label fx:id="lblEstado" text=""/>

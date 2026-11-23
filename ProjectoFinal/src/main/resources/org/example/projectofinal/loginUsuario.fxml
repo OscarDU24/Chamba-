@@ -45,7 +45,7 @@
 
         <Button text="Iniciar sesión" onAction="#onLogin" defaultButton="true"
                 maxWidth="Infinity" prefHeight="44.0"
-                style="-fx-background-color: #315da8; -fx-background-radius: 8; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;"/>
+                style="-fx-background-color: #1F3F75, linear-gradient(to bottom, #5A86D0 0%, #3A66B2 55%, #2F5BA5 100%); -fx-background-insets: 0, 1; -fx-background-radius: 9, 8; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(16, 32, 64, 0.35), 8, 0.15, 0, 3);"/>
         <Label fx:id="feedbackLbl" wrapText="true" minHeight="20.0"
                style="-fx-text-fill: #b42318; -fx-font-size: 13px;"/>
     </VBox>

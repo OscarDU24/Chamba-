@@ -9,9 +9,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.StringConverter;
 
 import org.example.projectofinal.model.CategoriaPersonal;
+import org.example.projectofinal.model.CuentaUsuario;
 import org.example.projectofinal.model.Departamento;
 import org.example.projectofinal.model.Empleado;
 import org.example.projectofinal.service.AdminPanelService;
+import org.example.projectofinal.util.SesionUsuario;
+import org.example.projectofinal.util.Validaciones;
 
 import java.util.HashMap;
 import java.util.List;
@@ -112,9 +115,24 @@ public class AdminPanelController {
         configurarTabla();
         configurarCombos();
         configurarFiltros();
+        configurarCampos();
 
         actualizarTabla();
 
+    }
+
+    // =========================================================
+    // CAMPOS: el nombre solo acepta letras y espacios al escribir
+    // =========================================================
+
+    private void configurarCampos() {
+
+        txtNombreCompleto.setTextFormatter(new TextFormatter<String>(cambio ->
+                Validaciones.esTextoDeNombre(cambio.getControlNewText()) ? cambio : null));
+
+        txtCorreo.setPromptText("usuario" + Validaciones.DOMINIO_CORREO);
+
+        txtContrasena.setPromptText("Mín. 8: mayúscula, minúscula, número y signo");
     }
 
     // =========================================================
@@ -362,43 +380,58 @@ public class AdminPanelController {
     @FXML
     private void guardarEmpleado() {
 
-        if (!validarFormulario()) {
+        boolean esNuevo = empleadoSeleccionado == null;
+        String contrasena = txtContrasena.getText();
+
+        // Se validan los datos del formulario en una copia, para no cambiar
+        // la fila de la tabla si el service los rechaza.
+        Empleado datos = new Empleado();
+        if (!esNuevo) {
+            datos.setId(empleadoSeleccionado.getId());
+        }
+        leerFormulario(datos);
+
+        // Las reglas (nombre, CIF, correo, categoría, contraseña) están en el service;
+        // el controller solo muestra el mensaje que devuelve.
+        String error = service.validarEmpleado(datos, contrasena);
+
+        if (error != null) {
+
+            mostrarAlerta(Alert.AlertType.WARNING, "Revise los datos", error);
             return;
         }
 
-        boolean esNuevo = empleadoSeleccionado == null;
+        Empleado empleado = esNuevo ? datos : empleadoSeleccionado;
 
-        Empleado empleado = esNuevo
-                ? new Empleado()
-                : empleadoSeleccionado;
-
-        empleado.setNombreCompleto(txtNombreCompleto.getText().trim());
-        empleado.setCif(txtCif.getText().trim());
-        empleado.setCorreoInstitucional(txtCorreo.getText().trim());
-        empleado.setIdCategoria(cmbCategoria.getValue());
-        empleado.setIdDepartamento(cmbDepartamento.getValue());
+        if (!esNuevo) {
+            leerFormulario(empleado);
+        }
 
         boolean resultado;
+        boolean cuentaCreada = false;
 
         if (esNuevo) {
 
             empleado.setActivo(true);
 
-            resultado = service.registrarEmpleado(
-                    empleado,
-                    txtContrasena.getText()
-            );
+            resultado = service.registrarEmpleado(empleado, contrasena);
 
         } else {
 
             resultado = service.actualizarEmpleado(empleado);
 
-            if (resultado && !txtContrasena.getText().isBlank()) {
+            if (resultado && !contrasena.isEmpty()) {
 
-                resultado = service.cambiarContrasena(
-                        empleado.getId(),
-                        txtContrasena.getText()
-                );
+                if (estadosCuentas.containsKey(empleado.getId())) {
+
+                    resultado = service.cambiarContrasena(empleado.getId(), contrasena);
+
+                } else {
+
+                    // El empleado no tenía cuenta (p. ej. se eliminó en Usuarios)
+                    resultado = service.crearCuenta(empleado.getId(), contrasena);
+                    cuentaCreada = resultado;
+                }
             }
         }
 
@@ -409,7 +442,9 @@ public class AdminPanelController {
                     "Operación exitosa",
                     esNuevo
                             ? "Empleado y cuenta registrados correctamente."
-                            : "Los datos del empleado fueron actualizados."
+                            : cuentaCreada
+                                ? "Datos actualizados y cuenta de usuario creada."
+                                : "Los datos del empleado fueron actualizados."
             );
 
             limpiarFormulario();
@@ -422,89 +457,18 @@ public class AdminPanelController {
                     "Error",
                     "No se pudo completar la operación."
             );
+            actualizarTabla();
         }
     }
 
-    // =========================================================
-    // VALIDAR FORMULARIO
-    // =========================================================
+    /** Copia lo escrito en el formulario al empleado (sin validar). */
+    private void leerFormulario(Empleado empleado) {
 
-    private boolean validarFormulario() {
-
-        if (txtNombreCompleto.getText().isBlank()
-                || txtCif.getText().isBlank()
-                || txtCorreo.getText().isBlank()
-                || cmbCategoria.getValue() == null) {
-
-            mostrarAlerta(
-                    Alert.AlertType.WARNING,
-                    "Campos obligatorios",
-                    "Complete el nombre, CIF, correo y categoría."
-            );
-
-            return false;
-        }
-
-        Empleado prueba = new Empleado();
-        prueba.setIdCategoria(cmbCategoria.getValue());
-        prueba.setIdDepartamento(cmbDepartamento.getValue());
-
-        String errorCombinacion = service.validarCategoriaDepartamento(prueba);
-
-        if (errorCombinacion != null) {
-
-            mostrarAlerta(
-                    Alert.AlertType.WARNING,
-                    "Departamento no permitido",
-                    errorCombinacion
-            );
-
-            return false;
-        }
-
-        String correo = txtCorreo.getText().trim();
-
-        if (!correo.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
-
-            mostrarAlerta(
-                    Alert.AlertType.WARNING,
-                    "Correo inválido",
-                    "Introduzca una dirección de correo válida."
-            );
-
-            return false;
-        }
-
-        if (empleadoSeleccionado == null) {
-
-            String contrasena = txtContrasena.getText();
-
-            if (contrasena == null || contrasena.length() < 8
-                    || contrasena.length() > 128) {
-
-                mostrarAlerta(
-                        Alert.AlertType.WARNING,
-                        "Contraseña inválida",
-                        "La contraseña inicial debe tener entre 8 y 128 caracteres."
-                );
-
-                return false;
-            }
-
-        } else if (!txtContrasena.getText().isBlank()
-                && (txtContrasena.getText().length() < 8
-                || txtContrasena.getText().length() > 128)) {
-
-            mostrarAlerta(
-                    Alert.AlertType.WARNING,
-                    "Contraseña inválida",
-                    "La nueva contraseña debe tener entre 8 y 128 caracteres."
-            );
-
-            return false;
-        }
-
-        return true;
+        empleado.setNombreCompleto(txtNombreCompleto.getText());
+        empleado.setCif(txtCif.getText());
+        empleado.setCorreoInstitucional(txtCorreo.getText());
+        empleado.setIdCategoria(cmbCategoria.getValue());
+        empleado.setIdDepartamento(cmbDepartamento.getValue());
     }
 
     // =========================================================
@@ -513,7 +477,12 @@ public class AdminPanelController {
 
     private void cargarEmpleadoFormulario(Empleado empleado) {
 
-        txtNombreCompleto.setText(empleado.getNombreCompleto());
+        // Un nombre antiguo con caracteres no permitidos no se puede cargar en el
+        // campo filtrado; se limpia para que se pueda corregir.
+        String nombre = empleado.getNombreCompleto() == null ? "" : empleado.getNombreCompleto();
+        txtNombreCompleto.setText(Validaciones.esTextoDeNombre(nombre)
+                ? nombre
+                : nombre.replaceAll("[^\\p{L} ]", ""));
         txtCif.setText(empleado.getCif());
         txtCorreo.setText(empleado.getCorreoInstitucional());
 
@@ -710,6 +679,85 @@ public class AdminPanelController {
                 }
             }
         });
+    }
+
+    // =========================================================
+    // ELIMINAR EMPLEADO (definitivo, con confirmación)
+    // =========================================================
+
+    @FXML
+    private void eliminarEmpleadoDefinitivo() {
+
+        Empleado seleccionado =
+                tablaEmpleados.getSelectionModel().getSelectedItem();
+
+        if (seleccionado == null) {
+
+            mostrarAlerta(
+                    Alert.AlertType.WARNING,
+                    "Selección requerida",
+                    "Seleccione un empleado."
+            );
+
+            return;
+        }
+
+        CuentaUsuario sesion = SesionUsuario.getCuentaUsuario();
+
+        if (sesion != null && sesion.getIdEmpleado().getId().equals(seleccionado.getId())) {
+
+            mostrarAlerta(
+                    Alert.AlertType.WARNING,
+                    "Acción no permitida",
+                    "No puede eliminar al empleado con el que inició sesión."
+            );
+
+            return;
+        }
+
+        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+
+        confirmacion.setTitle("Confirmar eliminación");
+        confirmacion.setHeaderText("¿Seguro que desea eliminar a " + seleccionado.getNombreCompleto() + "?");
+        confirmacion.setContentText(
+                "Se borrará el empleado y su cuenta de usuario de forma permanente."
+                        + "\nEsta acción no se puede deshacer."
+                        + "\n\nSi solo quiere quitarle el acceso, use \"Desactivar empleado\"."
+        );
+
+        ButtonType eliminar = new ButtonType("Eliminar", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+        confirmacion.getButtonTypes().setAll(cancelar, eliminar);
+
+        // Cancelar queda como opción por defecto para evitar borrar por error
+        ((Button) confirmacion.getDialogPane().lookupButton(eliminar)).setDefaultButton(false);
+        ((Button) confirmacion.getDialogPane().lookupButton(cancelar)).setDefaultButton(true);
+
+        if (confirmacion.showAndWait().orElse(cancelar) != eliminar) {
+            return;
+        }
+
+        String error = service.eliminarEmpleado(seleccionado.getId());
+
+        if (error == null) {
+
+            mostrarAlerta(
+                    Alert.AlertType.INFORMATION,
+                    "Empleado eliminado",
+                    seleccionado.getNombreCompleto() + " y su cuenta fueron eliminados."
+            );
+
+            limpiarFormulario();
+            actualizarTabla();
+
+        } else {
+
+            mostrarAlerta(
+                    Alert.AlertType.WARNING,
+                    "No se puede eliminar",
+                    error
+            );
+        }
     }
 
     // =========================================================
