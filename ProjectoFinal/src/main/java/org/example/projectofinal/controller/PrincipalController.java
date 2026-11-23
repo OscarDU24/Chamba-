@@ -31,6 +31,16 @@ public class PrincipalController {
     @FXML
     private Label lblRol;
 
+    // Botones del menú (para sombrear la opción activa)
+    @FXML private Button btnDashboard;
+    @FXML private Button btnEmpleados;
+    @FXML private Button btnDepartamentos;
+    @FXML private Button btnCategorias;
+    @FXML private Button btnUsuarios;
+    @FXML private Button btnSupervisiones;
+    @FXML private Button btnSeguimientos;
+    @FXML private Button btnEvaluacionFinal;
+
     // Opciones del menú que solo ve el ADMINISTRADOR
     @FXML
     private VBox seccionAdministracion;
@@ -84,6 +94,28 @@ public class PrincipalController {
         }
     }
 
+    // =========================================================
+    // OPCIÓN ACTIVA DEL MENÚ: se sombrea la pantalla abierta
+    // (estilo .menu-button-activo en principal.css)
+    // =========================================================
+
+    private static final String ACTIVO = "menu-button-activo";
+
+    private Button botonActivo;
+
+    private void marcarActivo(Button boton) {
+
+        if (botonActivo != null) {
+            botonActivo.getStyleClass().remove(ACTIVO);
+        }
+
+        botonActivo = boton;
+
+        if (boton != null && !boton.getStyleClass().contains(ACTIVO)) {
+            boton.getStyleClass().add(ACTIVO);
+        }
+    }
+
     /** Segunda barrera: aunque el botón esté oculto, no abre pantallas de administración. */
     private boolean permitirSoloAdministrador() {
 
@@ -96,7 +128,7 @@ public class PrincipalController {
         return esAdministrador;
     }
 
-    private void cargarVista(String ruta, String titulo) {
+    private void cargarVista(Button boton, String ruta, String titulo) {
 
         try {
 
@@ -109,6 +141,8 @@ public class PrincipalController {
             contenedorPrincipal.getChildren().setAll(vista);
 
             lblTitulo.setText(titulo);
+
+            marcarActivo(boton);
 
         } catch (IOException | RuntimeException e) {
 
@@ -126,6 +160,7 @@ public class PrincipalController {
     private void mostrarDashboard() {
 
         cargarVista(
+                btnDashboard,
                 "/org/example/projectofinal/dashboard.fxml",
                 "Dashboard"
         );
@@ -137,6 +172,7 @@ public class PrincipalController {
         if (!permitirSoloAdministrador()) return;
 
         cargarVista(
+                btnEmpleados,
                 "/org/example/projectofinal/adminpanel.fxml",
                 "Gestión de empleados"
         );
@@ -148,6 +184,7 @@ public class PrincipalController {
         if (!permitirSoloAdministrador()) return;
 
         cargarVista(
+                btnDepartamentos,
                 "/org/example/projectofinal/view/departamentos.fxml",
                 "Departamentos"
         );
@@ -159,6 +196,7 @@ public class PrincipalController {
         if (!permitirSoloAdministrador()) return;
 
         cargarVista(
+                btnCategorias,
                 "/org/example/projectofinal/view/categorias.fxml",
                 "Categorías"
         );
@@ -170,6 +208,7 @@ public class PrincipalController {
         if (!permitirSoloAdministrador()) return;
 
         cargarVista(
+                btnUsuarios,
                 "/org/example/projectofinal/view/usuarios.fxml",
                 "Usuarios"
         );
@@ -181,6 +220,7 @@ public class PrincipalController {
         if (!permitirSoloAdministrador()) return;
 
         cargarVista(
+                btnSupervisiones,
                 "/org/example/projectofinal/view/supervisiones.fxml",
                 "Supervisiones"
         );
@@ -192,6 +232,7 @@ public class PrincipalController {
         if (!permitirSoloAdministrador()) return;
 
         cargarVista(
+                btnPeriodos,
                 "/org/example/projectofinal/view/periodos.fxml",
                 "Períodos de evaluación"
         );
@@ -203,6 +244,7 @@ public class PrincipalController {
         if (!permitirSoloAdministrador()) return;
 
         cargarVista(
+                btnObjetivos,
                 "/org/example/projectofinal/view/objetivos.fxml",
                 "Objetivos"
         );
@@ -212,6 +254,7 @@ public class PrincipalController {
     private void mostrarSeguimientos() {
 
         cargarVista(
+                btnSeguimientos,
                 "/org/example/projectofinal/view/seguimientos.fxml",
                 "Seguimientos"
         );
@@ -223,6 +266,7 @@ public class PrincipalController {
         if (!permitirSoloAdministrador()) return;
 
         cargarVista(
+                btnFormularios,
                 "/org/example/projectofinal/view/evaluaciones/GestionEvaluaciones.fxml",
                 "Formularios de evaluación"
         );
@@ -232,6 +276,7 @@ public class PrincipalController {
     private void mostrarEvaluacionFinal() {
 
         cargarVista(
+                btnEvaluacionFinal,
                 "/org/example/projectofinal/view/evaluacionFinal.fxml",
                 "Evaluación final"
         );
@@ -243,6 +288,7 @@ public class PrincipalController {
         if (!permitirSoloAdministrador()) return;
 
         cargarVista(
+                btnReportes,
                 "/org/example/projectofinal/view/reportes.fxml",
                 "Reportes"
         );

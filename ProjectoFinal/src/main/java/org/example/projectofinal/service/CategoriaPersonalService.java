@@ -31,13 +31,27 @@ public class CategoriaPersonalService extends ServiceGeneric<CategoriaPersonal> 
                 CategoriaPersonal.class);
     }
 
+    /**
+     * Reglas del formulario de categorías.
+     * Devuelve el mensaje de error para mostrar, o null si es válido.
+     */
+    public String validar(CategoriaPersonal c) {
+        if (c == null || esVacio(c.getNombre())) {
+            return "Escribe el nombre de la categoría.";
+        }
+        c.setNombre(c.getNombre().trim());
+        if (c.getNombre().length() > 50) {
+            return "El nombre no puede tener más de 50 caracteres.";
+        }
+        if (existeNombre(c.getNombre(), c.getId())) {
+            return "Ya existe una categoría con ese nombre.";
+        }
+        return null;
+    }
+
     public boolean registrar(CategoriaPersonal categoria) {
 
-        if (categoria == null || esVacio(categoria.getNombre())) {
-            return false;
-        }
-
-        if (existeNombre(categoria.getNombre(), null)) {
+        if (validar(categoria) != null) {
             return false;
         }
 
@@ -55,11 +69,7 @@ public class CategoriaPersonalService extends ServiceGeneric<CategoriaPersonal> 
     public boolean modificar(CategoriaPersonal categoria) {
 
         if (categoria == null || categoria.getId() == null
-                || esVacio(categoria.getNombre())) {
-            return false;
-        }
-
-        if (existeNombre(categoria.getNombre(), categoria.getId())) {
+                || validar(categoria) != null) {
             return false;
         }
 

@@ -7,6 +7,7 @@
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.projectofinal.controller.PrincipalController"
+            stylesheets="@principal.css"
             prefWidth="1280.0"
             prefHeight="800.0"
             style="-fx-background-color: #F4F6FA;">
@@ -40,7 +41,7 @@
                           -fx-font-weight: bold;
                           -fx-padding: 0 0 10 8;"/>
 
-            <Button text="  Dashboard"
+            <Button fx:id="btnDashboard" text="  Dashboard"
                     onAction="#mostrarDashboard"
                     maxWidth="Infinity"
                     styleClass="menu-button"
@@ -56,27 +57,27 @@
                               -fx-font-weight: bold;
                               -fx-padding: 16 0 10 8;"/>
 
-                <Button text="  Empleados"
+                <Button fx:id="btnEmpleados" text="  Empleados"
                         onAction="#mostrarEmpleados"
                         maxWidth="Infinity"
                         styleClass="menu-button"/>
 
-                <Button text="  Departamentos"
+                <Button fx:id="btnDepartamentos" text="  Departamentos"
                         onAction="#mostrarDepartamentos"
                         maxWidth="Infinity"
                         styleClass="menu-button"/>
 
-                <Button text="  Categorías"
+                <Button fx:id="btnCategorias" text="  Categorías"
                         onAction="#mostrarCategorias"
                         maxWidth="Infinity"
                         styleClass="menu-button"/>
 
-                <Button text="  Usuarios"
+                <Button fx:id="btnUsuarios" text="  Usuarios"
                         onAction="#mostrarUsuarios"
                         maxWidth="Infinity"
                         styleClass="menu-button"/>
 
-                <Button text="  Supervisiones"
+                <Button fx:id="btnSupervisiones" text="  Supervisiones"
                         onAction="#mostrarSupervisiones"
                         maxWidth="Infinity"
                         styleClass="menu-button"/>
@@ -103,7 +104,7 @@
                     maxWidth="Infinity"
                     styleClass="menu-button"/>
 
-            <Button text="  Seguimientos"
+            <Button fx:id="btnSeguimientos" text="  Seguimientos"
                     onAction="#mostrarSeguimientos"
                     maxWidth="Infinity"
                     styleClass="menu-button"/>
@@ -114,7 +115,7 @@
                     maxWidth="Infinity"
                     styleClass="menu-button"/>
 
-            <Button text="  Evaluación final"
+            <Button fx:id="btnEvaluacionFinal" text="  Evaluación final"
                     onAction="#mostrarEvaluacionFinal"
                     maxWidth="Infinity"
                     styleClass="menu-button"/>

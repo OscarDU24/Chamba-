@@ -34,16 +34,33 @@ public class ObjetivoDepartamentoService extends ServiceGeneric<ObjetivoDepartam
                 ObjetivoDepartamento.class, "id", idPeriodo);
     }
 
+    /**
+     * Reglas para asignar un objetivo a un departamento.
+     * Devuelve el mensaje de error para mostrar, o null si es válido.
+     */
+    public String validar(ObjetivoDepartamento a) {
+        if (a == null || a.getIdObjetivo() == null) {
+            return "Selecciona en la tabla el objetivo que quieres asignar.";
+        }
+        if (!Boolean.TRUE.equals(a.getIdObjetivo().getActivo())) {
+            return "No se puede asignar un objetivo inactivo.";
+        }
+        if (!ObjetivoService.ESPECIFICO.equals(a.getIdObjetivo().getNivel())) {
+            return "A los departamentos se asignan objetivos ESPECÍFICOS. Crea un objetivo específico dentro de \""
+                    + a.getIdObjetivo().getNombre() + "\" y asigna ese.";
+        }
+        if (a.getIdDepartamento() == null || a.getIdPeriodo() == null) {
+            return "Selecciona el departamento y el período.";
+        }
+        if (existeAsignacion(a)) {
+            return "Ese objetivo ya está asignado a ese departamento en ese período.";
+        }
+        return null;
+    }
+
     public boolean asignar(ObjetivoDepartamento asignacion) {
 
-        if (asignacion == null
-                || asignacion.getIdObjetivo() == null
-                || asignacion.getIdDepartamento() == null
-                || asignacion.getIdPeriodo() == null) {
-            return false;
-        }
-
-        if (existeAsignacion(asignacion)) {
+        if (validar(asignacion) != null) {
             return false;
         }
 

@@ -159,10 +159,6 @@ public class ObjetivosController {
         }
 
         String nombre = UiUtil.texto(txtNombre);
-        if (nombre != null && nombre.length() > 150) {
-            UiUtil.error("El nombre no puede tener más de 150 caracteres.");
-            return;
-        }
 
         Objetivo o = seleccionado == null ? new Objetivo() : seleccionado;
         o.setNombre(nombre);
@@ -217,34 +213,15 @@ public class ObjetivosController {
 
     @FXML
     private void asignar() {
-        Objetivo o = tablaObjetivos.getSelectionModel().getSelectedItem();
-
-        if (o == null) {
-            UiUtil.error("Selecciona en la tabla el objetivo que quieres asignar.");
-            return;
-        }
-        if (!Boolean.TRUE.equals(o.getActivo())) {
-            UiUtil.error("No se puede asignar un objetivo inactivo.");
-            return;
-        }
-        if (!ObjetivoService.ESPECIFICO.equals(o.getNivel())) {
-            UiUtil.error("A los departamentos se asignan objetivos ESPECÍFICOS. "
-                    + "Crea un objetivo específico dentro de \"" + o.getNombre() + "\" y asigna ese.");
-            return;
-        }
-        if (cmbDepartamento.getValue() == null || cmbPeriodo.getValue() == null) {
-            UiUtil.error("Selecciona el departamento y el período.");
-            return;
-        }
-
         ObjetivoDepartamento a = new ObjetivoDepartamento();
-        a.setIdObjetivo(o);
+        a.setIdObjetivo(tablaObjetivos.getSelectionModel().getSelectedItem());
         a.setIdDepartamento(cmbDepartamento.getValue());
         a.setIdPeriodo(cmbPeriodo.getValue());
         a.setFechaAsignacion(LocalDate.now());
 
-        if (asignacionService.existeAsignacion(a)) {
-            UiUtil.error("Ese objetivo ya está asignado a ese departamento en ese período.");
+        String error = asignacionService.validar(a);
+        if (error != null) {
+            UiUtil.error(error);
             return;
         }
 

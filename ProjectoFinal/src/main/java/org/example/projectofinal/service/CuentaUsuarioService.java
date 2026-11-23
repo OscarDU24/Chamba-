@@ -1,7 +1,11 @@
 package org.example.projectofinal.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import org.example.projectofinal.dao.CuentaUsuarioDao;
+import org.example.projectofinal.dao.EntityManagerAdmin;
 import org.example.projectofinal.model.CuentaUsuario;
+import org.example.projectofinal.util.Validaciones;
 
 import java.util.Comparator;
 import java.util.List;
@@ -39,10 +43,52 @@ public class CuentaUsuarioService {
         return adminPanelService.cambiarEstadoCuenta(idEmpleado);
     }
 
-    public boolean restablecerContrasena(UUID idEmpleado, String nuevaContrasena) {
-        if (nuevaContrasena == null || nuevaContrasena.length() < 8 || nuevaContrasena.length() > 128) {
-            return false;
+    /**
+     * Cambia la contraseña de la cuenta del empleado.
+     * Devuelve el mensaje de error para mostrar, o null si se cambió.
+     */
+    public String restablecerContrasena(UUID idEmpleado, String nuevaContrasena, String confirmacion) {
+        String error = Validaciones.validarContrasena(nuevaContrasena);
+        if (error != null) {
+            return error;
         }
-        return adminPanelService.cambiarContrasena(idEmpleado, nuevaContrasena);
+        if (!nuevaContrasena.equals(confirmacion)) {
+            return "Las contraseñas no coinciden.";
+        }
+        return adminPanelService.cambiarContrasena(idEmpleado, nuevaContrasena)
+                ? null
+                : "No se pudo restablecer la contraseña.";
+    }
+
+    /**
+     * Elimina la cuenta (el empleado se conserva, sin acceso al sistema).
+     * Se le puede crear una nueva desde Gestión de empleados.
+     */
+    public boolean eliminarCuenta(UUID idCuenta) {
+
+        EntityManager em = EntityManagerAdmin.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
+        try {
+            tx.begin();
+
+            em.createNativeQuery("DELETE FROM administradores_sistema WHERE id_usuario = ?1")
+                    .setParameter(1, idCuenta).executeUpdate();
+            int borradas = em.createNativeQuery("DELETE FROM cuentas_usuario WHERE id_usuario = ?1")
+                    .setParameter(1, idCuenta).executeUpdate();
+
+            tx.commit();
+            return borradas == 1;
+
+        } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+            return false;
+
+        } finally {
+            EntityManagerAdmin.cerrar(em);
+        }
     }
 }

@@ -6,11 +6,8 @@ import javafx.scene.control.*;
 import org.example.projectofinal.model.Departamento;
 import org.example.projectofinal.service.DepartamentoService;
 
-import java.util.regex.Pattern;
 
 public class DepartamentosController {
-
-    private static final Pattern CORREO = Pattern.compile("^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$");
 
     @FXML private TextField txtNombre;
     @FXML private TextField txtUbicacion;
@@ -77,37 +74,23 @@ public class DepartamentosController {
 
     @FXML
     private void guardar() {
-        String nombre = UiUtil.texto(txtNombre);
-        String correo = UiUtil.texto(txtCorreo);
-        String telefono = UiUtil.texto(txtTelefono);
-
-        if (nombre == null) {
-            UiUtil.error("Escribe el nombre del departamento.");
-            return;
+        // Se arma una copia con lo escrito; si el service la acepta se aplica a la fila.
+        Departamento d = new Departamento();
+        if (seleccionado != null) {
+            d.setId(seleccionado.getId());
+            d.setActivo(seleccionado.getActivo());
         }
-        if (nombre.length() > 100) {
-            UiUtil.error("El nombre no puede tener más de 100 caracteres.");
-            return;
-        }
-        if (correo != null && !CORREO.matcher(correo).matches()) {
-            UiUtil.error("El correo de contacto no es válido.");
-            return;
-        }
-        if (telefono != null && telefono.length() > 20) {
-            UiUtil.error("El teléfono no puede tener más de 20 caracteres.");
-            return;
-        }
-        if (service.existeNombre(nombre, seleccionado == null ? null : seleccionado.getId())) {
-            UiUtil.error("Ya existe un departamento con ese nombre.");
-            return;
-        }
-
-        Departamento d = seleccionado == null ? new Departamento() : seleccionado;
-        d.setNombre(nombre);
+        d.setNombre(UiUtil.texto(txtNombre));
         d.setUbicacion(UiUtil.texto(txtUbicacion));
-        d.setCorreoContacto(correo);
-        d.setTelefono(telefono);
+        d.setCorreoContacto(UiUtil.texto(txtCorreo));
+        d.setTelefono(UiUtil.texto(txtTelefono));
         d.setDescripcion(UiUtil.texto(txtDescripcion));
+
+        String error = service.validar(d);
+        if (error != null) {
+            UiUtil.error(error);
+            return;
+        }
 
         boolean nuevo = seleccionado == null;
         boolean ok = nuevo ? service.registrar(d) : service.modificar(d);

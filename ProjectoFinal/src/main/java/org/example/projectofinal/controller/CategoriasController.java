@@ -142,24 +142,19 @@ public class CategoriasController {
 
     @FXML
     private void guardar() {
-        String nombre = UiUtil.texto(txtNombre);
-
-        if (nombre == null) {
-            UiUtil.error("Escribe el nombre de la categoría.");
-            return;
+        CategoriaPersonal c = new CategoriaPersonal();
+        if (seleccionada != null) {
+            c.setId(seleccionada.getId());
+            c.setActivo(seleccionada.getActivo());
         }
-        if (nombre.length() > 50) {
-            UiUtil.error("El nombre no puede tener más de 50 caracteres.");
-            return;
-        }
-        if (service.existeNombre(nombre, seleccionada == null ? null : seleccionada.getId())) {
-            UiUtil.error("Ya existe una categoría con ese nombre.");
-            return;
-        }
-
-        CategoriaPersonal c = seleccionada == null ? new CategoriaPersonal() : seleccionada;
-        c.setNombre(nombre);
+        c.setNombre(UiUtil.texto(txtNombre));
         c.setDescripcion(UiUtil.texto(txtDescripcion));
+
+        String error = service.validar(c);
+        if (error != null) {
+            UiUtil.error(error);
+            return;
+        }
 
         boolean nueva = seleccionada == null;
         boolean ok = nueva ? service.registrar(c) : service.modificar(c);

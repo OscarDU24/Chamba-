@@ -42,17 +42,39 @@ public class SupervisionService extends ServiceGeneric<Supervision> {
                 Supervision.class, "id", idEmpleado);
     }
 
-    public boolean registrar(Supervision supervision) {
-
-        if (supervision == null
-                || supervision.getIdEmpleado() == null
-                || supervision.getIdJefe() == null
-                || supervision.getFechaInicio() == null) {
-            return false;
+    /**
+     * Reglas para asignar un jefe.
+     * Devuelve el mensaje de error para mostrar, o null si es válido.
+     */
+    public String validar(Supervision s) {
+        if (s == null || s.getIdEmpleado() == null || s.getIdJefe() == null) {
+            return "Selecciona el empleado y su jefe.";
+        }
+        if (s.getIdEmpleado().getId().equals(s.getIdJefe().getId())) {
+            return "Un empleado no puede ser su propio jefe.";
+        }
+        if (s.getFechaInicio() == null) {
+            return "Selecciona la fecha de inicio.";
         }
 
-        // Un empleado no puede supervisarse a sí mismo
-        if (supervision.getIdEmpleado().getId().equals(supervision.getIdJefe().getId())) {
+        Supervision actual = buscarActivaPorEmpleado(s.getIdEmpleado().getId());
+        if (actual != null) {
+            if (actual.getIdJefe().getId().equals(s.getIdJefe().getId())) {
+                return actual.getIdJefe().getNombreCompleto() + " ya es el jefe actual de "
+                        + actual.getIdEmpleado().getNombreCompleto() + ".";
+            }
+            if (s.getFechaInicio().isBefore(actual.getFechaInicio())) {
+                return "La fecha debe ser igual o posterior al inicio de la supervisión actual ("
+                        + actual.getFechaInicio().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                        + ").";
+            }
+        }
+        return null;
+    }
+
+    public boolean registrar(Supervision supervision) {
+
+        if (validar(supervision) != null) {
             return false;
         }
 

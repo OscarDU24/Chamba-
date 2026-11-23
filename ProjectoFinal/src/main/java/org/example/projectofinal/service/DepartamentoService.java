@@ -24,13 +24,42 @@ public class DepartamentoService extends ServiceGeneric<Departamento> {
                 Departamento.class);
     }
 
+    private static final java.util.regex.Pattern CORREO =
+            java.util.regex.Pattern.compile("^[\\w.%+-]+@[\\w-]+(\\.[\\w-]+)+$");
+    private static final java.util.regex.Pattern TELEFONO =
+            java.util.regex.Pattern.compile("^[0-9+() -]{4,20}$");
+
+    /**
+     * Reglas del formulario de departamentos.
+     * Devuelve el mensaje de error para mostrar, o null si es válido.
+     */
+    public String validar(Departamento d) {
+        if (d == null || esVacio(d.getNombre())) {
+            return "Escribe el nombre del departamento.";
+        }
+        d.setNombre(d.getNombre().trim());
+        if (d.getNombre().length() > 100) {
+            return "El nombre no puede tener más de 100 caracteres.";
+        }
+        if (existeNombre(d.getNombre(), d.getId())) {
+            return "Ya existe un departamento con ese nombre.";
+        }
+        if (d.getUbicacion() != null && d.getUbicacion().length() > 150) {
+            return "La ubicación no puede tener más de 150 caracteres.";
+        }
+        if (d.getCorreoContacto() != null
+                && (d.getCorreoContacto().length() > 120 || !CORREO.matcher(d.getCorreoContacto()).matches())) {
+            return "El correo de contacto no es válido.";
+        }
+        if (d.getTelefono() != null && !TELEFONO.matcher(d.getTelefono()).matches()) {
+            return "El teléfono solo puede tener números, espacios, +, - y paréntesis (4 a 20 caracteres).";
+        }
+        return null;
+    }
+
     public boolean registrar(Departamento departamento) {
 
-        if (departamento == null || esVacio(departamento.getNombre())) {
-            return false;
-        }
-
-        if (existeNombre(departamento.getNombre(), null)) {
+        if (validar(departamento) != null) {
             return false;
         }
 
@@ -48,11 +77,7 @@ public class DepartamentoService extends ServiceGeneric<Departamento> {
     public boolean modificar(Departamento departamento) {
 
         if (departamento == null || departamento.getId() == null
-                || esVacio(departamento.getNombre())) {
-            return false;
-        }
-
-        if (existeNombre(departamento.getNombre(), departamento.getId())) {
+                || validar(departamento) != null) {
             return false;
         }
 

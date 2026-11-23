@@ -170,6 +170,10 @@
             <Button text="Reactivar empleado"
                     onAction="#reactivarEmpleado"/>
 
+            <Button text="Eliminar empleado"
+                    onAction="#eliminarEmpleadoDefinitivo"
+                    styleClass="boton-peligro"/>
+
             <Button text="Activar / Desactivar cuenta"
                     onAction="#cambiarEstadoCuenta"/>
         </HBox>

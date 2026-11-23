@@ -10,6 +10,7 @@ import org.example.projectofinal.model.CategoriaPersonal;
 import org.example.projectofinal.model.CuentaUsuario;
 import org.example.projectofinal.model.Departamento;
 import org.example.projectofinal.model.Empleado;
+import org.example.projectofinal.util.Validaciones;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -46,13 +47,92 @@ public class AdminPanelService extends ServiceGeneric<Empleado> {
     // REGISTRAR EMPLEADO Y CREAR SU CUENTA
     // =========================================================
 
-    public boolean registrarEmpleado(Empleado empleado, String contrasena) {
+    // =========================================================
+    // VALIDAR EMPLEADO
+    // Todas las reglas del formulario de empleados en un solo lugar.
+    // Devuelve el mensaje de error para mostrar, o null si es válido.
+    //   contrasena: obligatoria si el empleado es nuevo (id == null);
+    //   al editar, solo se valida si viene escrita.
+    // =========================================================
 
-        if (empleado == null || contrasena == null || contrasena.isBlank()) {
-            return false;
+    public String validarEmpleado(Empleado empleado, String contrasena) {
+
+        if (empleado == null) {
+            return "Faltan los datos del empleado.";
         }
 
-        if (validarCategoriaDepartamento(empleado) != null) {
+        normalizar(empleado);
+
+        String error = Validaciones.validarNombre(empleado.getNombreCompleto());
+        if (error != null) {
+            return error;
+        }
+
+        if (empleado.getCif() == null || empleado.getCif().isEmpty()) {
+            return "Escribe el CIF del empleado.";
+        }
+        if (empleado.getCif().length() > 120) {
+            return "El CIF no puede tener más de 120 caracteres.";
+        }
+
+        // El dominio @uamv.edu.ni se exige a correos nuevos o cambiados,
+        // para poder seguir editando empleados registrados antes de la regla.
+        if (correoCambio(empleado)) {
+            error = Validaciones.validarCorreo(empleado.getCorreoInstitucional());
+            if (error != null) {
+                return error;
+            }
+        }
+
+        if (empleado.getIdCategoria() == null) {
+            return "Selecciona la categoría.";
+        }
+
+        error = validarCategoriaDepartamento(empleado);
+        if (error != null) {
+            return error;
+        }
+
+        boolean esNuevo = empleado.getId() == null;
+        if (esNuevo || (contrasena != null && !contrasena.isEmpty())) {
+            error = Validaciones.validarContrasena(contrasena);
+            if (error != null) {
+                return error;
+            }
+        }
+
+        if (existeOtro("SELECT e FROM Empleado e WHERE LOWER(e.cif) = LOWER(:valor)",
+                empleado.getCif(), empleado.getId())) {
+            return "Ya existe otro empleado con el CIF " + empleado.getCif() + ".";
+        }
+        if (existeOtro("SELECT e FROM Empleado e WHERE LOWER(e.correoInstitucional) = LOWER(:valor)",
+                empleado.getCorreoInstitucional(), empleado.getId())) {
+            return "Ya existe otro empleado con el correo " + empleado.getCorreoInstitucional() + ".";
+        }
+
+        return null;
+    }
+
+    /** Quita espacios de más del nombre, CIF y correo antes de validar o guardar. */
+    private void normalizar(Empleado empleado) {
+        empleado.setNombreCompleto(Validaciones.normalizarNombre(empleado.getNombreCompleto()));
+        if (empleado.getCif() != null) {
+            empleado.setCif(empleado.getCif().trim());
+        }
+        if (empleado.getCorreoInstitucional() != null) {
+            empleado.setCorreoInstitucional(empleado.getCorreoInstitucional().trim());
+        }
+    }
+
+    private boolean existeOtro(String jpql, String valor, UUID idExcluido) {
+        Empleado encontrado = consultarUno(jpql, Empleado.class, "valor", valor);
+        return encontrado != null && !encontrado.getId().equals(idExcluido);
+    }
+
+    public boolean registrarEmpleado(Empleado empleado, String contrasena) {
+
+        if (empleado == null || empleado.getId() != null
+                || validarEmpleado(empleado, contrasena) != null) {
             return false;
         }
 
@@ -189,11 +269,8 @@ public class AdminPanelService extends ServiceGeneric<Empleado> {
 
     public boolean actualizarEmpleado(Empleado empleado) {
 
-        if (empleado == null || empleado.getId() == null) {
-            return false;
-        }
-
-        if (validarCategoriaDepartamento(empleado) != null) {
+        if (empleado == null || empleado.getId() == null
+                || validarEmpleado(empleado, null) != null) {
             return false;
         }
 
@@ -240,6 +317,142 @@ public class AdminPanelService extends ServiceGeneric<Empleado> {
             if (cuenta != null) {
                 cuenta.setActivo(false);
             }
+
+            tx.commit();
+            return true;
+
+        } catch (Exception e) {
+
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+
+            e.printStackTrace();
+            return false;
+
+        } finally {
+            EntityManagerAdmin.cerrar(em);
+        }
+    }
+
+    /** true si el correo es distinto al guardado (o el empleado es nuevo). */
+    public boolean correoCambio(Empleado empleado) {
+        if (empleado.getId() == null) {
+            return true;
+        }
+        Empleado guardado = buscarPorId(empleado.getId());
+        return guardado == null || guardado.getCorreoInstitucional() == null
+                || !guardado.getCorreoInstitucional().equalsIgnoreCase(
+                        empleado.getCorreoInstitucional() == null ? "" : empleado.getCorreoInstitucional().trim());
+    }
+
+    // =========================================================
+    // ELIMINAR EMPLEADO (definitivo)
+    // Solo si no tiene historial; si lo tiene, se debe desactivar.
+    // Devuelve el mensaje de error, o null si se eliminó.
+    // =========================================================
+
+    public String eliminarEmpleado(UUID idEmpleado) {
+
+        EntityManager em = EntityManagerAdmin.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
+        try {
+            Empleado empleado = em.find(Empleado.class, idEmpleado);
+
+            if (empleado == null) {
+                return "El empleado ya no existe.";
+            }
+
+            long seguimientos = contar(em,
+                    "SELECT COUNT(s) FROM Seguimiento s " +
+                            "WHERE s.idEmpleado.id = :id OR s.registradoPor.id = :id", idEmpleado);
+            long evaluaciones = contar(em,
+                    "SELECT COUNT(e) FROM Evaluacion e " +
+                            "WHERE e.idEmpleado.id = :id OR e.evaluadoPor.id = :id", idEmpleado);
+            long aCargo = contar(em,
+                    "SELECT COUNT(s) FROM Supervision s WHERE s.idJefe.id = :id", idEmpleado);
+
+            if (seguimientos + evaluaciones + aCargo > 0) {
+                List<String> motivos = new ArrayList<>();
+                if (seguimientos > 0) motivos.add(seguimientos + " seguimiento(s)");
+                if (evaluaciones > 0) motivos.add(evaluaciones + " evaluación(es)");
+                if (aCargo > 0) motivos.add("es o fue jefe en " + aCargo + " supervisión(es)");
+
+                return empleado.getNombreCompleto() + " tiene historial ("
+                        + String.join(", ", motivos) + "). Eliminarlo borraría esos registros; "
+                        + "usa \"Desactivar empleado\" en su lugar.";
+            }
+
+            tx.begin();
+
+            // Lo que depende solo de este empleado se borra con él
+            em.createNativeQuery("DELETE FROM responsables_objetivos WHERE id_empleado = ?1")
+                    .setParameter(1, idEmpleado).executeUpdate();
+            em.createNativeQuery("DELETE FROM supervisiones WHERE id_empleado = ?1")
+                    .setParameter(1, idEmpleado).executeUpdate();
+            em.createNativeQuery("DELETE FROM administradores_sistema WHERE id_usuario IN "
+                            + "(SELECT id_usuario FROM cuentas_usuario WHERE id_empleado = ?1)")
+                    .setParameter(1, idEmpleado).executeUpdate();
+            em.createNativeQuery("DELETE FROM cuentas_usuario WHERE id_empleado = ?1")
+                    .setParameter(1, idEmpleado).executeUpdate();
+            em.createNativeQuery("DELETE FROM empleados WHERE id_empleado = ?1")
+                    .setParameter(1, idEmpleado).executeUpdate();
+
+            tx.commit();
+            return null;
+
+        } catch (Exception e) {
+
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+
+            e.printStackTrace();
+            return "No se pudo eliminar el empleado.";
+
+        } finally {
+            EntityManagerAdmin.cerrar(em);
+        }
+    }
+
+    private long contar(EntityManager em, String jpql, UUID id) {
+        return em.createQuery(jpql, Long.class).setParameter("id", id).getSingleResult();
+    }
+
+    // =========================================================
+    // CREAR CUENTA PARA UN EMPLEADO QUE NO TIENE
+    // (por ejemplo, después de eliminar su cuenta en Usuarios)
+    // =========================================================
+
+    public boolean crearCuenta(UUID idEmpleado, String contrasena) {
+
+        if (Validaciones.validarContrasena(contrasena) != null) {
+            return false;
+        }
+
+        EntityManager em = EntityManagerAdmin.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
+        try {
+            tx.begin();
+
+            Empleado empleado = em.find(Empleado.class, idEmpleado);
+            boolean yaTiene = !em.createQuery(
+                            "SELECT c.id FROM CuentaUsuario c WHERE c.idEmpleado.id = :id", UUID.class)
+                    .setParameter("id", idEmpleado).getResultList().isEmpty();
+
+            if (empleado == null || yaTiene) {
+                tx.rollback();
+                return false;
+            }
+
+            CuentaUsuario cuenta = new CuentaUsuario();
+            cuenta.setIdEmpleado(empleado);
+            cuenta.setContrasenaHash(generarHash(contrasena));
+            cuenta.setRol("EMPLEADO");
+            cuenta.setActivo(Boolean.TRUE.equals(empleado.getActivo()));
+            em.persist(cuenta);
 
             tx.commit();
             return true;
@@ -366,7 +579,7 @@ public class AdminPanelService extends ServiceGeneric<Empleado> {
 
     public boolean cambiarContrasena(UUID idEmpleado, String nuevaContrasena) {
 
-        if (nuevaContrasena == null || nuevaContrasena.isBlank()) {
+        if (Validaciones.validarContrasena(nuevaContrasena) != null) {
             return false;
         }
 

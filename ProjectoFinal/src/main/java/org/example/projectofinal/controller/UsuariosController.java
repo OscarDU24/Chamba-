@@ -106,6 +106,43 @@ public class UsuariosController {
     }
 
     @FXML
+    private void eliminarCuenta() {
+        CuentaUsuario c = seleccionada();
+        if (c == null) {
+            return;
+        }
+        if (esCuentaPropia(c)) {
+            UiUtil.error("No puedes eliminar la cuenta con la que iniciaste sesión.");
+            return;
+        }
+
+        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmacion.setTitle("Confirmar eliminación");
+        confirmacion.setHeaderText("¿Seguro que deseas eliminar la cuenta de "
+                + c.getIdEmpleado().getNombreCompleto() + "?");
+        confirmacion.setContentText("La persona ya no podrá iniciar sesión. El empleado y su historial se conservan."
+                + "\nEsta acción no se puede deshacer; para darle acceso otra vez, créale una cuenta nueva"
+                + " escribiendo una contraseña al editarlo en Gestión de empleados.");
+
+        ButtonType eliminar = new ButtonType("Eliminar", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+        confirmacion.getButtonTypes().setAll(cancelar, eliminar);
+        ((Button) confirmacion.getDialogPane().lookupButton(eliminar)).setDefaultButton(false);
+        ((Button) confirmacion.getDialogPane().lookupButton(cancelar)).setDefaultButton(true);
+
+        if (confirmacion.showAndWait().orElse(cancelar) != eliminar) {
+            return;
+        }
+
+        if (service.eliminarCuenta(c.getId())) {
+            actualizarTabla();
+            lblEstado.setText("Cuenta de " + c.getIdEmpleado().getNombreCompleto() + " eliminada.");
+        } else {
+            UiUtil.error("No se pudo eliminar la cuenta.");
+        }
+    }
+
+    @FXML
     private void restablecerContrasena() {
         CuentaUsuario c = seleccionada();
         if (c == null) {
@@ -118,7 +155,7 @@ public class UsuariosController {
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
         PasswordField nueva = new PasswordField();
-        nueva.setPromptText("Nueva contraseña (8 a 128 caracteres)");
+        nueva.setPromptText("Mín. 8: mayúscula, minúscula, número y signo");
         PasswordField confirmar = new PasswordField();
         confirmar.setPromptText("Confirmar contraseña");
         dialog.getDialogPane().setContent(new VBox(10, nueva, confirmar));
@@ -128,20 +165,13 @@ public class UsuariosController {
             return;
         }
 
-        String clave = nueva.getText();
-        if (clave == null || clave.length() < 8 || clave.length() > 128) {
-            UiUtil.error("La contraseña debe tener entre 8 y 128 caracteres.");
-            return;
-        }
-        if (!clave.equals(confirmar.getText())) {
-            UiUtil.error("Las contraseñas no coinciden.");
-            return;
-        }
+        String error = service.restablecerContrasena(
+                c.getIdEmpleado().getId(), nueva.getText(), confirmar.getText());
 
-        if (service.restablecerContrasena(c.getIdEmpleado().getId(), clave)) {
+        if (error == null) {
             UiUtil.info("Contraseña restablecida.");
         } else {
-            UiUtil.error("No se pudo restablecer la contraseña.");
+            UiUtil.error(error);
         }
     }
 }
