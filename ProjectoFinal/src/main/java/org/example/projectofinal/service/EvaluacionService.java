@@ -35,19 +35,9 @@ public class EvaluacionService extends ServiceGeneric<Evaluacion> {
                 Evaluacion.class, "id", idPeriodo);
     }
 
-    public List<Evaluacion> listarPorEmpleado(UUID idEmpleado) {
-        return consultar(SELECT_BASE + "WHERE e.idEmpleado.id = :id ORDER BY e.fechaEvaluacion DESC",
-                Evaluacion.class, "id", idEmpleado);
-    }
-
-    public List<Evaluacion> listarPorDepartamento(UUID idDepartamento) {
-        return consultar(SELECT_BASE + "WHERE e.idDepartamento.id = :id ORDER BY e.fechaEvaluacion DESC",
-                Evaluacion.class, "id", idDepartamento);
-    }
-
     public boolean registrar(Evaluacion evaluacion) {
 
-        if (!esValida(evaluacion)) {
+        if (evaluacion == null || validar(evaluacion) != null) {
             return false;
         }
 
@@ -66,7 +56,7 @@ public class EvaluacionService extends ServiceGeneric<Evaluacion> {
 
     public boolean modificar(Evaluacion evaluacion) {
 
-        if (evaluacion == null || evaluacion.getId() == null || !esValida(evaluacion)) {
+        if (evaluacion == null || evaluacion.getId() == null || validar(evaluacion) != null) {
             return false;
         }
 
@@ -226,15 +216,6 @@ public class EvaluacionService extends ServiceGeneric<Evaluacion> {
         return null;
     }
 
-    private boolean esValida(Evaluacion evaluacion) {
-        return evaluacion != null
-                && evaluacion.getIdPeriodo() != null
-                && evaluacion.getIdDepartamento() != null
-                && evaluacion.getEvaluadoPor() != null
-                && enRango(evaluacion.getPuntuacionIndividual())
-                && enRango(evaluacion.getPuntuacionDepartamental())
-                && enRango(evaluacion.getPuntuacionFinal());
-    }
 
     private boolean enRango(BigDecimal valor) {
         return valor == null

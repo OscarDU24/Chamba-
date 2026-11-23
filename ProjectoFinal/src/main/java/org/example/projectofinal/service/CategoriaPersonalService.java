@@ -25,12 +25,6 @@ public class CategoriaPersonalService extends ServiceGeneric<CategoriaPersonal> 
                 CategoriaPersonal.class);
     }
 
-    public List<CategoriaPersonal> listarActivas() {
-        return consultar(
-                "SELECT c FROM CategoriaPersonal c WHERE c.activo = true ORDER BY c.nombre",
-                CategoriaPersonal.class);
-    }
-
     /**
      * Reglas del formulario de categorías.
      * Devuelve el mensaje de error para mostrar, o null si es válido.

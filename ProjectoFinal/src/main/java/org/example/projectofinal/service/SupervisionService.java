@@ -25,17 +25,6 @@ public class SupervisionService extends ServiceGeneric<Supervision> {
         return consultar(SELECT_BASE + "ORDER BY s.fechaInicio DESC", Supervision.class);
     }
 
-    public List<Supervision> listarActivas() {
-        return consultar(SELECT_BASE + "WHERE s.activo = true ORDER BY s.fechaInicio DESC",
-                Supervision.class);
-    }
-
-    /** Empleados que tiene a cargo un jefe (supervisiones activas). */
-    public List<Supervision> listarPorJefe(UUID idJefe) {
-        return consultar(SELECT_BASE + "WHERE s.idJefe.id = :id AND s.activo = true",
-                Supervision.class, "id", idJefe);
-    }
-
     /** Supervisión activa de un empleado (quién es su jefe). */
     public Supervision buscarActivaPorEmpleado(UUID idEmpleado) {
         return consultarUno(SELECT_BASE + "WHERE s.idEmpleado.id = :id AND s.activo = true",
@@ -121,12 +110,6 @@ public class SupervisionService extends ServiceGeneric<Supervision> {
         } finally {
             EntityManagerAdmin.cerrar(em);
         }
-    }
-
-    /** Todas las supervisiones (actuales y pasadas) de un empleado. */
-    public List<Supervision> listarHistorialPorEmpleado(UUID idEmpleado) {
-        return consultar(SELECT_BASE + "WHERE s.idEmpleado.id = :id ORDER BY s.fechaInicio DESC",
-                Supervision.class, "id", idEmpleado);
     }
 
     public boolean finalizar(UUID idSupervision) {

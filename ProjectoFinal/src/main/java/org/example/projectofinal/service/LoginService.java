@@ -8,8 +8,6 @@ public class LoginService {
 
     private final CuentaUsuarioDao cuentaUsuarioDao = new CuentaUsuarioDao();
     private final AdminPanelService adminPanelService = new AdminPanelService();
-    private final AdministradoresSistemaService administradoresService =
-            new AdministradoresSistemaService();
 
     /**
      * Valida correo y contraseña contra la base de datos.
@@ -40,7 +38,4 @@ public class LoginService {
         SesionUsuario.cerrarSesion();
     }
 
-    public boolean esAdministrador(CuentaUsuario cuenta) {
-        return cuenta != null && administradoresService.esAdministrador(cuenta.getId());
-    }
 }

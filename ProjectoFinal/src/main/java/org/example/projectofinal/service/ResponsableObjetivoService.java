@@ -36,38 +36,6 @@ public class ResponsableObjetivoService extends ServiceGeneric<ResponsableObjeti
                 ResponsableObjetivo.class, "id", idEmpleado);
     }
 
-    public boolean asignar(ResponsableObjetivo responsable) {
-
-        if (responsable == null
-                || responsable.getIdAsignacion() == null
-                || responsable.getIdEmpleado() == null) {
-            return false;
-        }
-
-        boolean yaAsignado = consultarUno(
-                "SELECT r FROM ResponsableObjetivo r " +
-                        "WHERE r.idAsignacion.id = :asig AND r.idEmpleado.id = :emp",
-                ResponsableObjetivo.class,
-                "asig", responsable.getIdAsignacion().getId(),
-                "emp", responsable.getIdEmpleado().getId()) != null;
-
-        if (yaAsignado) {
-            return false;
-        }
-
-        try {
-            if (responsable.getFechaAsignacion() == null) {
-                responsable.setFechaAsignacion(LocalDate.now());
-            }
-            guardar(responsable);
-            return true;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     /**
      * Agrega como responsables a todos los empleados activos del departamento
      * de la asignación que todavía no lo sean. Devuelve cuántos se agregaron,
@@ -131,14 +99,4 @@ public class ResponsableObjetivoService extends ServiceGeneric<ResponsableObjeti
         return totales;
     }
 
-    public boolean quitar(UUID idResponsable) {
-        try {
-            eliminar(idResponsable);
-            return true;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 }
