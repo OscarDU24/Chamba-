@@ -32,23 +32,23 @@
 }</component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.28442025853147" />
-      <entry key="MS500" value="4.148469744523675" />
-      <entry key="S2" value="8.929761491083207" />
-      <entry key="S5" value="11.107503700389378" />
-      <entry key="S10" value="12.112105686042964" />
-      <entry key="S30" value="13.144675934261576" />
-      <entry key="S60" value="13.526470704668704" />
-      <entry key="M2" value="13.749736125663572" />
-      <entry key="M5" value="13.896351342420083" />
-      <entry key="M10" value="13.947557831182625" />
-      <entry key="M15" value="13.964899154564083" />
-      <entry key="M30" value="13.982379344319009" />
-      <entry key="H1" value="13.991172013211603" />
-      <entry key="H2" value="13.995581579215688" />
-      <entry key="H4" value="13.99778968117461" />
-      <entry key="D1" value="13.999631459445263" />
-      <entry key="W1" value="13.999947347574087" />
+      <entry key="MS100" value="1.0295087696738203" />
+      <entry key="MS500" value="2.4636900067531835" />
+      <entry key="S2" value="5.132793059763195" />
+      <entry key="S5" value="6.160733575381134" />
+      <entry key="S10" value="6.5666104129870275" />
+      <entry key="S30" value="7.717322606807545" />
+      <entry key="S60" value="10.398503452635431" />
+      <entry key="M2" value="13.93018288427352" />
+      <entry key="M5" value="17.573139111128892" />
+      <entry key="M10" value="19.167187194041066" />
+      <entry key="M15" value="19.749916258301937" />
+      <entry key="M30" value="20.36040890247188" />
+      <entry key="H1" value="20.676481229438444" />
+      <entry key="H2" value="20.837298846661913" />
+      <entry key="H4" value="20.91841259678965" />
+      <entry key="D1" value="20.986369088709676" />
+      <entry key="W1" value="20.998051916986302" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -70,23 +70,23 @@
       <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.2320662839189713" />
-      <entry key="MS500" value="4.110492922965753" />
-      <entry key="S2" value="8.898925792058405" />
-      <entry key="S5" value="11.088179867755937" />
-      <entry key="S10" value="12.093427145422925" />
-      <entry key="S30" value="13.128587294946303" />
-      <entry key="S60" value="13.515671750558878" />
-      <entry key="M2" value="13.74344127325631" />
-      <entry key="M5" value="13.893585837754236" />
-      <entry key="M10" value="13.946130789679286" />
-      <entry key="M15" value="13.963937715342606" />
-      <entry key="M30" value="13.981893525366088" />
-      <entry key="H1" value="13.990927817492839" />
-      <entry key="H2" value="13.99545915835991" />
-      <entry key="H4" value="13.997728389817512" />
-      <entry key="D1" value="13.999621232963595" />
-      <entry key="W1" value="13.999945886372293" />
+      <entry key="MS100" value="0.9940842821756092" />
+      <entry key="MS500" value="2.445123917545521" />
+      <entry key="S2" value="5.122953020082935" />
+      <entry key="S5" value="6.155989636445398" />
+      <entry key="S10" value="6.56407439632009" />
+      <entry key="S30" value="7.715380105451827" />
+      <entry key="S60" value="10.395284509332381" />
+      <entry key="M2" value="13.92676880301678" />
+      <entry key="M5" value="17.5709420326022" />
+      <entry key="M10" value="19.165896530634075" />
+      <entry key="M15" value="19.749008104660884" />
+      <entry key="M30" value="20.35992959346923" />
+      <entry key="H1" value="20.6762349964249" />
+      <entry key="H2" value="20.837174050593354" />
+      <entry key="H4" value="20.918349774425998" />
+      <entry key="D1" value="20.986358559000923" />
+      <entry key="W1" value="20.998050411284602" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -98,24 +98,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Launcher.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "DiegoG",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "python.packages.toolwindow.project.migrated.to.right.top.v2": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Launcher.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;DiegoG&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;python.packages.toolwindow.project.migrated.to.right.top.v2&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
