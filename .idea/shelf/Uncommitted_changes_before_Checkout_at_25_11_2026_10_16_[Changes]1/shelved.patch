@@ -1,0 +1,19 @@
+Index: ProjectoFinal/src/main/resources/META-INF/persistence.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<persistence xmlns=\"https://jakarta.ee/xml/ns/persistence\"\r\n             xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n             xsi:schemaLocation=\"https://jakarta.ee/xml/ns/persistence\r\n             https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd\"\r\n             version=\"3.2\">\r\n\r\n    <persistence-unit name=\"default\">\r\n\r\n        <properties>\r\n            <property name=\"jakarta.persistence.jdbc.driver\"\r\n                      value=\"org.postgresql.Driver\"/>\r\n            <property name=\"jakarta.persistence.jdbc.url\"\r\n                      value=\"jdbc:postgresql://localhost:5432/sistema_atencion\"/>\r\n            <property name=\"jakarta.persistence.jdbc.user\"\r\n                      value=\"postgres\"/>\r\n            <property name=\"jakarta.persistence.jdbc.password\"\r\n                      value=\"8998\"/>\r\n            <property name=\"hibernate.show_sql\"\r\n                      value=\"true\"/>\r\n            <property name=\"hibernate.format_sql\"\r\n                      value=\"true\"/>\r\n            <property name=\"hibernate.hbm2ddl.auto\"\r\n                      value=\"none\"/>\r\n        </properties>\r\n\r\n    </persistence-unit>\r\n\r\n</persistence>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ProjectoFinal/src/main/resources/META-INF/persistence.xml b/ProjectoFinal/src/main/resources/META-INF/persistence.xml
+--- a/ProjectoFinal/src/main/resources/META-INF/persistence.xml	(revision 2b787a8d229f11ebfa50a536cf956334f5734cbc)
++++ b/ProjectoFinal/src/main/resources/META-INF/persistence.xml	(date 1795212676175)
+@@ -15,7 +15,7 @@
+             <property name="jakarta.persistence.jdbc.user"
+                       value="postgres"/>
+             <property name="jakarta.persistence.jdbc.password"
+-                      value="8998"/>
++                      value="1234"/>
+             <property name="hibernate.show_sql"
+                       value="true"/>
+             <property name="hibernate.format_sql"

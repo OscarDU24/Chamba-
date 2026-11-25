@@ -1,0 +1,17 @@
+Index: .idea/dataSources.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"DataSourceManagerImpl\" format=\"xml\" multifile-model=\"true\">\r\n    <data-source source=\"LOCAL\" name=\"sistema_atencion@localhost\" uuid=\"b36121b2-ecdb-43e0-ab55-5a694933a2dd\">\r\n      <driver-ref>postgresql</driver-ref>\r\n      <synchronize>true</synchronize>\r\n      <jdbc-driver>org.postgresql.Driver</jdbc-driver>\r\n      <jdbc-url>jdbc:postgresql://localhost:5432/sistema_atencion</jdbc-url>\r\n      <jdbc-additional-properties>\r\n        <property name=\"com.intellij.clouds.kubernetes.db.host.port\" />\r\n        <property name=\"com.intellij.clouds.kubernetes.db.enabled\" value=\"false\" />\r\n        <property name=\"com.intellij.clouds.kubernetes.db.container.port\" />\r\n      </jdbc-additional-properties>\r\n      <working-dir>$ProjectFileDir$</working-dir>\r\n    </data-source>\r\n  </component>\r\n</project>
+===================================================================
+diff --git a/.idea/dataSources.xml b/.idea/dataSources.xml
+--- a/.idea/dataSources.xml	(revision 2b787a8d229f11ebfa50a536cf956334f5734cbc)
++++ b/.idea/dataSources.xml	(date 1795212679379)
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+-    <data-source source="LOCAL" name="sistema_atencion@localhost" uuid="b36121b2-ecdb-43e0-ab55-5a694933a2dd">
++    <data-source source="LOCAL" name="sistema_atencion@localhost" uuid="30b8676e-e909-45f1-9e11-9824aa86e2dd">
+       <driver-ref>postgresql</driver-ref>
+       <synchronize>true</synchronize>
+       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
