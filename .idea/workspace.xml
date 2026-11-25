@@ -4,19 +4,85 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="786991da-d455-4a06-8278-9374cdbe17aa" name="Changes" comment="" />
+    <list default="true" id="786991da-d455-4a06-8278-9374cdbe17aa" name="Changes" comment="jhon java&#10;&#10;# Conflicts:&#10;#&#9;ProjectoFinal/src/main/resources/META-INF/persistence.xml&#10;#&#9;ProjectoFinal/src/main/resources/org/example/projectofinal/dashboard.fxml">
+      <change afterPath="$PROJECT_DIR$/ProjectoFinal/src/main/java/org/example/projectofinal/config/ExportarExcel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProjectoFinal/src/main/java/org/example/projectofinal/config/ExportarPDF.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProjectoFinal/src/main/java/org/example/projectofinal/config/IExportar.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProjectoFinal/src/main/java/org/example/projectofinal/model/CategoriaDepartamento.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProjectoFinal/src/main/java/org/example/projectofinal/model/CategoriaDepartamentoId.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/data_sources_history.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/data_sources_history.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jpa.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jpa.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_classmate_1_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_sun_istack_istack_commons_runtime_4_1_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__io_smallrye_jandex_3_3_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_activation_jakarta_activation_api_2_1_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_inject_jakarta_inject_api_2_0_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_persistence_jakarta_persistence_api_3_2_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_transaction_jakarta_transaction_api_2_0_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_xml_bind_jakarta_xml_bind_api_4_0_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_bytebuddy_byte_buddy_1_17_5.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_antlr_antlr4_runtime_4_13_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apiguardian_apiguardian_api_1_1_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_checkerframework_checker_qual_3_55_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_angus_angus_activation_2_0_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_jaxb_jaxb_core_4_0_5.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_jaxb_jaxb_runtime_4_0_5.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_jaxb_txw2_4_0_5.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_models_hibernate_models_1_0_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_orm_hibernate_core_7_0_4_Final.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_orm_hibernate_scan_jandex_7_0_4_Final.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_logging_jboss_logging_3_6_1_Final.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_engine_5_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_engine_1_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_base_21_0_6.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_base_win_21_0_6.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_controls_21_0_6.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_controls_win_21_0_6.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_fxml_21_0_6.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_fxml_win_21_0_6.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_graphics_21_0_6.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_graphics_win_21_0_6.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_opentest4j_opentest4j_1_3_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_postgresql_postgresql_42_7_13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectoFinal/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectoFinal/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectoFinal/src/main/java/org/example/projectofinal/controller/ReportesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectoFinal/src/main/java/org/example/projectofinal/controller/ReportesController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectoFinal/src/main/java/org/example/projectofinal/model/Empleado.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectoFinal/src/main/java/org/example/projectofinal/model/Empleado.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectoFinal/src/main/java/org/example/projectofinal/service/ReporteService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectoFinal/src/main/java/org/example/projectofinal/service/ReporteService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectoFinal/src/main/resources/META-INF/persistence.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectoFinal/src/main/resources/META-INF/persistence.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectoFinal/src/main/resources/org/example/projectofinal/view/reportes.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectoFinal/src/main/resources/org/example/projectofinal/view/reportes.fxml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="DatabaseLocalColorSettings">
+    <colors>
+      <entry key="8850837e-dc17-4fad-a91e-8a41127ed39f" value="" />
+    </colors>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
+    <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
         <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -32,23 +98,23 @@
 }</component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0295087696738203" />
-      <entry key="MS500" value="2.4636900067531835" />
-      <entry key="S2" value="5.132793059763195" />
-      <entry key="S5" value="6.160733575381134" />
-      <entry key="S10" value="6.5666104129870275" />
-      <entry key="S30" value="7.717322606807545" />
-      <entry key="S60" value="10.398503452635431" />
-      <entry key="M2" value="13.93018288427352" />
-      <entry key="M5" value="17.573139111128892" />
-      <entry key="M10" value="19.167187194041066" />
-      <entry key="M15" value="19.749916258301937" />
-      <entry key="M30" value="20.36040890247188" />
-      <entry key="H1" value="20.676481229438444" />
-      <entry key="H2" value="20.837298846661913" />
-      <entry key="H4" value="20.91841259678965" />
-      <entry key="D1" value="20.986369088709676" />
-      <entry key="W1" value="20.998051916986302" />
+      <entry key="MS100" value="1.8467453123625273" />
+      <entry key="MS500" value="1.9672763296139322" />
+      <entry key="S2" value="1.9917167307382933" />
+      <entry key="S5" value="1.99667842386992" />
+      <entry key="S10" value="1.9984527259311418" />
+      <entry key="S30" value="2.2153106707891763" />
+      <entry key="S60" value="3.793405674018133" />
+      <entry key="M2" value="7.922474527465338" />
+      <entry key="M5" value="14.831060681427065" />
+      <entry key="M10" value="18.762320701637922" />
+      <entry key="M15" value="20.343220818766827" />
+      <entry key="M30" value="22.08349077049515" />
+      <entry key="H1" value="23.018591378311903" />
+      <entry key="H2" value="23.50336020997728" />
+      <entry key="H4" value="23.750177442723203" />
+      <entry key="D1" value="23.958152589045593" />
+      <entry key="W1" value="23.994016626593474" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -70,23 +136,23 @@
       <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.9940842821756092" />
-      <entry key="MS500" value="2.445123917545521" />
-      <entry key="S2" value="5.122953020082935" />
-      <entry key="S5" value="6.155989636445398" />
-      <entry key="S10" value="6.56407439632009" />
-      <entry key="S30" value="7.715380105451827" />
-      <entry key="S60" value="10.395284509332381" />
-      <entry key="M2" value="13.92676880301678" />
-      <entry key="M5" value="17.5709420326022" />
-      <entry key="M10" value="19.165896530634075" />
-      <entry key="M15" value="19.749008104660884" />
-      <entry key="M30" value="20.35992959346923" />
-      <entry key="H1" value="20.6762349964249" />
-      <entry key="H2" value="20.837174050593354" />
-      <entry key="H4" value="20.918349774425998" />
-      <entry key="D1" value="20.986358559000923" />
-      <entry key="W1" value="20.998050411284602" />
+      <entry key="MS100" value="0.8469463843882273" />
+      <entry key="MS500" value="1.1495275019660045" />
+      <entry key="S2" value="1.64509935768488" />
+      <entry key="S5" value="1.8401433598388053" />
+      <entry key="S10" value="1.9168561449716361" />
+      <entry key="S30" value="2.18728103611552" />
+      <entry key="S60" value="3.7787892501235065" />
+      <entry key="M2" value="7.914022314456815" />
+      <entry key="M5" value="14.826688836525117" />
+      <entry key="M10" value="18.75981782435925" />
+      <entry key="M15" value="20.341463832982665" />
+      <entry key="M30" value="22.08256263888875" />
+      <entry key="H1" value="23.018113779221693" />
+      <entry key="H2" value="23.50311787680627" />
+      <entry key="H4" value="23.75005537329282" />
+      <entry key="D1" value="23.958132117064423" />
+      <entry key="W1" value="23.99401369889053" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -94,6 +160,9 @@
   &quot;fromUser&quot;: false
 }</component>
   <component name="ProjectId" id="3MODCFH1UPXc7IDIozM9FA8FUdj" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -135,7 +204,28 @@
       <workItem from="1795468205570" duration="620000" />
       <workItem from="1795622792679" duration="676000" />
       <workItem from="1795623480271" duration="103000" />
+      <workItem from="1795625106080" duration="1297000" />
+      <workItem from="1795626440305" duration="14000" />
+      <workItem from="1795626479272" duration="77000" />
+      <workItem from="1795626590001" duration="324000" />
     </task>
+    <task id="LOCAL-00001" summary="Merge branch 'main' into DiegoG&#10;&#10;# Conflicts:&#10;#&#9;.idea/compiler.xml&#10;#&#9;.idea/modules.xml&#10;#&#9;ProjectoFinal/src/main/java/org/example/projectofinal/HelloApplication.java&#10;#&#9;ProjectoFinal/src/main/java/org/example/projectofinal/controller/AdminPanelController.java&#10;#&#9;ProjectoFinal/src/main/java/org/example/projectofinal/controller/DashboardController.java&#10;#&#9;ProjectoFinal/src/main/java/org/example/projectofinal/controller/PrincipalController.java&#10;#&#9;ProjectoFinal/src/main/java/org/example/projectofinal/dao/CuentaUsuarioDao.java&#10;#&#9;ProjectoFinal/src/main/java/org/example/projectofinal/model/Supervision.java&#10;#&#9;ProjectoFinal/src/main/java/org/example/projectofinal/service/AdminPanelService.java&#10;#&#9;ProjectoFinal/src/main/java/org/example/projectofinal/service/ServiceGeneric.java&#10;#&#9;ProjectoFinal/src/main/java/org/example/projectofinal/util/SesionUsuario.java&#10;#&#9;ProjectoFinal/src/main/resources/META-INF/persistence.xml&#10;#&#9;ProjectoFinal/src/main/resources/org/example/projectofinal/adminpanel.fxml&#10;#&#9;ProjectoFinal/src/main/resources/org/example/projectofinal/dashboard.fxml&#10;#&#9;ProjectoFinal/src/main/resources/org/example/projectofinal/principal.fxml">
+      <option name="closed" value="true" />
+      <created>1795624423029</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1795624423029</updated>
+    </task>
+    <task id="LOCAL-00002" summary="jhon java&#10;&#10;# Conflicts:&#10;#&#9;.idea/compiler.xml&#10;#&#9;.idea/modules.xml&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/PruebaPrincipal.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/controller/AdminPanelController.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/controller/DashboardController.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/controller/PrincipalController.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/dao/CuentaUsuarioDao.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/dao/EntityManagerAdmin.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/dao/IDao.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/dao/ImplDao.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/dao/UsuarioDao.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/CategoriaPersonal.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/CuentaUsuario.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Departamento.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Empleado.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Evaluacion.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Objetivo.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/ObjetivoDepartamento.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/PeriodoEvaluacion.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/ResponsableObjetivo.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Seguimiento.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Supervision.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Usuario.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/service/AdminPanelService.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/service/ServiceGeneric.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/util/JpaUtil.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/util/SesionUsuario.java&#10;#&#9;ProjectoFinal/src/main/java/module-info.java">
+      <option name="closed" value="true" />
+      <created>1795624504478</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1795624504478</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -151,5 +241,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Merge branch 'main' into DiegoG&#10;&#10;# Conflicts:&#10;#&#9;.idea/compiler.xml&#10;#&#9;.idea/modules.xml&#10;#&#9;ProjectoFinal/src/main/java/org/example/projectofinal/HelloApplication.java&#10;#&#9;ProjectoFinal/src/main/java/org/example/projectofinal/controller/AdminPanelController.java&#10;#&#9;ProjectoFinal/src/main/java/org/example/projectofinal/controller/DashboardController.java&#10;#&#9;ProjectoFinal/src/main/java/org/example/projectofinal/controller/PrincipalController.java&#10;#&#9;ProjectoFinal/src/main/java/org/example/projectofinal/dao/CuentaUsuarioDao.java&#10;#&#9;ProjectoFinal/src/main/java/org/example/projectofinal/model/Supervision.java&#10;#&#9;ProjectoFinal/src/main/java/org/example/projectofinal/service/AdminPanelService.java&#10;#&#9;ProjectoFinal/src/main/java/org/example/projectofinal/service/ServiceGeneric.java&#10;#&#9;ProjectoFinal/src/main/java/org/example/projectofinal/util/SesionUsuario.java&#10;#&#9;ProjectoFinal/src/main/resources/META-INF/persistence.xml&#10;#&#9;ProjectoFinal/src/main/resources/org/example/projectofinal/adminpanel.fxml&#10;#&#9;ProjectoFinal/src/main/resources/org/example/projectofinal/dashboard.fxml&#10;#&#9;ProjectoFinal/src/main/resources/org/example/projectofinal/principal.fxml" />
+    <MESSAGE value="jhon java&#10;&#10;# Conflicts:&#10;#&#9;.idea/compiler.xml&#10;#&#9;.idea/modules.xml&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/PruebaPrincipal.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/controller/AdminPanelController.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/controller/DashboardController.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/controller/PrincipalController.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/dao/CuentaUsuarioDao.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/dao/EntityManagerAdmin.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/dao/IDao.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/dao/ImplDao.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/dao/UsuarioDao.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/CategoriaPersonal.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/CuentaUsuario.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Departamento.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Empleado.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Evaluacion.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Objetivo.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/ObjetivoDepartamento.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/PeriodoEvaluacion.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/ResponsableObjetivo.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Seguimiento.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Supervision.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Usuario.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/service/AdminPanelService.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/service/ServiceGeneric.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/util/JpaUtil.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/util/SesionUsuario.java&#10;#&#9;ProjectoFinal/src/main/java/module-info.java" />
+    <option name="LAST_COMMIT_MESSAGE" value="jhon java&#10;&#10;# Conflicts:&#10;#&#9;.idea/compiler.xml&#10;#&#9;.idea/modules.xml&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/PruebaPrincipal.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/controller/AdminPanelController.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/controller/DashboardController.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/controller/PrincipalController.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/dao/CuentaUsuarioDao.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/dao/EntityManagerAdmin.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/dao/IDao.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/dao/ImplDao.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/dao/UsuarioDao.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/CategoriaPersonal.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/CuentaUsuario.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Departamento.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Empleado.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Evaluacion.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Objetivo.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/ObjetivoDepartamento.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/PeriodoEvaluacion.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/ResponsableObjetivo.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Seguimiento.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Supervision.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/model/Usuario.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/service/AdminPanelService.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/service/ServiceGeneric.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/util/JpaUtil.java&#10;#&#9;ProjectoFinal/ProjectoFinal/src/main/java/org/example/projectofinal/util/SesionUsuario.java&#10;#&#9;ProjectoFinal/src/main/java/module-info.java" />
   </component>
 </project>

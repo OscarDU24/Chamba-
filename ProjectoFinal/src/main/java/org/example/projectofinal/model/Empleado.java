@@ -1,3 +1,4 @@
+
 package org.example.projectofinal.model;
 
 import jakarta.persistence.*;
@@ -8,6 +9,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "empleados")
 public class Empleado {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_empleado", nullable = false)
@@ -24,6 +26,7 @@ public class Empleado {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_categoria", nullable = false)
+    private CategoriaPersonal idCategoria;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_departamento")
@@ -65,9 +68,11 @@ public class Empleado {
         this.correoInstitucional = correoInstitucional;
     }
 
+    public CategoriaPersonal getIdCategoria() {
         return idCategoria;
     }
 
+    public void setIdCategoria(CategoriaPersonal idCategoria) {
         this.idCategoria = idCategoria;
     }
 
@@ -86,5 +91,4 @@ public class Empleado {
     public void setActivo(Boolean activo) {
         this.activo = activo;
     }
-
 }
