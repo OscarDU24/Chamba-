@@ -8,6 +8,10 @@ module org.example.projectofinal {
     requires org.hibernate.orm.core;
     requires java.sql;
 
+    // Reportes con JasperReports (PDF y Excel)
+    requires net.sf.jasperreports.core;
+    requires net.sf.jasperreports.pdf;
+
     opens org.example.projectofinal to javafx.fxml;
 
     opens org.example.projectofinal.controller to javafx.fxml;

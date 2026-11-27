@@ -78,6 +78,39 @@
             </Tab>
         </TabPane>
 
+        <TitledPane text="Exportar reportes del período elegido (plantillas de JasperReports)"
+                    expanded="true" collapsible="false">
+            <content>
+                <VBox fx:id="panelExportar" spacing="8">
+                    <padding><javafx.geometry.Insets top="10" right="10" bottom="10" left="10"/></padding>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Reporte general:" minWidth="150"/>
+                        <Label text="Tarjetas y tablas por departamento y por empleado" HBox.hgrow="ALWAYS"
+                               maxWidth="Infinity" style="-fx-text-fill: #65738a;"/>
+                        <Button text="PDF" onAction="#generalPdf" minWidth="80"/>
+                        <Button text="Excel" onAction="#generalExcel" minWidth="80"/>
+                    </HBox>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Reporte departamental:" minWidth="150"/>
+                        <ComboBox fx:id="cmbDepartamentoReporte" promptText="Seleccione departamento"
+                                  HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                        <Button text="PDF" onAction="#departamentalPdf" minWidth="80"/>
+                        <Button text="Excel" onAction="#departamentalExcel" minWidth="80"/>
+                    </HBox>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Reporte individual:" minWidth="150"/>
+                        <ComboBox fx:id="cmbEmpleadoReporte" promptText="Seleccione empleado"
+                                  HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                        <Button text="PDF" onAction="#individualPdf" minWidth="80"/>
+                        <Button text="Excel" onAction="#individualExcel" minWidth="80"/>
+                    </HBox>
+                </VBox>
+            </content>
+        </TitledPane>
+
         <Label fx:id="lblEstado" text=""/>
     </VBox>
 </AnchorPane>

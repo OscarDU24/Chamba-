@@ -1,0 +1,285 @@
+<!-- Reporte individual de desempeño · Sistema de Gestión de Personal (JasperReports 7) -->
+<jasperReport name="ReporteIndividual" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenNoDataType="NoDataSection" uuid="3c0f6a4e-1b2d-4f6a-9c11-0a1b2c3d4e01">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="sistema_atencion"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<style name="Base" default="true" fontName="SansSerif" fontSize="9.0" forecolor="#1D2B45"/>
+	<style name="Etiqueta" style="Base" fontSize="8.0" forecolor="#5F6E85"/>
+	<style name="Valor" style="Base" fontSize="10.0" bold="true"/>
+	<style name="Encabezado" style="Base" fontSize="8.5" bold="true" forecolor="#FFFFFF" backcolor="#315DA8" mode="Opaque" vTextAlign="Middle"/>
+	<parameter name="P_PERIODO" class="java.lang.String">
+		<description><![CDATA[Nombre del período de evaluación]]></description>
+		<defaultValueExpression><![CDATA["Segundo semestre 2026"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_CIF" class="java.lang.String">
+		<description><![CDATA[CIF del empleado]]></description>
+		<defaultValueExpression><![CDATA["EMP-003"]]></defaultValueExpression>
+	</parameter>
+	<query language="sql"><![CDATA[WITH base AS (
+    SELECT e.id_empleado, e.nombre_completo, e.cif, e.correo_institucional,
+           c.nombre AS categoria, d.nombre AS departamento,
+           p.id_periodo, p.nombre AS periodo, p.fecha_inicio, p.fecha_fin, p.estado AS estado_periodo
+    FROM empleados e
+    JOIN categorias_personal c ON c.id_categoria = e.id_categoria
+    LEFT JOIN departamentos d ON d.id_departamento = e.id_departamento
+    CROSS JOIN periodos_evaluacion p
+    WHERE e.cif = $P{P_CIF} AND p.nombre = $P{P_PERIODO}
+),
+objs AS (
+    SELECT r.id_empleado, a.id_asignacion, o.nombre AS objetivo, og.nombre AS objetivo_general,
+           o.indicador, o.meta, o.unidad_medida
+    FROM base b
+    JOIN responsables_objetivos r ON r.id_empleado = b.id_empleado
+    JOIN objetivos_departamento a ON a.id_asignacion = r.id_asignacion AND a.id_periodo = b.id_periodo
+    JOIN objetivos o ON o.id_objetivo = a.id_objetivo
+    LEFT JOIN objetivos og ON og.id_objetivo = o.id_objetivo_padre
+)
+SELECT b.nombre_completo, b.cif, b.correo_institucional, b.categoria, b.departamento,
+       b.periodo, b.fecha_inicio, b.fecha_fin, b.estado_periodo,
+       x.objetivo_general, x.objetivo, x.indicador, x.meta, x.unidad_medida,
+       (SELECT s.porcentaje_avance FROM seguimientos s
+         WHERE s.id_asignacion = x.id_asignacion AND s.tipo = 'INDIVIDUAL' AND s.id_empleado = b.id_empleado
+         ORDER BY s.fecha_seguimiento DESC LIMIT 1) AS ultimo_avance,
+       (SELECT max(s.fecha_seguimiento) FROM seguimientos s
+         WHERE s.id_asignacion = x.id_asignacion AND s.tipo = 'INDIVIDUAL' AND s.id_empleado = b.id_empleado) AS fecha_ultimo_avance,
+       (SELECT count(*) FROM objs) AS total_objetivos,
+       ev.puntuacion_individual, ev.puntuacion_departamental, ev.puntuacion_final,
+       ev.estado AS estado_evaluacion, ev.observaciones, ev.fecha_evaluacion,
+       evaluador.nombre_completo AS evaluador
+FROM base b
+LEFT JOIN objs x ON x.id_empleado = b.id_empleado
+LEFT JOIN evaluaciones ev ON ev.id_periodo = b.id_periodo AND ev.tipo = 'INDIVIDUAL' AND ev.id_empleado = b.id_empleado
+LEFT JOIN empleados evaluador ON evaluador.id_empleado = ev.evaluado_por
+ORDER BY x.objetivo_general NULLS LAST, x.objetivo]]></query>
+	<field name="nombre_completo" class="java.lang.String"/>
+	<field name="cif" class="java.lang.String"/>
+	<field name="correo_institucional" class="java.lang.String"/>
+	<field name="categoria" class="java.lang.String"/>
+	<field name="departamento" class="java.lang.String"/>
+	<field name="periodo" class="java.lang.String"/>
+	<field name="fecha_inicio" class="java.sql.Date"/>
+	<field name="fecha_fin" class="java.sql.Date"/>
+	<field name="estado_periodo" class="java.lang.String"/>
+	<field name="objetivo_general" class="java.lang.String"/>
+	<field name="objetivo" class="java.lang.String"/>
+	<field name="indicador" class="java.lang.String"/>
+	<field name="meta" class="java.math.BigDecimal"/>
+	<field name="unidad_medida" class="java.lang.String"/>
+	<field name="ultimo_avance" class="java.math.BigDecimal"/>
+	<field name="fecha_ultimo_avance" class="java.sql.Date"/>
+	<field name="total_objetivos" class="java.lang.Long"/>
+	<field name="puntuacion_individual" class="java.math.BigDecimal"/>
+	<field name="puntuacion_departamental" class="java.math.BigDecimal"/>
+	<field name="puntuacion_final" class="java.math.BigDecimal"/>
+	<field name="estado_evaluacion" class="java.lang.String"/>
+	<field name="observaciones" class="java.lang.String"/>
+	<field name="fecha_evaluacion" class="java.sql.Date"/>
+	<field name="evaluador" class="java.lang.String"/>
+	<title height="196">
+		<element kind="frame" x="0" y="0" width="555" height="62" mode="Opaque" backcolor="#202C3B">
+			<element kind="staticText" x="16" y="10" width="360" height="24" style="Base" fontSize="17.0" bold="true" forecolor="#FFFFFF">
+				<text><![CDATA[Reporte individual de desempeño]]></text>
+			</element>
+			<element kind="staticText" x="16" y="36" width="360" height="16" style="Base" fontSize="9.0" forecolor="#AFC0D7">
+				<text><![CDATA[Sistema de Gestión de Personal · Evaluación del desempeño]]></text>
+			</element>
+			<element kind="textField" x="380" y="14" width="160" height="14" style="Base" fontSize="8.0" forecolor="#AFC0D7" hTextAlign="Right">
+				<expression><![CDATA["Generado el"]]></expression>
+			</element>
+			<element kind="textField" x="380" y="30" width="160" height="16" style="Base" fontSize="10.0" bold="true" forecolor="#FFFFFF" hTextAlign="Right" pattern="dd/MM/yyyy HH:mm">
+				<expression><![CDATA[new java.util.Date()]]></expression>
+			</element>
+		</element>
+		<element kind="staticText" x="0" y="74" width="270" height="12" style="Etiqueta">
+			<text><![CDATA[EMPLEADO]]></text>
+		</element>
+		<element kind="textField" x="0" y="86" width="270" height="16" style="Valor" fontSize="12.0" textAdjust="StretchHeight">
+			<expression><![CDATA[$F{nombre_completo}]]></expression>
+		</element>
+		<element kind="staticText" x="285" y="74" width="130" height="12" style="Etiqueta">
+			<text><![CDATA[CIF]]></text>
+		</element>
+		<element kind="textField" x="285" y="86" width="130" height="16" style="Valor">
+			<expression><![CDATA[$F{cif}]]></expression>
+		</element>
+		<element kind="staticText" x="425" y="74" width="130" height="12" style="Etiqueta">
+			<text><![CDATA[CATEGORÍA]]></text>
+		</element>
+		<element kind="textField" x="425" y="86" width="130" height="16" style="Valor" textAdjust="StretchHeight">
+			<expression><![CDATA[$F{categoria}.replace("_", " ")]]></expression>
+		</element>
+		<element kind="staticText" x="0" y="110" width="270" height="12" style="Etiqueta">
+			<text><![CDATA[DEPARTAMENTO]]></text>
+		</element>
+		<element kind="textField" x="0" y="122" width="270" height="16" style="Valor" blankWhenNull="true" textAdjust="StretchHeight">
+			<expression><![CDATA[$F{departamento} == null ? "Sin departamento" : $F{departamento}]]></expression>
+		</element>
+		<element kind="staticText" x="285" y="110" width="270" height="12" style="Etiqueta">
+			<text><![CDATA[CORREO INSTITUCIONAL]]></text>
+		</element>
+		<element kind="textField" x="285" y="122" width="270" height="16" style="Valor" textAdjust="StretchHeight">
+			<expression><![CDATA[$F{correo_institucional}]]></expression>
+		</element>
+		<element kind="frame" x="0" y="148" width="555" height="34" mode="Opaque" backcolor="#E6EDF9">
+			<element kind="staticText" x="10" y="4" width="200" height="12" style="Etiqueta" forecolor="#315DA8">
+				<text><![CDATA[PERÍODO DE EVALUACIÓN]]></text>
+			</element>
+			<element kind="textField" x="10" y="16" width="250" height="16" style="Valor">
+				<expression><![CDATA[$F{periodo}]]></expression>
+			</element>
+			<element kind="textField" x="260" y="16" width="190" height="16" style="Base" fontSize="9.5">
+				<expression><![CDATA["Del " + new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{fecha_inicio}) + " al " + new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{fecha_fin})]]></expression>
+			</element>
+			<element kind="textField" x="450" y="16" width="95" height="16" style="Base" fontSize="9.0" bold="true" forecolor="#315DA8" hTextAlign="Right">
+				<expression><![CDATA[$F{estado_periodo}.replace("_", " ")]]></expression>
+			</element>
+		</element>
+	</title>
+	<columnHeader height="34">
+		<element kind="staticText" x="0" y="4" width="555" height="12" style="Etiqueta">
+			<text><![CDATA[OBJETIVOS EN LOS QUE PARTICIPA Y SU AVANCE INDIVIDUAL]]></text>
+		</element>
+		<element kind="staticText" x="0" y="18" width="165" height="16" style="Encabezado">
+			<box leftPadding="4"/>
+			<text><![CDATA[Objetivo general]]></text>
+		</element>
+		<element kind="staticText" x="165" y="18" width="200" height="16" style="Encabezado">
+			<box leftPadding="4"/>
+			<text><![CDATA[Objetivo específico]]></text>
+		</element>
+		<element kind="staticText" x="365" y="18" width="70" height="16" style="Encabezado" hTextAlign="Center">
+			<text><![CDATA[Meta]]></text>
+		</element>
+		<element kind="staticText" x="435" y="18" width="60" height="16" style="Encabezado" hTextAlign="Center">
+			<text><![CDATA[Avance]]></text>
+		</element>
+		<element kind="staticText" x="495" y="18" width="60" height="16" style="Encabezado" hTextAlign="Center">
+			<text><![CDATA[Registro]]></text>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<element kind="staticText" x="0" y="2" width="555" height="16" style="Base" italic="true" forecolor="#5F6E85">
+				<printWhenExpression><![CDATA[$F{objetivo} == null]]></printWhenExpression>
+				<box leftPadding="4"/>
+				<text><![CDATA[El empleado no participa en objetivos asignados en este período.]]></text>
+			</element>
+			<element kind="textField" x="0" y="0" width="165" height="20" style="Base" textAdjust="StretchHeight" blankWhenNull="true" vTextAlign="Middle">
+				<printWhenExpression><![CDATA[$F{objetivo} != null]]></printWhenExpression>
+				<box topPadding="3" leftPadding="4" bottomPadding="3" rightPadding="4">
+					<bottomPen lineWidth="0.5" lineColor="#DCE3EE"/>
+				</box>
+				<expression><![CDATA[$F{objetivo_general}]]></expression>
+			</element>
+			<element kind="textField" x="165" y="0" width="200" height="20" style="Base" bold="true" textAdjust="StretchHeight" vTextAlign="Middle">
+				<printWhenExpression><![CDATA[$F{objetivo} != null]]></printWhenExpression>
+				<box topPadding="3" leftPadding="4" bottomPadding="3" rightPadding="4">
+					<bottomPen lineWidth="0.5" lineColor="#DCE3EE"/>
+				</box>
+				<expression><![CDATA[$F{objetivo}]]></expression>
+			</element>
+			<element kind="textField" x="365" y="0" width="70" height="20" style="Base" hTextAlign="Center" textAdjust="StretchHeight" vTextAlign="Middle">
+				<printWhenExpression><![CDATA[$F{objetivo} != null]]></printWhenExpression>
+				<box>
+					<bottomPen lineWidth="0.5" lineColor="#DCE3EE"/>
+				</box>
+				<expression><![CDATA[$F{meta} == null ? "—" : $F{meta}.stripTrailingZeros().toPlainString() + " " + ($F{unidad_medida} == null ? "" : $F{unidad_medida})]]></expression>
+			</element>
+			<element kind="textField" x="435" y="0" width="60" height="20" style="Base" bold="true" forecolor="#315DA8" hTextAlign="Center" textAdjust="StretchHeight" vTextAlign="Middle">
+				<printWhenExpression><![CDATA[$F{objetivo} != null]]></printWhenExpression>
+				<box>
+					<bottomPen lineWidth="0.5" lineColor="#DCE3EE"/>
+				</box>
+				<expression><![CDATA[$F{ultimo_avance} == null ? "Sin avance" : $F{ultimo_avance}.stripTrailingZeros().toPlainString() + " %"]]></expression>
+			</element>
+			<element kind="textField" x="495" y="0" width="60" height="20" style="Base" hTextAlign="Center" textAdjust="StretchHeight" vTextAlign="Middle">
+				<printWhenExpression><![CDATA[$F{objetivo} != null]]></printWhenExpression>
+				<box>
+					<bottomPen lineWidth="0.5" lineColor="#DCE3EE"/>
+				</box>
+				<expression><![CDATA[$F{fecha_ultimo_avance} == null ? "—" : new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{fecha_ultimo_avance})]]></expression>
+			</element>
+		</band>
+	</detail>
+	<pageFooter height="24">
+		<element kind="line" x="0" y="4" width="555" height="1" forecolor="#DCE3EE"/>
+		<element kind="textField" x="0" y="8" width="380" height="14" style="Etiqueta">
+			<expression><![CDATA["Reporte individual · " + $F{nombre_completo} + " · " + $F{periodo}]]></expression>
+		</element>
+		<element kind="textField" x="380" y="8" width="140" height="14" style="Etiqueta" hTextAlign="Right">
+			<expression><![CDATA["Página " + $V{PAGE_NUMBER} + " de"]]></expression>
+		</element>
+		<element kind="textField" x="520" y="8" width="35" height="14" style="Etiqueta" evaluationTime="Report">
+			<expression><![CDATA[" " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+	</pageFooter>
+	<summary height="168">
+		<element kind="staticText" x="0" y="14" width="555" height="12" style="Etiqueta">
+			<text><![CDATA[EVALUACIÓN FINAL DEL PERÍODO (MODELO MIXTO)]]></text>
+		</element>
+		<element kind="frame" x="0" y="28" width="555" height="128" mode="Opaque" backcolor="#F4F6FA">
+			<printWhenExpression><![CDATA[$F{estado_evaluacion} != null]]></printWhenExpression>
+			<box>
+				<pen lineWidth="0.5" lineColor="#DCE3EE"/>
+			</box>
+			<element kind="staticText" x="12" y="10" width="120" height="12" style="Etiqueta">
+				<text><![CDATA[Puntuación individual]]></text>
+			</element>
+			<element kind="textField" x="12" y="22" width="120" height="24" style="Base" fontSize="18.0" bold="true">
+				<expression><![CDATA[$F{puntuacion_individual} == null ? "—" : $F{puntuacion_individual}.stripTrailingZeros().toPlainString()]]></expression>
+			</element>
+			<element kind="staticText" x="142" y="10" width="130" height="12" style="Etiqueta">
+				<text><![CDATA[Puntuación departamental]]></text>
+			</element>
+			<element kind="textField" x="142" y="22" width="130" height="24" style="Base" fontSize="18.0" bold="true">
+				<expression><![CDATA[$F{puntuacion_departamental} == null ? "—" : $F{puntuacion_departamental}.stripTrailingZeros().toPlainString()]]></expression>
+			</element>
+			<element kind="staticText" x="282" y="10" width="120" height="12" style="Etiqueta" forecolor="#315DA8">
+				<text><![CDATA[PUNTUACIÓN FINAL]]></text>
+			</element>
+			<element kind="textField" x="282" y="22" width="120" height="24" style="Base" fontSize="18.0" bold="true" forecolor="#315DA8">
+				<expression><![CDATA[$F{puntuacion_final} == null ? "—" : $F{puntuacion_final}.stripTrailingZeros().toPlainString()]]></expression>
+			</element>
+			<element kind="staticText" x="412" y="10" width="130" height="12" style="Etiqueta">
+				<text><![CDATA[Estado]]></text>
+			</element>
+			<element kind="textField" x="412" y="24" width="130" height="18" style="Valor">
+				<expression><![CDATA[$F{estado_evaluacion}.replace("_", " ")]]></expression>
+			</element>
+			<element kind="staticText" x="12" y="56" width="260" height="12" style="Etiqueta">
+				<text><![CDATA[Evaluado por]]></text>
+			</element>
+			<element kind="textField" x="12" y="68" width="260" height="14" style="Base" fontSize="9.5" blankWhenNull="true">
+				<expression><![CDATA[$F{evaluador}]]></expression>
+			</element>
+			<element kind="staticText" x="282" y="56" width="260" height="12" style="Etiqueta">
+				<text><![CDATA[Fecha de evaluación]]></text>
+			</element>
+			<element kind="textField" x="282" y="68" width="260" height="14" style="Base" fontSize="9.5" blankWhenNull="true" pattern="dd/MM/yyyy">
+				<expression><![CDATA[$F{fecha_evaluacion}]]></expression>
+			</element>
+			<element kind="staticText" x="12" y="88" width="530" height="12" style="Etiqueta">
+				<text><![CDATA[Observaciones]]></text>
+			</element>
+			<element kind="textField" x="12" y="100" width="530" height="20" style="Base" fontSize="9.5" textAdjust="StretchHeight">
+				<expression><![CDATA[$F{observaciones} == null ? "Sin observaciones." : $F{observaciones}]]></expression>
+			</element>
+		</element>
+		<element kind="staticText" x="0" y="28" width="555" height="30" style="Base" fontSize="9.5" italic="true" forecolor="#5F6E85" mode="Opaque" backcolor="#F4F6FA" vTextAlign="Middle">
+			<printWhenExpression><![CDATA[$F{estado_evaluacion} == null]]></printWhenExpression>
+			<box leftPadding="12">
+				<pen lineWidth="0.5" lineColor="#DCE3EE"/>
+			</box>
+			<text><![CDATA[El empleado todavía no tiene una evaluación final registrada en este período.]]></text>
+		</element>
+	</summary>
+	<noData height="70">
+		<element kind="frame" x="0" y="0" width="555" height="44" mode="Opaque" backcolor="#202C3B">
+			<element kind="staticText" x="16" y="10" width="520" height="24" style="Base" fontSize="15.0" bold="true" forecolor="#FFFFFF">
+				<text><![CDATA[Reporte individual de desempeño]]></text>
+			</element>
+		</element>
+		<element kind="textField" x="0" y="52" width="555" height="16" style="Base" fontSize="10.0" forecolor="#B42318">
+			<expression><![CDATA["No se encontró el empleado con CIF \"" + $P{P_CIF} + "\" o el período \"" + $P{P_PERIODO} + "\". Revise los parámetros."]]></expression>
+		</element>
+	</noData>
+</jasperReport>
